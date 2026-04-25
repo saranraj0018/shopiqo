@@ -198,4 +198,29 @@ function closeMenu() {
 if (menuToggle) menuToggle.addEventListener('click', openMenu);
 if (menuClose) menuClose.addEventListener('click', closeMenu);
 if (mobileOverlay) mobileOverlay.addEventListener('click', closeMenu);
+
+const container = document.getElementById('autoScroll');
+
+let scrollAmount = 0;
+const speed = 30;
+
+let lastTime = null;
+
+function autoScroll(timestamp) {
+    if (!lastTime) lastTime = timestamp;
+
+    const delta = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+
+    const maxScroll = container.scrollWidth - container.clientWidth;
+
+    if (scrollAmount < maxScroll) {
+        scrollAmount += speed * delta;
+        container.scrollLeft = scrollAmount;
+
+        requestAnimationFrame(autoScroll);
+    }
+}
+
+requestAnimationFrame(autoScroll);
 </script>

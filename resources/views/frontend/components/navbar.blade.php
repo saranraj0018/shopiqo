@@ -250,26 +250,24 @@ menuToggle.addEventListener('click', function() {
 
 menuClose.addEventListener('click', closeMenu);
 mobileOverlay.addEventListener('click', closeMenu);
-</script>
 
-<script>
 const container = document.getElementById('autoScroll');
 
 let scrollAmount = 0;
-const speed = 30; 
+const speed = 30;
 
 let lastTime = null;
 
 function autoScroll(timestamp) {
     if (!lastTime) lastTime = timestamp;
 
-    const delta = (timestamp - lastTime) / 1000; 
+    const delta = (timestamp - lastTime) / 1000;
     lastTime = timestamp;
 
     const maxScroll = container.scrollWidth - container.clientWidth;
 
     if (scrollAmount < maxScroll) {
-        scrollAmount += speed * delta; 
+        scrollAmount += speed * delta;
         container.scrollLeft = scrollAmount;
 
         requestAnimationFrame(autoScroll);

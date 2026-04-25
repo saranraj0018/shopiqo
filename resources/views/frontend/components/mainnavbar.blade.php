@@ -1,5 +1,5 @@
 @php
-$showMainNavbar = true  ;
+$showMainNavbar = true ;
 @endphp
 
 @if($showMainNavbar)
