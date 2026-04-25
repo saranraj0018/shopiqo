@@ -21,12 +21,6 @@
             </div>
         </div>
 
-        <!-- <div class="flex items-center gap-1 text-[12px] text-[#f6c344] shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
-                <path d="M12 2l2.9 6.26 6.9.59-5.2 4.5 1.56 6.65L12 16.9 5.84 20l1.56-6.65-5.2-4.5 6.9-.59L12 2z" />
-            </svg>
-            <span>{{ $testimonial['rating'] }}</span>
-        </div> -->
     </div>
 
     <p class="text-white/55 text-[11px] leading-[1.55]">

@@ -1,17 +1,14 @@
 <footer class="bg-[#111] text-white pt-8 sm:pt-12">
 
-    <!-- TOP BIG TITLE -->
     <div class="text-center border-b border-white/10 pb-5 sm:pb-6 px-4">
         <img src="{{ asset('assets/images/footerlogo.png') }}" alt="Shopiqo"
             class="mx-auto w-[280px] sm:w-[190px] md:w-[430px]">
     </div>
 
-    <!-- MAIN FOOTER -->
     <div class="max-w-7xl mx-auto px-6 py-10">
 
         <div class="flex flex-wrap lg:flex-nowrap items-start justify-between gap-10">
 
-            <!-- LOGO + DESC -->
             <div class="w-full sm:w-[45%] lg:w-[22%]">
                 <div class="flex items-center gap-3 mb-4">
                     <img src="{{ asset('assets/images/Shopiqologo.svg') }}" class="w-28">
@@ -23,62 +20,58 @@
                 </p>
             </div>
 
-            <!-- COMPANY -->
             <div class="w-[48%] sm:w-[30%] lg:w-[15%]">
                 <h4 class="font-semibold mb-3">Company</h4>
                 <ul class="space-y-2 text-sm text-gray-400">
-                    <li>• <a href="#" class="hover:text-white">About Us</a></li>
+                    <li>• <a href="/" class="hover:text-white">Home</a></li>
+                    <li>• <a href="shop" class="hover:text-white">Shop</a></li>
                     <li>• <a href="contact" class="hover:text-white">Contact</a></li>
-                    <li>• <a href="#" class="hover:text-white">FAQs</a></li>
-                    <li>• <a href="#" class="hover:text-white">Blog</a></li>
+                    <!-- <li>• <a href="blog" class="hover:text-white">Blog</a></li> -->
                 </ul>
             </div>
 
-            <!-- FOR CUSTOMERS -->
             <div class="w-[48%] sm:w-[30%] lg:w-[18%]">
                 <h4 class="font-semibold mb-3">For Customers</h4>
                 <ul class="space-y-2 text-sm text-gray-400">
-                    <li>• <a href="#" class="hover:text-white">Browse Products</a></li>
-                    <li>• <a href="#" class="hover:text-white">How It Works</a></li>
-                    <li>• <a href="#" class="hover:text-white">My Orders</a></li>
-                    <li>• <a href="#" class="hover:text-white">Track Order</a></li>
+                    <li>• <a href="shop" class="hover:text-white">Browse Products</a></li>
+                    <li>• <a href="how-it-works" class="hover:text-white">How It Works</a></li>
+                    <li>• <a href="profile/orders-activity" class="hover:text-white">My Orders</a></li>
+                    <!-- <li>• <a href="track-order" class="hover:text-white">Track Order</a></li> -->
                 </ul>
             </div>
 
-            <!-- FOR VENDORS -->
             <div class="w-[48%] sm:w-[30%] lg:w-[18%]">
                 <h4 class="font-semibold mb-3">For Vendors</h4>
                 <ul class="space-y-2 text-sm text-gray-400">
                     <li>• <a href="#" class="hover:text-white">Become a Vendor</a></li>
                     <li>• <a href="#" class="hover:text-white">Vendor Dashboard</a></li>
                     <li>• <a href="#" class="hover:text-white">Vendor Support</a></li>
-                    <li>• <a href="#" class="hover:text-white">Guidelines</a></li>
+                    <!-- <li>• <a href="#" class="hover:text-white">Guidelines</a></li> -->
                 </ul>
             </div>
 
-            <!-- SOCIAL -->
             <div class="w-[48%] sm:w-[30%] lg:w-[18%]">
                 <h4 class="font-semibold mb-3">Stay Connected</h4>
 
                 <div class="flex gap-3 mt-2">
                     <a href="#"
-                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-[10px]">
+                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-2.5">
                         <i class="fa-brands fa-youtube"></i>
                     </a>
                     <a href="#"
-                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-[13px]">
+                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-2.5">
                         <i class="fa-brands fa-facebook-f"></i>
                     </a>
                     <a href="#"
-                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-[10px]">
+                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-2.5">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
                     <a href="#"
-                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-[10px]">
+                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-2.5">
                         <i class="fa-brands fa-linkedin-in"></i>
                     </a>
                     <a href="#"
-                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-[10px]">
+                        class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-black px-2.5">
                         <i class="fa-brands fa-twitter"></i>
                     </a>
                 </div>

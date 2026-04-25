@@ -1,11 +1,8 @@
 <div class="min-h-screen bg-black text-white px-6 pt-[5rem] sm:pt-10 py-10">
     <div class="max-w-[1050px] mx-auto grid grid-cols-1 lg:grid-cols-[1.7fr_0.8fr] gap-6">
-        <!-- LEFT SIDE -->
         <div class="space-y-4">
-            <!-- REVIEW CARD -->
             <div class="rounded-[16px] border border-white/40 bg-black px-5 py-4">
                 <h2 class="text-[18px] font-medium leading-none mb-5">Review Your Order</h2>
-                <!-- PRODUCT -->
                 <div class="flex items-start gap-4">
                     <div class="w-[96px] h-[96px] rounded-[12px] bg-white overflow-hidden shrink-0">
                         <img src="{{ asset('assets/images/jacket.png') }}" alt="Product"
@@ -25,7 +22,6 @@
                     </div>
                 </div>
                 <div class="my-5 border-t border-white/30"></div>
-                <!-- PACKAGING OPTIONS -->
                 <div>
                     <h4 class="text-[18px] font-normal mb-4">Packaging Options</h4>
                     <div class="grid grid-cols-3 gap-4 mb-5">
@@ -42,7 +38,6 @@
                             50 Units
                         </button>
                     </div>
-                    <!-- SUMMARY BOX -->
                     <div
                         class="rounded-[16px] border border-white/30 bg-[linear-gradient(90deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))] px-5 py-4 flex items-center justify-between">
                         <div>
@@ -56,7 +51,6 @@
                     </div>
                 </div>
                 <div class="my-5 border-t border-white/30"></div>
-                <!-- TIMELINE -->
                 <div>
                     <h4 class="text-[18px] font-normal mb-4">Production Timeline</h4>
                     <div class="space-y-3 text-[12px] text-white/90">
@@ -79,7 +73,6 @@
                     </div>
                 </div>
             </div>
-            <!-- SAMPLE TYPE -->
             <div class="rounded-[16px] border border-white/30 px-5 py-4 
     bg-gradient-to-r from-[#0a0a0a] via-[#1c1c1c] to-[#0a0a0a]">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
@@ -104,7 +97,6 @@
                 class="bg-[#f3f3f3] p-5 rounded-[18px] scale-95 translate-y-4 transition-all duration-300"
                 onclick="event.stopPropagation()">
                 <div class="flex flex-col md:flex-row gap-6">
-                    <!-- CARD 1 -->
                     <div class="w-full md:w-[320px] bg-[#1a1a1a] rounded-[16px] p-6 text-center text-white">
                         <div
                             class="w-[56px] h-[56px] mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center">
@@ -118,7 +110,6 @@
                             Use Digital Sample
                         </button>
                     </div>
-                    <!-- CARD 2 -->
                     <div class="w-full md:w-[320px] bg-[#1a1a1a] rounded-[16px] p-6 text-center text-white">
                         <div
                             class="w-[56px] h-[56px] mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center">
@@ -136,7 +127,6 @@
             </div>
         </div>
 
-        <!-- RIGHT SIDE -->
         <div class="md:sticky md:top-[20px] self-start">
             <div class="rounded-[16px] bg-[#f2f2f2] text-black px-5 py-5 mx-[20px] sm:mx-0">
                 <h3 class="text-[16px] font-medium mb-4">Order Summary</h3>
@@ -185,7 +175,7 @@
 <script>
 function selectUnit(unit, btn) {
 
-    const totalPieces = 50; // 👈 change this if needed
+    const totalPieces = 50
 
     const packs = Math.floor(totalPieces / unit);
 

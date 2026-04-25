@@ -2,7 +2,7 @@
 
         <!-- Background glow -->
         <div class="absolute inset-0">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]">
+            <!-- <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]"> -->
             </div>
             <!-- <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(0,120,255,0.10),transparent_30%)]"></div> -->
             <div

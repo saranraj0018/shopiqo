@@ -1,10 +1,8 @@
 <header class="absolute top-0 left-0 w-full z-50 text-white">
-    <!-- Top Navbar -->
     <div class="w-full bg-black backdrop-blur-md border-b border-white/10">
         <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div class="h-[64px] md:h-[68px] flex items-center justify-between gap-4">
 
-                <!-- Left: Logo -->
                 <div class="flex items-center">
                     <a href="/" class="shrink-0 flex items-center">
                         <img src="{{ asset('assets/images/Shopiqologo.svg') }}" alt="Logo"
@@ -12,7 +10,6 @@
                     </a>
                 </div>
 
-                <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center gap-8 lg:gap-10">
                     <div>
                         <nav class="flex items-center gap-6 lg:gap-10 text-[14px] lg:text-[16px] font-normal">
@@ -23,7 +20,6 @@
                         </nav>
                     </div>
                     <div class="flex gap-[20px]">
-                        <!-- Search -->
                         <div class=" flex items-center w-[150px] lg:w-[210px] h-[36px] lg:h-[38px] rounded-full border
                         border-white/20 bg-white/5 px-3 lg:px-4">
                             <svg xmlns="http://www.w3.org/2000/svg"
@@ -36,7 +32,6 @@
                                 class="w-full bg-transparent text-[13px] lg:text-[15px] text-white placeholder:text-white/65 outline-none border-none">
                         </div>
 
-                        <!-- Icons -->
                         <a href="/wishlist" class="flex items-center justify-center hover:opacity-80 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px] lg:w-[22px] lg:h-[22px]"
                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
@@ -64,17 +59,14 @@
 
 
 
-                    <!-- Call Button -->
                     <a href="tel:9629035372"
                         class="hidden xl:flex items-center gap-3 bg-white text-black rounded-full pl-3 pr-4 h-[42px] hover:bg-white/90 transition">
 
-                        <!-- ICON (use your SVG image) -->
                         <span class="flex items-center justify-center w-[28px] h-[28px] ">
                             <img src="{{ asset('assets/images/navbarheadset.svg') }}" alt="call"
                                 class="w-[26px] h-[26px] object-contain">
                         </span>
 
-                        <!-- TEXT -->
                         <div class="leading-tight">
                             <p class="text-[9px] font-medium uppercase tracking-[0.5px]">Call us 24/7</p>
                             <p class="text-[15px] font-medium">89564 78965</p>
@@ -83,9 +75,7 @@
                     </a>
                 </div>
 
-                <!-- Mobile Right -->
                 <div class="flex md:hidden items-center gap-4">
-                    <!-- Mobile Search -->
                     <div
                         class="flex items-center w-full h-[30px] rounded-full border border-white/20 bg-white/5 px-4 ml-[30px]">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] text-white/80 mr-2 shrink-0"
@@ -94,10 +84,9 @@
                                 d="m21 21-4.35-4.35m1.85-5.15a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
                         </svg>
                         <input type="text" placeholder="Search"
-                            class="w-full bg-transparent text-[14px] text-white placeholder:text-white/65 outline-none border-none">
+                            class="  w-full bg-transparent text-[14px] text-white placeholder:text-white/65 outline-none border-none">
                     </div>
 
-                    <!-- Wishlist -->
                     <a href="/wishlist" class="flex items-center justify-center hover:opacity-80 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
@@ -106,7 +95,6 @@
                         </svg>
                     </a>
 
-                    <!-- Cart -->
                     <a href="/cart" class="flex items-center justify-center hover:opacity-80 transition">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
@@ -115,16 +103,6 @@
                         </svg>
                     </a>
 
-                    <!-- My Account -->
-                    <!-- <a href="/profile" class="flex items-center justify-center hover:opacity-80 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px] lg:w-[22px] lg:h-[22px]"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.12a7.5 7.5 0 0 1 15 0" />
-                        </svg>
-                    </a> -->
-
-                    <!-- Burger Right Side -->
                     <button id="menuToggle" type="button" class="flex items-center justify-center">
                         <svg id="openIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 block" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -141,7 +119,6 @@
         </div>
     </div>
 
-    <!-- Bottom Category Bar -->
     <div class="w-full bg-black/10 backdrop-blur-md border-white/5">
         <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div id="autoScroll"
@@ -206,10 +183,8 @@
     </div>
 
 
-    <!-- Mobile Overlay -->
     <div id="mobileOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden md:hidden"></div>
 
-    <!-- Mobile Side Menu -->
     <div id="mobileMenu"
         class="fixed top-0 left-0 h-full w-[280px] bg-black/95 backdrop-blur-xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
 
@@ -226,18 +201,14 @@
 
         <div class="px-5 py-6">
 
-            <!-- Mobile Links -->
             <nav class="flex flex-col gap-4 text-[15px]">
                 <a href="/" class="hover:text-white/80 transition">Home</a>
                 <a href="/shop" class="hover:text-white/80 transition">Shop</a>
                 <a href="/how-it-works" class="hover:text-white/80 transition">How it works</a>
                 <a href="/contact" class="hover:text-white/80 transition">Contact Us</a>
-                <!-- <a href="/wishlist" class="hover:text-white/80 transition">Wishlist</a>
-                <a href="/cart" class="hover:text-white/80 transition">Cart</a> -->
                 <a href="/profile" class="hover:text-white/80 transition">My Account</a>
             </nav>
 
-            <!-- Mobile Call -->
             <a href="tel:9629035372"
                 class="mt-8 inline-flex items-center gap-3 bg-white text-black rounded-full px-4 h-[42px] hover:bg-white/90 transition">
                 <span class="flex items-center justify-center w-[28px] h-[28px]">
@@ -285,20 +256,20 @@ mobileOverlay.addEventListener('click', closeMenu);
 const container = document.getElementById('autoScroll');
 
 let scrollAmount = 0;
-const speed = 30; // pixels per second (not per frame)
+const speed = 30; 
 
 let lastTime = null;
 
 function autoScroll(timestamp) {
     if (!lastTime) lastTime = timestamp;
 
-    const delta = (timestamp - lastTime) / 1000; // convert to seconds
+    const delta = (timestamp - lastTime) / 1000; 
     lastTime = timestamp;
 
     const maxScroll = container.scrollWidth - container.clientWidth;
 
     if (scrollAmount < maxScroll) {
-        scrollAmount += speed * delta; // 🔥 smooth based on time
+        scrollAmount += speed * delta; 
         container.scrollLeft = scrollAmount;
 
         requestAnimationFrame(autoScroll);

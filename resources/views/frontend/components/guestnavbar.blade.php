@@ -1,10 +1,8 @@
 <header class="absolute top-0 left-0 w-full z-50 text-white">
-    <!-- Top Navbar -->
     <div class="w-full bg-black backdrop-blur-md border-b border-white/10">
         <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div class="h-[64px] md:h-[68px] flex items-center justify-between gap-4">
 
-                <!-- Left: Logo -->
                 <div class="flex items-center shrink-0">
                     <a href="/" class="flex items-center">
                         <img src="{{ asset('assets/images/Shopiqologo.svg') }}" alt="Logo"
@@ -12,7 +10,6 @@
                     </a>
                 </div>
 
-                <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center justify-around flex-1 ml-8">
                     <nav class="flex items-center gap-6 lg:gap-10 text-[14px] lg:text-[15px] font-normal">
                         <a href="/" class="hover:text-white/80 transition">Home</a>
@@ -22,7 +19,6 @@
                     </nav>
 
                     <div class="flex items-center gap-4 lg:gap-5">
-                        <!-- Search -->
                         <div
                             class="flex items-center w-[180px] lg:w-[230px] h-[38px] rounded-full border border-white/15 bg-white/[0.04] px-4">
                             <svg xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +31,6 @@
                                 class="w-full bg-transparent text-[13px] lg:text-[14px] text-white placeholder:text-white/60 outline-none border-none">
                         </div>
 
-                        <!-- Guest Login Button -->
                         <a href="/login"
                             class="h-[36px] px-5 rounded-full bg-white text-black text-[13px] font-medium flex items-center justify-center hover:bg-white/90 transition">
                             Login
@@ -43,9 +38,7 @@
                     </div>
                 </div>
 
-                <!-- Mobile Right -->
                 <div class="flex md:hidden items-center gap-3 ml-auto">
-                    <!-- Mobile Search -->
                     <button type="button"
                         class="flex items-center justify-center w-9 h-9 rounded-full border border-white/15 bg-white/[0.04] hover:bg-white/[0.08] transition">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px] text-white/85" fill="none"
@@ -55,13 +48,11 @@
                         </svg>
                     </button>
 
-                    <!-- Mobile Login -->
                     <a href="/login"
                         class="h-[36px] px-5 rounded-full bg-white text-black text-[13px] font-medium flex items-center justify-center hover:bg-white/90 transition">
                         Login
                     </a>
 
-                    <!-- Burger -->
                     <button id="menuToggle" type="button" class="flex items-center justify-center">
                         <svg id="openIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 block" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -78,54 +69,61 @@
         </div>
     </div>
 
-    <!-- Bottom Category Bar -->
     <div class="w-full bg-black/10 backdrop-blur-md border-white/5">
         <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
-            <div class="h-[36px] md:h-[38px] flex items-center gap-6 md:gap-10 overflow-x-auto whitespace-nowrap text-[12px] md:text-[13px]"
+            <div id="autoScroll"
+                class="h-[46px] md:h-[50px] flex items-center gap-6 md:gap-10 overflow-x-auto whitespace-nowrap text-[13px] md:text-[15px]"
                 style="scrollbar-width:none; -ms-overflow-style:none;">
-                <a href="#" class="flex items-center gap-2 text-white/90 hover:text-white transition shrink-0">
+
+                <a href="/shop?category=all"
+                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
                     <span>Christmas</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[11px] h-[11px] md:w-[12px] md:h-[12px]"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
                     </svg>
                 </a>
 
-                <a href="#" class="flex items-center gap-2 text-white/90 hover:text-white transition shrink-0">
-                    <span>Diaries & Calendars 2026</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[11px] h-[11px] md:w-[12px] md:h-[12px]"
+                <a href="/shop?category=stationery"
+                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
+                    <span>Diaries &amp; Calendars 2026</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
                     </svg>
                 </a>
 
-                <a href="#" class="flex items-center gap-2 text-white/90 hover:text-white transition shrink-0">
-                    <span>Visiting Cards & ID Cards</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[11px] h-[11px] md:w-[12px] md:h-[12px]"
+                <a href="/shop?category=visiting-cards"
+                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
+                    <span>Visiting Cards &amp; ID Cards</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
                     </svg>
                 </a>
 
-                <a href="#" class="flex items-center gap-2 text-white/90 hover:text-white transition shrink-0">
-                    <span>Stationery & Office Supplies</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[11px] h-[11px] md:w-[12px] md:h-[12px]"
+                <a href="/shop?category=stationery"
+                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
+                    <span>Stationery &amp; Office Supplies</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
                     </svg>
                 </a>
 
-                <a href="#" class="flex items-center gap-2 text-white/90 hover:text-white transition shrink-0">
-                    <span>Drinkware & Lunchboxes</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[11px] h-[11px] md:w-[12px] md:h-[12px]"
+                <a href="/shop?category=bottles"
+                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
+                    <span>Drinkware &amp; Lunchboxes</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
                     </svg>
                 </a>
 
-                <a href="#" class="flex items-center gap-2 text-white/90 hover:text-white transition shrink-0 pr-2">
+                <a href="/shop?category=bags"
+                    class="flex items-center gap-2 text-white/95 hover:text-white transition pr-2 shrink-0">
                     <span>Bags</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[11px] h-[11px] md:w-[12px] md:h-[12px]"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
                     </svg>
@@ -134,10 +132,8 @@
         </div>
     </div>
 
-    <!-- Mobile Overlay -->
     <div id="mobileOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden md:hidden"></div>
 
-    <!-- Mobile Side Menu -->
     <div id="mobileMenu"
         class="fixed top-0 left-0 h-full w-[280px] bg-black/95 backdrop-blur-xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
 
@@ -158,7 +154,6 @@
                 <a href="/shop" class="hover:text-white/80 transition">Shop</a>
                 <a href="/how-it-works" class="hover:text-white/80 transition">How it works</a>
                 <a href="/contact" class="hover:text-white/80 transition">Contact Us</a>
-                <!-- <a href="/login" class="hover:text-white/80 transition">Login</a> -->
             </nav>
 
             <a href="tel:8956478965"

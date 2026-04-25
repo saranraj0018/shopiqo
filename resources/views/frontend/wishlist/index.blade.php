@@ -56,7 +56,7 @@ return isset($item['wishlist']) && $item['wishlist'] === true;
 });
 @endphp
 
-<section class="min-h-screen bg-black px-12 sm:px-4 sm:px-6 lg:px-8 pt-[140px]">
+<section class="bg-black px-12 sm:px-4 sm:px-6 lg:px-8 pt-[140px]">
     <div class="max-w-5xl mx-auto">
 
         <!-- Breadcrumb -->
@@ -86,7 +86,7 @@ return isset($item['wishlist']) && $item['wishlist'] === true;
         <!-- Empty Wishlist -->
         <div id="noWishlistMessage" class="text-center mt-10">
             <img src="{{ asset('assets/images/ordericons/emptywishlist.png') }}" alt="Empty Wishlist"
-                class="w-[80%] sm:w-[50%] md:w-[50%] mx-auto mb-6 object-contain">
+                class="w-[80%] sm:w-[40%] md:w-[35%] mx-auto mb-6 object-contain">
 
             <h2 class="text-white text-[18px] sm:text-[20px] font-semibold mb-2">
                 Your wishlist is empty
@@ -97,7 +97,7 @@ return isset($item['wishlist']) && $item['wishlist'] === true;
             </p>
 
             <a href="/shop"
-                class="inline-flex items-center justify-center px-6 h-[42px] rounded-full bg-white text-black text-[14px] font-medium hover:bg-white/90 transition">
+                class="inline-flex items-center justify-center mb-10 px-6 h-[42px] rounded-full bg-white text-black text-[14px] font-medium hover:bg-white/90 transition">
                 Browse Products
             </a>
         </div>

@@ -1,6 +1,5 @@
 @php
 $orders = [
-
 ['image'=>'assets/images/categoriecard/categorie.png','button1'=>'View Order','button2'=>'Download Invoice'],
 ['image'=>'assets/images/categoriecard/categorie1.png','button1'=>'Track Order','button2'=>null],
 ['image'=>'assets/images/categoriecard/categorie2.png','button1'=>'View Order','button2'=>'Download Invoice'],
@@ -13,11 +12,10 @@ $orders = [
 ['image'=>'assets/images/categoriecard/categorie.png','button1'=>'View Order','button2'=>'Download Invoice'],
 ['image'=>'assets/images/categoriecard/categorie2.png','button1'=>'Track Order','button2'=>null],
 ['image'=>'assets/images/categoriecard/categorie1.png','button1'=>'View Order','button2'=>'Download Invoice'],
-
 ];
 @endphp
 
-<section class="bg-transparent lg:bg-black min-h-screen">
+<section>
 
     <h3 class="mb-6 text-[14px] flex justify-center font-medium text-white lg:hidden">
         Orders & Activity
@@ -25,15 +23,12 @@ $orders = [
 
     <div class="max-w-5xl mx-auto">
 
-        <!-- VIEW DROPDOWN -->
         <div class="mb-4 sm:mb-2 flex justify-end px-4 sm:px-6 lg:px-0">
             <div class="relative w-[120px] sm:w-[135px]">
                 <select id="viewSwitcher"
                     class="appearance-none w-full h-[36px] sm:h-[40px] rounded-full border border-white/15 bg-white/5 backdrop-blur-md pl-3 sm:pl-4 pr-9 sm:pr-10 text-[11px] sm:text-[12px] font-medium text-white shadow-[0_0_20px_rgba(255,255,255,0.04)] outline-none transition-all duration-300 hover:border-white/30 hover:bg-white/10 focus:border-white/40 focus:bg-white/10">
 
                     <option value="grid" class="bg-[#111] text-white">Grid View</option>
-
-                    <!-- HIDE ON MOBILE -->
                     <option value="list" class="hidden md:block bg-[#111] text-white">List View</option>
 
                 </select>
@@ -46,6 +41,9 @@ $orders = [
                 </div>
             </div>
         </div>
+
+        {{-- ✅ CONDITION START --}}
+        @if(count($orders) > 0)
 
         <!-- GRID -->
         <div id="ordersContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 px-8 lg:px-0">
@@ -60,7 +58,6 @@ $orders = [
                         @if($order['button2'])
                         <a href="{{ url('/order/view-order') }}"
                             class="flex-1 w-full h-[35px] rounded-full border border-black/20 bg-white text-black text-[10px] font-medium text-black/70 hover:bg-black hover:text-white transition flex items-center justify-center">
-
                             {{ $order['button1'] }}
                         </a>
 
@@ -83,7 +80,6 @@ $orders = [
         <!-- LIST VIEW -->
         <div id="ordersListContainer" class="hidden px-5 lg:px-0">
             <div class="overflow-hidden rounded-2xl border border-white/10 bg-black">
-                <!-- Header -->
                 <div class="hidden md:grid grid-cols-6 bg-white/10 text-white text-[12px] font-medium px-6 py-4">
                     <div>Order ID</div>
                     <div>Date</div>
@@ -95,20 +91,17 @@ $orders = [
 
                 @foreach($orders as $index => $order)
                 <div class="order-list-item border-t border-white/10 text-white">
-                    <!-- Desktop -->
                     <div class="hidden md:grid grid-cols-6 items-center px-6 py-5 text-[12px]">
                         <div>ORD-12345678{{ $index }}</div>
                         <div>08/11/2024</div>
                         <div>₹500</div>
                         <div>
                             @if($index == 3)
-                            <span
-                                class="inline-flex items-center rounded-full border border-white/40 px-3 py-1 text-[11px]">
+                            <span class="inline-flex items-center rounded-full border border-white/40 px-3 py-1 text-[11px]">
                                 Pending
                             </span>
                             @else
-                            <span
-                                class="inline-flex items-center rounded-full bg-white text-black px-3 py-1 text-[11px]">
+                            <span class="inline-flex items-center rounded-full bg-white text-black px-3 py-1 text-[11px]">
                                 Batching
                             </span>
                             @endif
@@ -125,7 +118,6 @@ $orders = [
                                 class="rounded-full bg-white px-4 py-2 text-[11px] font-medium text-black hover:bg-white/90 transition">
                                 View order
                             </a>
-
                         </div>
                     </div>
                 </div>
@@ -133,11 +125,37 @@ $orders = [
             </div>
         </div>
 
+        {{-- ❌ NO DATA --}}
+        @else
+        <div class="flex items-center justify-center px-4 flex-col pt-6">
+            <div class="text-center">
+                <img src="{{ asset('assets/images/ordericons/noorders.png') }}"
+                    class="w-[300px] mx-auto mb-6">
+
+            </div>
+                <h3 class="text-white text-[20px] font-medium mb-2">
+                    No Orders yet
+                </h3>
+
+                <p class="text-white/50 text-[13px] mb-6">
+                    You haven't placed any orders yet, Start shopping to fill this space!
+                </p>
+
+                <a href="/shop"
+                    class="px-6 py-2 bg-white text-black rounded-full text-[14px] font-medium">
+                    Start Shopping
+                </a>
+        </div>
+        @endif
+        {{-- ✅ CONDITION END --}}
+
         <!-- PAGINATION -->
+        @if(count($orders) > 0)
         <div class="mt-10 flex justify-center">
             <div id="pagination" class="flex items-center gap-2 px-3 py-2 backdrop-blur-md">
             </div>
         </div>
+        @endif
 
     </div>
 </section>

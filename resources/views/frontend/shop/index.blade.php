@@ -112,7 +112,6 @@ Print'],'production_time'=>'7+ days'],
     class="bg-black min-h-screen text-white px-[25px] lg:px-[25px] pb-8 pt-[110px] md:pt-[130px] lg:pt-[140px] overflow-hidden">
     <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-5 lg:gap-6">
 
-        <!-- Mobile Filter Button -->
         <div class="lg:hidden">
             <button id="openFilterDrawer" type="button"
                 class="h-[46px] rounded-[15px] mt-[20px] lg:mt-0 border border-white/15 bg-[#0d0d0d] px-4 flex items-center justify-center gap-2 text-[14px] font-medium text-white width-[30%]">
@@ -124,11 +123,9 @@ Print'],'production_time'=>'7+ days'],
             </button>
         </div>
 
-        <!-- Mobile Overlay -->
         <div id="filterOverlay"
             class="fixed inset-0 bg-black/60 z-[9998] opacity-0 invisible transition-all duration-300 lg:hidden"></div>
 
-        <!-- Left Filter -->
         <div id="filterDrawer"
             class="fixed top-0 left-0 h-full w-full max-w-full z-[9999] -translate-x-full transition-transform duration-300 lg:translate-x-0 lg:static lg:h-auto lg:w-[20%] lg:max-w-none lg:z-auto shrink-0">
             <div
@@ -150,7 +147,6 @@ Print'],'production_time'=>'7+ days'],
             </div>
         </div>
 
-        <!-- Right Content -->
         <div class="w-full lg:w-[80%]">
             <div class="mb-4">
                 <div
@@ -187,25 +183,16 @@ Print'],'production_time'=>'7+ days'],
 
             <div id="noProductsMessage" class="hidden text-center">
 
-                <!-- Image -->
                 <img src="{{ asset('assets/images/ordericons/nomacthing.png') }}"
-                    class="w-[80%] sm:w-[50%] md:w-[50%] mx-auto object-contain">
+                    class="w-[80%] sm:w-[40%] md:w-[35%] mx-auto object-contain">
 
-                <!-- Title -->
-                <h2 class="text-white text-[18px] sm:text-[20px] font-semibold mb-2">
+                <h2 class="text-white text-[18px] sm:text-[20px] font-semibold mb-2 mt-6">
                     No matching search result
                 </h2>
 
-                <!-- Subtitle -->
                 <p class="text-white/50 text-[13px] sm:text-[14px] mb-6">
                     Try again using more general search terms
                 </p>
-
-                <!-- Button -->
-                <!-- <button onclick="clearFilters()"
-                    class="px-6 h-[42px] rounded-full bg-white text-black text-[14px] font-medium hover:bg-white/90 transition">
-                    Clear All Filters
-                </button> -->
 
             </div>
 

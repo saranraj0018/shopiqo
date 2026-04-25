@@ -94,19 +94,14 @@ standards.',
 @endphp
 <div class="w-full bg-black text-white overflow-hidden relative">
 
-    <!-- background glow -->
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.08),_transparent_35%)]"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(255,255,255,0.06),_transparent_30%)]">
-    </div>
+<!-- BACKGROUND IMAGE -->
+<div class="absolute pt-[40px] inset-0">
+    <img src="{{ asset('assets/images/Asset.png') }}"
+         class="w-full object-cover opacity"
+         alt="bg">
+</div>
 
-    <!-- top curved line effect -->
-    <div class="absolute inset-0 opacity-20 pointer-events-none">
-        <div
-            class="w-full h-full bg-[repeating-radial-gradient(circle_at_top,_rgba(255,255,255,0.08)_0px,_rgba(255,255,255,0.08)_1px,_transparent_1px,_transparent_18px)]">
-        </div>
-    </div>
-
-    <div class="relative z-10 max-w-[900px] mx-auto px-8 pt-52 pb-20">
+    <div class="relative z-10 max-w-[900px] mx-auto px-8 pt-64 pb-20">
 
         <!-- top title -->
         <div class="text-center">

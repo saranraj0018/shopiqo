@@ -92,7 +92,6 @@
         }
         </style>
 
-        <!-- Tabs -->
         <div class="border-b border-white/10 mb-8">
             <div class="flex items-center gap-8 text-[11px] sm:text-[12px]">
                 <button id="tabDescription" class="relative pb-3 text-white/60 hover:text-white transition">
@@ -107,11 +106,9 @@
             </div>
         </div>
 
-        <!-- Description -->
         <div id="descriptionContent" class="hidden">
             <div class="mx-auto space-y-3 text-white">
 
-                <!-- PRODUCT DETAILS -->
                 <div class="rounded-[16px] border border-white/15 bg-[#050505] overflow-hidden">
                     <button type="button" onclick="toggleAccordion('acc1','icon1')"
                         class="w-full flex items-center justify-between px-4 py-4 text-left">
@@ -146,7 +143,6 @@
                     </div>
                 </div>
 
-                <!-- CUSTOMIZATION OPTIONS -->
                 <div class="rounded-[16px] border border-white/15 bg-[#050505] overflow-hidden">
                     <button type="button" onclick="toggleAccordion('acc2','icon2')"
                         class="w-full flex items-center justify-between px-4 py-4 text-left">
@@ -190,7 +186,6 @@
                     </div>
                 </div>
 
-                <!-- SIZE & FIT GUIDE -->
                 <div class="rounded-[16px] border border-white/15 bg-[#050505] overflow-hidden">
                     <button type="button" onclick="toggleAccordion('acc3','icon3')"
                         class="w-full flex items-center justify-between px-4 py-4 text-left">
@@ -232,7 +227,6 @@
                     </div>
                 </div>
 
-                <!-- USE CASES -->
                 <div class="rounded-[16px] border border-white/15 bg-[#050505] overflow-hidden">
                     <button type="button" onclick="toggleAccordion('acc4','icon4')"
                         class="w-full flex items-center justify-between px-4 py-4 text-left">
@@ -317,11 +311,9 @@
             </script>
         </div>
 
-        <!-- Reviews -->
         <div id="reviewContent">
             <div class="grid grid-cols-1 lg:grid-cols-[250px_minmax(0,1fr)] gap-10">
 
-                <!-- Left -->
                 <div>
                     <div class="flex items-end gap-2 leading-none">
                         <h2 class="text-[76px] sm:text-[90px] font-semibold tracking-[-4px] text-white">4.5</h2>
@@ -389,7 +381,6 @@
                     </div>
                 </div>
 
-                <!-- Right -->
                 <div>
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
                         <button onclick="openReviewModal()"
@@ -417,18 +408,15 @@
                         class="w-[85%] max-w-[500px] bg-white backdrop:bg-black/60 border rounded-[15px]">
 
                         <div class="relative bg-white px-4 sm:px-4 py-5 sm:py-4">
-                            <!-- Close -->
                             <button onclick="closeReviewModal()"
                                 class="absolute top-4 right-4 text-black text-[26px] leading-none hover:opacity-70">
                                 ×
                             </button>
 
-                            <!-- Title -->
                             <h3 class="text-[14px] sm:text-[18px] font-medium text-black mb-4">
                                 Write a Review
                             </h3>
 
-                            <!-- Rating -->
                             <div class="mb-4">
                                 <label class="block text-[12px] sm:text-[14px] font-medium text-black mb-3">
                                     Your Rating <span class="text-red-500">*</span>
@@ -450,7 +438,6 @@
                                 <input type="hidden" id="selectedRating" value="">
                             </div>
 
-                            <!-- Review -->
                             <div class="mb-2">
                                 <label class="block text-[14px] sm:text-[15px] font-medium text-black mb-3">
                                     Your Review <span class="text-red-500">*</span>
@@ -465,7 +452,6 @@
                                 </p>
                             </div>
 
-                            <!-- Upload -->
                             <div class="mb-4">
                                 <label class="block text-[14px] sm:text-[15px] font-medium text-black mb-3">
                                     Add Photos (Optional)
@@ -492,7 +478,6 @@
                                 </label>
                             </div>
 
-                            <!-- Buttons -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <button type="button" onclick="closeReviewModal()"
                                     class="h-[36px] rounded-[14px] border border-gray-300 bg-white text-black text-[12px] font-medium hover:bg-gray-50 transition">
@@ -552,17 +537,14 @@
                     <div id="previewModal"
                         class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center z-[9999] p-[30px] sm:p-0">
 
-                        <!-- Close button -->
                         <button onclick="closePreview()"
                             class="absolute top-12 right-8 sm:top-5 sm:right-6 text-white text-3xl font-light hover:opacity-70">
                             ✕
                         </button>
 
-                        <!-- Image -->
                         <img id="previewImg" class="max-h-[85vh] max-w-[90%] object-contain">
                     </div>
 
-                    <!-- Pagination -->
                     <div id="reviewPagination"
                         class="flex items-center justify-center gap-3 mt-10 text-[14px] text-white/70 flex-wrap">
                     </div>
@@ -638,14 +620,12 @@ function closePreview() {
     document.body.style.overflow = 'auto';
 }
 
-// click outside close
 document.getElementById('previewModal').addEventListener('click', function(e) {
     if (e.target.id === 'previewModal') {
         closePreview();
     }
 });
 
-// ESC close
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closePreview();
@@ -788,11 +768,11 @@ stars.forEach((star, index) => {
             if (i < value) {
                 s.classList.add('text-yellow-400');
                 s.classList.remove('text-gray-300');
-                svg.setAttribute('fill', 'currentColor'); // ⭐ fill
+                svg.setAttribute('fill', 'currentColor');
             } else {
                 s.classList.remove('text-yellow-400');
                 s.classList.add('text-gray-300');
-                svg.setAttribute('fill', 'none'); // ⭐ outline
+                svg.setAttribute('fill', 'none');
             }
         });
     });

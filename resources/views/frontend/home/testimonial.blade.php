@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
         loop: true,
         spaceBetween: 20,
         slidesPerView: 1,
-        slidesPerGroup: 1, // one by one slide
+        slidesPerGroup: 1,
         speed: 800,
         navigation: {
             nextEl: ".testimonial-next",

@@ -1,50 +1,52 @@
 @php
 $orders = [
 
-['title' => 'Order Confirmed','desc' => 'Your order #ORD-2024-1236 has been confirmed and is being processed.','time' =>
-'4 day ago','icon' => 'assets/images/profile/Confirmed.png'],
+    ['title' => 'Order Confirmed','desc' => 'Your order #ORD-2024-1236 has been confirmed and is being processed.','time' =>
+    '4 day ago','icon' => 'assets/images/profile/Confirmed.png'],
 
-['title' => 'Order Returned','desc' => 'Your order #ORD-2024-1237 has been returned to our warehouse.','time' => '3 day
-ago','icon' => 'assets/images/profile/Returned.png','dot' => true],
+    ['title' => 'Order Returned','desc' => 'Your order #ORD-2024-1237 has been returned to our warehouse.','time' => '3 day
+    ago','icon' => 'assets/images/profile/Returned.png','dot' => true],
 
-['title' => 'Order Rejected','desc' => 'Order #ORD-2024-1238 was rejected. Contact support for help.','time' => '2 day
-ago','icon' => 'assets/images/profile/Rejected.png','dot' => true],
+    ['title' => 'Order Rejected','desc' => 'Order #ORD-2024-1238 was rejected. Contact support for help.','time' => '2 day
+    ago','icon' => 'assets/images/profile/Rejected.png','dot' => true],
 
-['title' => 'Order Pending','desc' => 'Your order #ORD-2024-1240 has been returned and a refund has been
-initiated.','time' => '1 day ago','icon' => 'assets/images/profile/Pending.png'],
+    ['title' => 'Order Pending','desc' => 'Your order #ORD-2024-1240 has been returned and a refund has been
+    initiated.','time' => '1 day ago','icon' => 'assets/images/profile/Pending.png'],
 
-['title' => 'Order Delivered Successfully','desc' => 'Your order #ORD-2024-1234 has been delivered. We hope you
-enjoyyour new EV accessories!','time' => '1 day ago','icon' => 'assets/images/profile/Successfully.png'],
+    ['title' => 'Order Delivered Successfully','desc' => 'Your order #ORD-2024-1234 has been delivered. We hope you
+    enjoyyour new EV accessories!','time' => '1 day ago','icon' => 'assets/images/profile/Successfully.png'],
 
-['title' => 'Order Out for Delivery','desc' => 'Your order #ORD-2024-1235 is out for delivery and will reach you
-today.','time' => '1 day ago','icon' => 'assets/images/profile/Delivery.png'],
+    ['title' => 'Order Out for Delivery','desc' => 'Your order #ORD-2024-1235 is out for delivery and will reach you
+    today.','time' => '1 day ago','icon' => 'assets/images/profile/Delivery.png'],
 
-['title' => 'Order Confirmed','desc' => 'Your order #ORD-2024-1236 has been confirmed and is being processed.','time' =>
-'4 day ago','icon' => 'assets/images/profile/Confirmed.png'],
+    ['title' => 'Order Rejected','desc' => 'Order #ORD-2024-1238 was rejected. Contact support for help.','time' => '2 day
+    ago','icon' => 'assets/images/profile/Rejected.png','dot' => true],
 
-['title' => 'Order Returned','desc' => 'Your order #ORD-2024-1237 has been returned to our warehouse.','time' => '3 day
-ago','icon' => 'assets/images/profile/Returned.png','dot' => true],
+    ['title' => 'Order Pending','desc' => 'Your order #ORD-2024-1240 has been returned and a refund has been
+    initiated.','time' => '1 day ago','icon' => 'assets/images/profile/Pending.png'],
 
-['title' => 'Order Rejected','desc' => 'Order #ORD-2024-1238 was rejected. Contact support for help.','time' => '2 day
-ago','icon' => 'assets/images/profile/Rejected.png','dot' => true],
+    ['title' => 'Order Delivered Successfully','desc' => 'Your order #ORD-2024-1234 has been delivered. We hope you
+    enjoyyour new EV accessories!','time' => '1 day ago','icon' => 'assets/images/profile/Successfully.png'],
 
-['title' => 'Order Pending','desc' => 'Your order #ORD-2024-1240 has been returned and a refund has been
-initiated.','time' => '1 day ago','icon' => 'assets/images/profile/Pending.png'],
+    ['title' => 'Order Out for Delivery','desc' => 'Your order #ORD-2024-1235 is out for delivery and will reach you
+    today.','time' => '1 day ago','icon' => 'assets/images/profile/Delivery.png'],
 
-['title' => 'Order Delivered Successfully','desc' => 'Your order #ORD-2024-1234 has been delivered. We hope you
-enjoyyour new EV accessories!','time' => '1 day ago','icon' => 'assets/images/profile/Successfully.png'],
+    ['title' => 'Order Confirmed','desc' => 'Your order #ORD-2024-1236 has been confirmed and is being processed.','time' =>
+    '4 day ago','icon' => 'assets/images/profile/Confirmed.png'],
 
-['title' => 'Order Out for Delivery','desc' => 'Your order #ORD-2024-1235 is out for delivery and will reach you
-today.','time' => '1 day ago','icon' => 'assets/images/profile/Delivery.png'],
+    ['title' => 'Order Returned','desc' => 'Your order #ORD-2024-1237 has been returned to our warehouse.','time' => '3 day
+    ago','icon' => 'assets/images/profile/Returned.png','dot' => true],
 
 ];
 @endphp
 
-<section class="min-h-screen bg-black">
+<section>
     <div class="max-w-5xl mx-auto">
 
+        @if(count($orders) > 0)
+
         <!-- Orders List -->
-        <div id="ordersContainer" class="space-y-4">
+        <div id="ordersContainer" class="flex flex-col gap-[10px]">
             @foreach($orders as $order)
             <div
                 class="order-item relative flex items-center gap-4 rounded-[20px] border border-white/20 bg-white/[0.03] px-4 py-2 backdrop-blur-md">
@@ -77,6 +79,25 @@ today.','time' => '1 day ago','icon' => 'assets/images/profile/Delivery.png'],
 
         <!-- Pagination -->
         <div id="pagination" class="mt-8 flex items-center justify-center gap-2 flex-wrap"></div>
+
+        @else
+
+        <!-- NO NOTIFICATIONS FOUND -->
+        <div class="flex flex-col items-center">
+            
+            <div class="flex justify-center mb-4">
+                <div class="w-[350px] sm:w-[450px]">
+                    <img src="{{ asset('assets/images/ordericons/nonotifications.png') }}" alt="notification">
+                </div>
+            </div>
+
+            <h3 class="text-white text-[22px] font-medium">
+                No Notifications
+            </h3>
+        </div>
+
+        @endif
+
     </div>
 </section>
 

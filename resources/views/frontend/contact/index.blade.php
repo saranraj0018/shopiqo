@@ -1,7 +1,6 @@
 <section
     class="relative bg-black text-white overflow-hidden flex items-center justify-center px-[25px] pt-[10rem] pb-[4rem]">
 
-    <!-- background glow -->
     <div class="absolute pointer-events-none">
         <div class="absolute top-[12%] left-[8%] w-[260px] h-[260px] bg-white/5 blur-[140px] rounded-full"></div>
         <div class="absolute top-[18%] right-[10%] w-[260px] h-[260px] bg-white/5 blur-[140px] rounded-full"></div>
@@ -10,7 +9,6 @@
     </div>
 
     <div class="relative z-10 w-full max-w-3xl">
-        <!-- top badge -->
         <div class="flex justify-center mb-4">
             <span
                 class="px-4 py-1.5 text-[12px] text-white/80 rounded-full border border-white/10 bg-white/5 backdrop-blur-md">
@@ -18,7 +16,6 @@
             </span>
         </div>
 
-        <!-- title -->
         <div class="text-center mb-10">
             <h2 class="text-[32px] sm:text-[42px] md:text-[56px] leading-none font-light tracking-[-0.03em]">
                 Get in Touch with Us
@@ -29,7 +26,6 @@
             </p>
         </div>
 
-        <!-- top cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div
                 class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl px-5 py-4
@@ -64,7 +60,6 @@
             </div>
         </div>
 
-        <!-- form -->
         <form class="space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

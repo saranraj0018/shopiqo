@@ -4,7 +4,6 @@
 <section
     class="h-screen overflow-y-auto no-scrollbar bg-black text-white px-[25px] py-8 flex items-start justify-center">
     <div class="w-full max-w-[420px]">
-        <!-- Top back -->
         <div class="flex items-center gap-3 mb-5">
             <button type="button" class="text-white text-xl leading-none">&#8592;</button>
             <a href="/login" class="text-[15px] font-medium">
@@ -12,17 +11,14 @@
             </a>
         </div>
 
-        <!-- Card -->
         <div
             class="rounded-[22px] border border-white/10 bg-white/[0.04] backdrop-blur-xl px-5 py-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
 
-            <!-- Logo -->
             <div class="flex justify-center mb-6">
                 <img src="{{ asset('assets/images/Shopiqologo.svg') }}" alt="Shopiq Logo"
                     class="h-[70px] object-contain">
             </div>
 
-            <!-- Title -->
             <div class="text-center">
                 <h2 id="formTitle" class="text-[20px] font-semibold transition-all duration-300">
                     Welcome Back!
@@ -32,7 +28,6 @@
                 </p>
             </div>
 
-            <!-- Tabs -->
             <div class="mt-7">
                 <div class="relative rounded-[12px] bg-white/20 p-1 flex">
                     <div id="tabIndicator"
@@ -51,9 +46,7 @@
                 </div>
             </div>
 
-            <!-- Forms Wrapper -->
             <div class="relative mt-6">
-                <!-- Login Form -->
                 <form id="loginForm" class="form-panel active-form space-y-5">
                     <div>
                         <label class="block text-[14px] font-medium mb-2">Email Address</label>
@@ -84,7 +77,6 @@
                     </p>
                 </form>
 
-                <!-- Signup Form -->
                 <form id="signupForm" class="form-panel hidden-form space-y-5">
                     <div>
                         <label class="block text-[14px] font-medium mb-2">Full Name</label>

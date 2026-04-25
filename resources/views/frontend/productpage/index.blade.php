@@ -31,10 +31,8 @@
     <div class="relative z-10 max-w-[60rem] mx-auto">
         <!-- Breadcrumb -->
         <div class="text-center text-[13px] text-white/70 mb-8">
-            <!-- <span>Shop</span> -->
 
             @if(Request::segment(1))
-            <!-- <span class="mx-1">/</span> -->
             <span class="text-white capitalize">
                 {{ Request::segment(1) }}
             </span>
@@ -48,17 +46,12 @@
             @endif
         </div>
 
-        <!-- MAIN FLEX -->
         <div class="flex flex-col xl:flex-row gap-[30px]">
 
-            <!-- LEFT SIDE -->
             <div
                 class="relative gap-[20px] flex flex-col md:flex-col xl:flex-row w-full xl:w-[50%] items-center xl:items-start">
-
-                <!-- IMAGE -->
                 <div
                     class="order-1 xl:order-2 relative w-full h-[300px] xl:h-[350px] flex px-[40px] sm:px-0 flex flex-row-reverse gap-[20px]">
-                    <!-- wishlist -->
                     <button onclick="toggleHeart(this)"
                         class="absolute top-6 right-16 sm:top-4 sm:right-4 xl:top-6 xl:left-[25rem] w-9 h-9 rounded-full bg-black/80 text-white flex items-center justify-center shadow z-10">
                         <i class="fa-solid fa-heart text-[13px] text-white"></i>
@@ -66,7 +59,6 @@
 
                     <img id="mainProductImage" src="{{ $productImages[0] }}" class="w-full">
 
-                    <!-- THIS IS TASKTOP LEFT SIDE THUMBNAILS HIDE AND SHOW -->
                     <div
                         class="order-2 xl:order-1 flex flex-row xl:flex-col gap-3 xl:gap-6 overflow-x-auto xl:overflow-y-auto xl:overflow-x-hidden hide-scrollbar w-[74%] sm:w-[18%]">
                         @foreach($productImages as $index => $img)
@@ -78,7 +70,6 @@
                     </div>
                 </div>
 
-                <!--THIS IS MOBILE BOTTOM SIDE THUMBNAILS HIDE AND SHOW -->
                 <div
                     class="order-2 xl:order-1 flex flex-row xl:flex-col gap-4 xl:gap-6 overflow-x-auto xl:overflow-y-auto xl:overflow-x-hidden md:hidden hide-scrollbar w-[77%] sm:w-[18%]">
                     @foreach($productImages as $index => $img)
@@ -93,7 +84,6 @@
 
             </div>
 
-            <!-- RIGHT SIDE -->
             <div class="w-full sm:w-[50%] p-[15px] sm:p-0">
 
                 <p class="text-[11px] text-white/60 mb-1">Brand: Polo</p>
@@ -108,7 +98,6 @@
                     <span class="text-[13px] text-white/60 pb-[4px]">4.5</span>
                 </div>
 
-                <!-- COLORS -->
                 <div class="mt-6">
                     <p class="text-[11px] text-white/80 mb-3">Choose Color</p>
 
@@ -121,14 +110,12 @@
                     </div>
                 </div>
 
-                <!-- UPLOAD -->
                 <div class="mt-8">
                     <p class="text-[12px] mb-3 text-white/90">Upload Your Design/Logo*</p>
 
                     <label
                         class="group relative flex flex-col items-center justify-center h-[120px] w-full sm:w-[80%] rounded-xl border border-dashed border-white/30 bg-white/[0.02] cursor-pointer transition-all duration-300 hover:bg-white/[0.05] hover:border-white/50">
 
-                        <!-- ICON -->
                         <div
                             class="mb-2 flex items-center justify-center w-10 h-10 rounded-full bg-white/10 group-hover:bg-white/20 transition">
                             <svg xmlns="http://www.w3.org/2000/svg"
@@ -140,12 +127,10 @@
                             </svg>
                         </div>
 
-                        <!-- TEXT -->
                         <p class="text-[12px] text-white/40 group-hover:text-white/70 transition">
                             Drop Design here or click to upload
                         </p>
 
-                        <!-- HOVER GLOW -->
                         <div
                             class="absolute inset-0 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition pointer-events-none">
                         </div>

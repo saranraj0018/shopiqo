@@ -35,7 +35,7 @@ $tickets = [
 ],
 ];
 @endphp
-<section class="min-h-screen bg-transparent lg:bg-black text-white">
+<section >
     <div class="mx-auto">
         <h3 class="mb-3 text-[14px] flex justify-center font-medium text-white lg:hidden">
             Support Tickets

@@ -3,7 +3,6 @@
     <div
         class="w-full h-full bg-white rounded-[14px] overflow-hidden border border-black/10 shadow-sm flex flex-col cursor-pointer">
 
-        <!-- IMAGE SECTION -->
         <div class="relative bg-[#efefef] h-[200px] flex items-center justify-center">
 
             @if(!empty($item['badge']))
@@ -11,7 +10,6 @@
                 class="absolute top-3 left-3 w-8 h-8 object-contain z-10">
             @endif
 
-            <!-- ❤️ WISHLIST -->
             @if(!empty($item['wishlist']))
             <button type="button" onclick="event.stopPropagation(); event.preventDefault(); toggleHeart(this)"
                 class="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#1f1f1f] flex items-center justify-center shadow-md z-10">
@@ -27,10 +25,8 @@
             <img src="{{ asset($item['image']) }}" alt="{{ $item['title'] }}" class="w-full h-full object-cover">
         </div>
 
-        <!-- CONTENT -->
         <div class="p-3 flex flex-col justify-between flex-1">
 
-            <!-- TITLE -->
             <div>
                 <h3 class="text-[12.5px] leading-[1.25] font-medium text-black line-clamp-2">
                     {{ $item['title'] }}
@@ -41,12 +37,10 @@
                 </p>
             </div>
 
-            <!-- PRICE + ACTION -->
             <div class="mt-3 flex items-start justify-between gap-2">
 
                 <div class="flex flex-wrap gap-3 items-end">
 
-                    <!-- PRICE -->
                     <div class="flex items-end gap-1">
                         <span class="text-[20px] font-semibold text-black leading-none">
                             ₹{{ $item['price'] }}
@@ -54,7 +48,6 @@
                         <span class="text-xs text-gray-500">/piece</span>
                     </div>
 
-                    <!-- RATING -->
                     <div class="flex items-center gap-1 mb-[3px]">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-yellow-400 fill-current"
                             viewBox="0 0 24 24">
@@ -68,7 +61,6 @@
 
                 </div>
 
-                <!-- BUTTON -->
                 @if(strtolower(trim($item['availability'])) === 'out-of-stock')
                 <span
                     class="shrink-0 h-[30px] px-4 rounded-full bg-gray-400 text-white text-[11px] font-medium flex items-center justify-center cursor-not-allowed">
