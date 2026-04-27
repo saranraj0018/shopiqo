@@ -115,13 +115,6 @@ $orders = [
                             Online Payment
                             @endif
                         </div>
-                        <!-- <div>
-                            <a href="{{ url('/order/view-order') }}"
-                                class="rounded-full bg-white px-4 py-2 text-[11px] font-medium text-black hover:bg-white/90 transition">
-                                View order
-                            </a>
-                        </div> -->
-
                         <div>
                             <div class=" flex flex-col gap-2">
                                 @if($order['button2'])
