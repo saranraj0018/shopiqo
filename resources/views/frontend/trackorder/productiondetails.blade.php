@@ -1,20 +1,10 @@
 @php
 $vendorUpdates = [
-[
-'date' => 'Dec 8, 2025',
-'time' => '10:30 AM',
-'message' => 'Sample approved. Starting mass production.'
-],
-[
-'date' => 'Dec 8, 2025',
-'time' => '2:15 PM',
-'message' => 'Raw materials ordered from suppliers.'
-],
-[
-'date' => 'Dec 9, 2025',
-'time' => '9:00 AM',
-'message' => 'Materials received. Quality inspection in progress.'
-],
+
+['date' => 'Dec 8, 2025','time' => '10:30 AM','message' => 'Sample approved. Starting mass production.'],
+['date' => 'Dec 8, 2025','time' => '2:15 PM','message' => 'Raw materials ordered from suppliers.'],
+['date' => 'Dec 9, 2025','time' => '9:00 AM','message' => 'Materials received. Quality inspection in progress.'],
+
 ];
 @endphp
 
@@ -67,7 +57,7 @@ $vendorUpdates = [
         </div>
 
         <!-- Vendor Updates -->
-        <div class="rounded-2xl border border-white/20 bg-black px-5 py-5 sm:px-6 sm:py-6">
+        <!-- <div class="rounded-2xl border border-white/20 bg-black px-5 py-5 sm:px-6 sm:py-6">
             <h2 class="mb-5 text-[22px] font-medium text-white">Vendor Updates</h2>
 
             <div class="space-y-6">
@@ -85,7 +75,7 @@ $vendorUpdates = [
                 </div>
                 @endforeach
             </div>
-        </div>
+        </div> -->
 
     </div>
 </section>

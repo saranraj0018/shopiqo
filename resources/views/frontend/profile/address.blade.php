@@ -1,19 +1,12 @@
 @php
 $addresses = [
-[
-'title' => 'Office Address',
-'name' => 'Tech Corp Ltd.',
-'line1' => '123 Business Park, Sector 5',
-'city' => 'Mumbai, Maharashtra 400001',
-'phone' => '+91 98765 43210'
-],
-[
-'title' => 'Home Address',
-'name' => '456 Residential Complex',
-'line1' => 'Andheri West',
-'city' => 'Mumbai, Maharashtra 400053',
-'phone' => '+91 98765 43210'
-]
+
+['title' => 'Office Address','name' => 'Tech Corp Ltd.','line1' => '123 Business Park, Sector 5','city' => 'Mumbai,
+Maharashtra 400001','phone' => '+91 98765 43210'],
+
+['title' => 'Home Address','name' => '456 Residential Complex','line1' => 'Andheri West','city' => 'Mumbai, Maharashtra
+400053','phone' => '+91 98765 43210']
+
 ];
 @endphp
 <div
@@ -21,14 +14,14 @@ $addresses = [
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
-        <h2 class="text-[16px] font-medium text-white">Saved Addresses</h2>
+        <h1 class="text-[16px] font-medium text-white">Saved Addresses</h1>
 
     </div>
 
     @foreach($addresses as $address)
     <div class="mb-5">
 
-        <p class="text-[12px] text-white mb-2">{{ $address['title'] }}</p>
+        <!-- <p class="text-[12px] text-white mb-2">{{ $address['title'] }}</p> -->
 
         <div class="flex items-start gap-3">
             <div

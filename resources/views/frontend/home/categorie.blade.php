@@ -1,59 +1,30 @@
 @php
 $categories = [
-[
-'image' => 'assets/images/categoriecard/categorie.png',
-'title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt - Unisex',
-'subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex',
-'price' => '120',
-'rating' => '4.5',
-'badge' => 'assets/images/categoriecard/categoriecardicon.svg',
-'wishlist' => true,
-],
-[
-'image' => 'assets/images/categoriecard/categorie1.png',
-'title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt - Unisex',
-'subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex',
-'price' => '120',
-'rating' => '4.5',
-'badge' => null,
-'wishlist' => true,
-],
-[
-'image' => 'assets/images/categoriecard/categorie2.png',
-'title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt - Unisex',
-'subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex',
-'price' => '120',
-'rating' => '4.5',
-'badge' => 'assets/images/categoriecard/categoriecardicon.svg',
-'wishlist' => true,
-],
-[
-'image' => 'assets/images/categoriecard/categorie3.png',
-'title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt - Unisex',
-'subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex',
-'price' => '120',
-'rating' => '4.5',
-'badge' => null,
-'wishlist' => true,
-],
-[
-'image' => 'assets/images/categoriecard/categorie4.png',
-'title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt - Unisex',
-'subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex',
-'price' => '120',
-'rating' => '4.5',
-'badge' => 'assets/images/categoriecard/categoriecardicon.svg',
-'wishlist' => true,
-],
-[
-'image' => 'assets/images/categoriecard/categorie5.png',
-'title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt - Unisex',
-'subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex',
-'price' => '120',
-'rating' => '4.5',
-'badge' => null,
-'wishlist' => true,
-],
+
+['image' => 'assets/images/categoriecard/categorie.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
+Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
+'assets/images/categoriecard/categoriecardicon.svg','wishlist' => true,],
+
+['image' => 'assets/images/categoriecard/categorie1.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
+Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
+null,'wishlist' => true,],
+
+['image' => 'assets/images/categoriecard/categorie2.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
+Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
+'assets/images/categoriecard/categoriecardicon.svg','wishlist' => true,],
+
+['image' => 'assets/images/categoriecard/categorie3.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
+Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
+null,'wishlist' => true,],
+
+['image' => 'assets/images/categoriecard/categorie4.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
+Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
+'assets/images/categoriecard/categoriecardicon.svg','wishlist' => true,],
+
+['image' => 'assets/images/categoriecard/categorie5.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
+Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
+null,'wishlist' => true,],
+
 ];
 @endphp
 

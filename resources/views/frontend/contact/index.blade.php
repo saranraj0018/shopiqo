@@ -17,9 +17,9 @@
         </div>
 
         <div class="text-center mb-10">
-            <h2 class="text-[32px] sm:text-[42px] md:text-[56px] leading-none font-light tracking-[-0.03em]">
+            <h1 class="text-[32px] sm:text-[42px] md:text-[56px] leading-none font-light tracking-[-0.03em]">
                 Get in Touch with Us
-            </h2>
+            </h1>
             <p class="mt-4 text-[13px] sm:text-[14px] text-white/55 max-w-md mx-auto leading-relaxed">
                 Have questions or need AI solutions? Let us know by
                 filling out the form, and we’ll be in touch!

@@ -97,11 +97,13 @@ $orders = [
                         <div>₹500</div>
                         <div>
                             @if($index == 3)
-                            <span class="inline-flex items-center rounded-full border border-white/40 px-3 py-1 text-[11px]">
+                            <span
+                                class="inline-flex items-center rounded-full border border-white/40 px-3 py-1 text-[11px]">
                                 Pending
                             </span>
                             @else
-                            <span class="inline-flex items-center rounded-full bg-white text-black px-3 py-1 text-[11px]">
+                            <span
+                                class="inline-flex items-center rounded-full bg-white text-black px-3 py-1 text-[11px]">
                                 Batching
                             </span>
                             @endif
@@ -113,11 +115,32 @@ $orders = [
                             Online Payment
                             @endif
                         </div>
-                        <div>
+                        <!-- <div>
                             <a href="{{ url('/order/view-order') }}"
                                 class="rounded-full bg-white px-4 py-2 text-[11px] font-medium text-black hover:bg-white/90 transition">
                                 View order
                             </a>
+                        </div> -->
+
+                        <div>
+                            <div class=" flex flex-col gap-2">
+                                @if($order['button2'])
+                                <a href="{{ url('/order/view-order') }}"
+                                    class="rounded-full border border-black/20 bg-white text-[10px] py-1 mx-4 font-medium text-black hover:bg-black hover:text-white transition flex items-center justify-center">
+                                    {{ $order['button1'] }}
+                                </a>
+
+                                <button
+                                    class="rounded-full bg-white text-black text-[10px] font-medium hover:bg-black/90 hover:text-white py-1 mx-4 transition">
+                                    {{ $order['button2'] }}
+                                </button>
+                                @else
+                                <a href="{{ url('/order/track-order') }}"
+                                    class=" rounded-full border border-black/20 bg-white text-[10px] font-medium text-black hover:bg-black py-1 mx-4 hover:text-white transition flex items-center justify-center">
+                                    {{ $order['button1'] }}
+                                </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -129,22 +152,20 @@ $orders = [
         @else
         <div class="flex items-center justify-center px-4 flex-col pt-6">
             <div class="text-center">
-                <img src="{{ asset('assets/images/ordericons/noorders.png') }}"
-                    class="w-[300px] mx-auto mb-6">
+                <img src="{{ asset('assets/images/ordericons/noorders.png') }}" class="w-[300px] mx-auto mb-6">
 
             </div>
-                <h3 class="text-white text-[20px] font-medium mb-2">
-                    No Orders yet
-                </h3>
+            <h3 class="text-white text-[20px] font-medium mb-2">
+                No Orders yet
+            </h3>
 
-                <p class="text-white/50 text-[13px] mb-6">
-                    You haven't placed any orders yet, Start shopping to fill this space!
-                </p>
+            <p class="text-white/50 text-[13px] mb-6">
+                You haven't placed any orders yet, Start shopping to fill this space!
+            </p>
 
-                <a href="/shop"
-                    class="px-6 py-2 bg-white text-black rounded-full text-[14px] font-medium">
-                    Start Shopping
-                </a>
+            <a href="/shop" class="px-6 py-2 bg-white text-black rounded-full text-[14px] font-medium">
+                Start Shopping
+            </a>
         </div>
         @endif
         {{-- ✅ CONDITION END --}}

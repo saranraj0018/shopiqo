@@ -7,34 +7,20 @@
 @php
 $isCompleted = false;
 
-$status = [
-'title' => $isCompleted ? 'Completed Successfully' : 'We will update you soon',
-'date' => now()->format('M d, Y')
-];
+$status = ['title' => $isCompleted ? 'Completed Successfully' : 'We will update you soon','date' => now()->format('M d,
+Y')];
+
 @endphp
 
 @php
 $timeline = [
-[
-'title' => 'Modul Process Started',
-'date' => 'Dec 8, 2025'
-],
-[
-'title' => 'Designing Process',
-'date' => 'Dec 8, 2025'
-],
-[
-'title' => 'Quality Check',
-'date' => 'Dec 8, 2025'
-],
-[
-'title' => 'Working on Changes',
-'date' => 'Dec 8, 2025'
-],
-[
-'title' => 'Ready For Review',
-'date' => 'Dec 8, 2025'
-],
+
+['title' => 'Modul Process Started','date' => 'Dec 8, 2025'],
+['title' => 'Designing Process','date' => 'Dec 8, 2025'],
+['title' => 'Quality Check','date' => 'Dec 8, 2025'],
+['title' => 'Working on Changes','date' => 'Dec 8, 2025'],
+['title' => 'Ready For Review','date' => 'Dec 8, 2025'],
+
 ];
 @endphp
 
