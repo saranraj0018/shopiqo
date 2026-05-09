@@ -10,8 +10,9 @@
         {{ $slot }}
     </div>
     <footer class=" w-full text-center text-gray-500 text-sm">
-        &copy; {{ date('Y') }} Chumpay. All rights reserved.
+        &copy; {{ date('Y') }} Shopiqo. All rights reserved.
     </footer>
     <x-partials.scripts />
 </body>
+
 </html>

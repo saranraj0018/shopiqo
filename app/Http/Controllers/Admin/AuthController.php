@@ -55,7 +55,7 @@ class AuthController extends Controller
             'code' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if ($value !== 'chumpay2026') {
+                    if ($value !== 'shopiqo@2026') {
                         $fail('The security code is invalid.');
                     }
                 }
@@ -90,8 +90,8 @@ class AuthController extends Controller
     public function user_logout(Request $request): \Illuminate\Http\RedirectResponse
     {
         Auth::guard('admin')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken(); 
+        $request->session()->invalidate(); // Invalidate session
+        $request->session()->regenerateToken(); // Regenerate CSRF token for security
         return redirect()->route('admin.login')->with('success', 'You have been logged out successfully.');
     }
 }

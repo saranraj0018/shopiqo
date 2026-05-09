@@ -31,21 +31,19 @@ class ProductController extends Controller
 
         $this->data['category'] = Category::whereNull('parent_id')->where('status', 1)->get();
         $this->data['variants'] = AttributeType::with('get_variant_value')->get();
-        $this->data['product_lists'] = Product::with('product_variant', 'product_variant.variantValues', 'product_gallery_image', 'bulk_product', 'bulk_product.bulk_product_variants')->get();
+        $this->data['product_lists'] = Product::with('product_variant', 'product_variant.variantValues', 'product_gallery_image')->get();
         return view('admin.product.view_product')->with($this->data);
     }
 
     public function getVariantValues($id)
     {
-        $values = AttributeValue::where('attribute_id', $id)->get();
-
+        $values = AttributeValue::where('attribute_type_id', $id)->get();
         return response()->json($values);
     }
 
     public function getSecondaryValues($id)
     {
-        $values = AttributeValue::where('attribute_id', '!=', $id)->get();
-
+        $values = AttributeValue::where('attribute_type_id', '!=', $id)->get();
         return response()->json($values);
     }
 
@@ -88,7 +86,6 @@ class ProductController extends Controller
             $product = empty($request->product_id)
                 ? new Product()
                 : Product::findOrFail($request->product_id);
-
             $product->category_id     = $request->category_id;
             $product->sub_category_id = $request->sub_category_id;
             $product->name            = $request->product_name;
@@ -120,22 +117,12 @@ class ProductController extends Controller
 
             /* -------------------- TYPE SWITCH CLEANUP -------------------- */
             if (!empty($request->product_id)) {
-
                 $variantIds = ProductVariant::where('product_id', $product->id)->pluck('id');
-                $bulkIds    = BulkProduct::where('product_id', $product->id)->pluck('id');
-
                 // Delete variants
                 if ($variantIds->isNotEmpty()) {
                     ProductVariantValue::whereIn('product_variant_id', $variantIds)->delete();
                     ProductVariant::whereIn('id', $variantIds)->delete();
                 }
-
-                // Delete bulk
-                if ($bulkIds->isNotEmpty()) {
-                    BulkProductVariant::whereIn('bulk_product_id', $bulkIds)->delete();
-                    BulkProduct::whereIn('id', $bulkIds)->delete();
-                }
-
                 // Reset single fields if not single
                 if ($request->product_type != 'single') {
                     $product->update([
@@ -150,10 +137,8 @@ class ProductController extends Controller
             $oldImages = ProductGalleryImage::where('product_id', $product->id)
                 ->pluck('image_path')
                 ->toArray();
-
             $keepImages = array_filter($request->existing_gallery ?? []);
             $deleteImages = array_diff($oldImages, $keepImages);
-
             if (!empty($deleteImages)) {
                 ProductGalleryImage::where('product_id', $product->id)
                     ->whereIn('image_path', $deleteImages)
@@ -243,41 +228,27 @@ class ProductController extends Controller
             }
 
             /* -------------------- BULK SAVE -------------------- */
-            if ($request->product_type == 'bulk' && !empty($request->bulk)) {
-
-                foreach ($request->bulk as $bulk) {
-                    $bulkexist = BulkProduct::where([
-                        'product_id' => $product->id,
-                        'minimum' => $bulk['minimum'],
-                        'maximum' => $bulk['maximum']
-                    ])->exists();
-                    if (!$bulkexist) {
-                        $bulkProduct = new BulkProduct();
-                        $bulkProduct->product_id = $product->id;
-                        $bulkProduct->minimum = $bulk['minimum'];
-                        $bulkProduct->maximum = $bulk['maximum'];
-                        $bulkProduct->regular_price =  $bulk['regular_price'];
-                        $bulkProduct->sale_price = $bulk['sale_price'];
-                        $bulkProduct->save();
-                    }
+            if ($request->product_type === 'bulk' && !empty($request->bulk)) {
+                foreach ($request->bulk as $index => $bulkData) {
+                    $pv                = new ProductVariant();
+                    $pv->product_id    = $product->id;
+                    $pv->minimum       = $bulkData['minimum'];
+                    $pv->maximum       = $bulkData['maximum'];
+                    $pv->regular_price = $bulkData['regular_price'];
+                    $pv->sale_price    = $bulkData['sale_price'] ?? 0;
+                    $pv->pri_attribute_id = null;
+                    $pv->stock            = 0;
+                    $pv->cover_image      = null;
+                    $pv->save();
 
                     if (!empty($request->bulk_attributes)) {
-                        if (isset($bulkProduct)) {
-                            foreach ($request->bulk_attributes as $attributeId => $values) {
-                                foreach ($values as $value) {
-                                    $existbulkvariant = BulkProductVariant::where([
-                                        'bulk_product_id' => $bulkProduct->id,
-                                        'attribute_id' => $attributeId,
-                                        'attribute_value_id' => $value
-                                    ])->exists();
-                                    if (!$existbulkvariant) {
-                                        $bulkProductVariant = new BulkProductVariant();
-                                        $bulkProductVariant->bulk_product_id = $bulkProduct->id;
-                                        $bulkProductVariant->attribute_id = $attributeId;
-                                        $bulkProductVariant->attribute_value_id = $value;
-                                        $bulkProductVariant->save();
-                                    }
-                                }
+                        foreach ($request->bulk_attributes as $attributeTypeId => $valueIds) {
+                            foreach ($valueIds as $valueId) {
+                                $pvv                     = new ProductVariantValue();
+                                $pvv->product_variant_id = $pv->id;
+                                $pvv->attribute_id        = (int) $attributeTypeId;
+                                $pvv->attribute_value_id  = (int) $valueId;
+                                $pvv->save();
                             }
                         }
                     }

@@ -13,17 +13,23 @@ return new class extends Migration
     {
         Schema::create('attribute_types', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->string('name');
             $table->unsignedInteger('sort_order')->default(0);
             $table->timestamps();
+
+            $table->foreign('created_by')->references('id')->on('admins')->onDelete('no action');
         });
 
         Schema::create('attribute_values', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->foreignId('attribute_type_id')->constrained()->cascadeOnDelete();
             $table->string('value');
             $table->unsignedInteger('sort_order')->default(0);
             $table->timestamps();
+
+            $table->foreign('created_by')->references('id')->on('admins')->onDelete('no action');
         });
     }
 

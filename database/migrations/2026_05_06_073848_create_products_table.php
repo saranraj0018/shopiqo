@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('sub_category_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->string('name');
             $table->string('product_code')->unique();
             $table->text('description')->nullable();
@@ -29,6 +30,7 @@ return new class extends Migration
 
             $table->timestamps();
 
+            $table->foreign('created_by')->references('id')->on('admins')->onDelete('no action');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('no action');
             $table->foreign('sub_category_id')->references('id')->on('categories')->onDelete('no action');
         });

@@ -19,7 +19,7 @@ class CouponController extends Controller
         $rules = [
             'coupon_code'   => 'required|unique:coupons,coupon_code,' . $request->coupon_id,
             'discount_type' => 'required|in:1,2',
-            'discount_value' => 'required|numeric',
+            'discount_value' =>'required|numeric',
             'description'   => 'required|string',
             'apply_for'     => 'required|in:1,2',
             'max_price'     => 'nullable|numeric',
@@ -31,6 +31,7 @@ class CouponController extends Controller
 
         $request->validate($rules);
         try {
+            
             if (!empty($request->coupon_id)) {
                 $coupon = Coupon::find($request->coupon_id);
                 if (!$coupon) {

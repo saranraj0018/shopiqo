@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AttributeType;
 use App\Models\AttributeValue;
+use App\Models\VariantAttribute;
+use App\Models\VariantAttributeValue;
 use Illuminate\Http\Request;
 
-class AttributeController extends Controller
+class AttributeValueController extends Controller
 {
+
     public function view(Request $request)
     {
-        $this->data['attributes'] = AttributeType::with('get_variant_value')->paginate(10);
-        $this->data['attribute_name'] = AttributeType::get();
+        $this->data['attributes'] = VariantAttribute::with('get_variant_value')->paginate(10);
+        $this->data['attribute_name'] = VariantAttribute::get();
         return view('admin.attribute.view')->with($this->data);
     }
 

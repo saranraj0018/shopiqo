@@ -13,14 +13,15 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('admin_id');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('name');
             $table->string('image')->nullable();
             $table->tinyInteger('status')->default(1)->comment('0 - In Active , 1 - Active');
-            $table->enum('gender', ['male', 'female', 'others'])->nullable();
             $table->timestamps();
 
+            $table->foreign('created_by')->references('id')->on('admins')->onDelete('no action');
             $table->foreign('parent_id')->references('id')->on('categories')->onDelete('no action');
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('no action');
         });

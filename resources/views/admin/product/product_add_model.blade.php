@@ -1,37 +1,50 @@
 <style>
-.select2-container--default .select2-selection--multiple {
-    border-radius: 12px;
-    min-height: 42px;
-  }
+    .select2-container--default .select2-selection--multiple {
+        border-radius: 12px;
+        min-height: 42px;
+    }
 </style>
+
 <div id="productModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
     <div class="bg-white w-full max-w-6xl max-h-[95vh] overflow-y-auto rounded-2xl p-6 relative">
-        <button id="closeProductModal" class="absolute right-3 top-3 text-gray-500">✕</button>
-        <h2 class="text-xl font-bold mb-6" id="product_label">Create Product</h2>
+        <button id="closeProductModal" class="absolute right-3 top-3 text-gray-500 text-xl font-bold">✕</button>
+        <h2 class="text-xl font-bold mb-4" id="product_label">Create Product</h2>
+        <div class="flex items-center gap-2 mb-6">
+            <span class="step-indicator px-3 py-1 rounded-full text-sm font-semibold bg-black text-white" data-step="1">1. Basic Info</span>
+            <span class="text-gray-400">→</span>
+            <span class="step-indicator px-3 py-1 rounded-full text-sm font-semibold bg-gray-200 text-gray-500" data-step="2">2. Pricing & Stock</span>
+            <span class="text-gray-400">→</span>
+            <span class="step-indicator px-3 py-1 rounded-full text-sm font-semibold bg-gray-200 text-gray-500" data-step="3">3. Gallery</span>
+        </div>
         <form id="productForm" method="POST" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="product_id">
+            {{-- Hidden fields for edit mode --}}
+            <input type="hidden" name="product_id" id="product_id">
             <input type="hidden" name="existing_main" id="existing_main">
-            <input type="hidden" name="existing_gallery[]" class="existing_gallery">
-            <input type="hidden" name="variants[0][existing_image]" class="existingVariantImage">
+
+            {{-- ======================================================== --}}
+            {{-- STEP 1 — Basic Info                                        --}}
+            {{-- ======================================================== --}}
             <div class="step step-1">
                 <div class="grid grid-cols-2 gap-4">
+
                     <div>
-                        <label class="text-sm font-semibold">Product Name</label>
+                        <label class="text-sm font-semibold">Product Name <span class="text-red-500">*</span></label>
                         <input type="text" name="product_name" id="product_name"
-                            class="w-full border rounded-xl px-4 py-2">
+                            class="w-full border rounded-xl px-4 py-2 mt-1">
                     </div>
 
                     <div>
-                        <label class="text-sm font-semibold">Product Code</label>
+                        <label class="text-sm font-semibold">Product Code <span class="text-red-500">*</span></label>
                         <input type="text" name="product_code" id="product_code"
-                            class="w-full border rounded-xl px-4 py-2">
+                            class="w-full border rounded-xl px-4 py-2 mt-1">
                     </div>
 
                     <div>
-                        <label class="text-sm font-semibold">Category</label>
-                        <select name="category_id" id="category_id" class="w-full border rounded-xl px-4 py-2">
-                            <option value="">Select</option>
+                        <label class="text-sm font-semibold">Category <span class="text-red-500">*</span></label>
+                        <select name="category_id" id="category_id"
+                            class="w-full border rounded-xl px-4 py-2 mt-1">
+                            <option value="">Select Category</option>
                             @foreach ($categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
                             @endforeach
@@ -40,73 +53,113 @@
 
                     <div>
                         <label class="text-sm font-semibold">Sub Category</label>
-                        <select name="sub_category_id" id="sub_category_id" class="w-full border rounded-xl px-4 py-2">
-                            <option value="">Select</option>
+                        <select name="sub_category_id" id="sub_category_id"
+                            class="w-full border rounded-xl px-4 py-2 mt-1">
+                            <option value="">Select Sub Category</option>
                         </select>
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-semibold">Production Min Days</label>
+                        <input type="number" name="production_min_days" id="production_min_days" min="0"
+                            class="w-full border rounded-xl px-4 py-2 mt-1" placeholder="e.g. 3">
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-semibold">Production Max Days</label>
+                        <input type="number" name="production_max_days" id="production_max_days" min="0"
+                            class="w-full border rounded-xl px-4 py-2 mt-1" placeholder="e.g. 7">
                     </div>
 
                     <div class="col-span-2">
                         <label class="text-sm font-semibold">Description</label>
-                        <textarea name="description" class="w-full border rounded-xl px-4 py-2"></textarea>
+                        <textarea name="description" id="description" rows="3"
+                            class="w-full border rounded-xl px-4 py-2 mt-1"></textarea>
                     </div>
-                    <!-- MAIN IMAGE -->
+
+                    {{-- MAIN IMAGE --}}
                     <div class="col-span-2">
-                        <label class="text-sm font-semibold">Main Image</label>
-                        <div class="image-wrapper border-2 border-dashed rounded-xl p-5 text-center">
-                            <input type="file" name="main_image" id="mainImage" class="main-image-input hidden">
-                            <button type="button" class="choose-image-btn bg-black text-white px-4 py-2 rounded-xl">
+                        <label class="text-sm font-semibold">Main Image <span class="text-red-500">*</span></label>
+                        <div class="image-wrapper border-2 border-dashed rounded-xl p-5 text-center mt-1">
+                            <input type="file" name="main_image" id="mainImage"
+                                class="main-image-input hidden" accept="image/*">
+                            <button type="button"
+                                class="choose-image-btn bg-black text-white px-4 py-2 rounded-xl">
                                 Choose Image
                             </button>
                             <div class="image-preview hidden mt-3">
-                                <img class="preview-img w-40 mx-auto rounded">
-                                <button type="button" class="remove-image-btn text-red-500 mt-2">Remove</button>
+                                <img class="preview-img w-40 mx-auto rounded object-cover">
+                                <button type="button"
+                                    class="remove-image-btn text-red-500 mt-2 block mx-auto text-sm">
+                                    Remove
+                                </button>
                             </div>
                         </div>
                     </div>
+
                 </div>
-            </div>
+            </div>{{-- end step-1 --}}
+
+            {{-- ======================================================== --}}
+            {{-- STEP 2 — Product Type / Pricing / Stock                   --}}
+            {{-- ======================================================== --}}
             <div class="step step-2 hidden">
-                <label class="text-sm font-semibold">Product Type</label>
-                <select id="product_type" name="product_type" class="w-full border rounded-xl px-4 py-2 mb-5">
-                    <option value="">Select</option>
-                    <option value="single">Single</option>
-                    <option value="variant">Variant</option>
-                    <option value="bulk">Bulk</option>
-                </select>
+
+                <div class="mb-4">
+                    <label class="text-sm font-semibold">Product Type <span class="text-red-500">*</span></label>
+                    <select id="product_type" name="product_type"
+                        class="w-full border rounded-xl px-4 py-2 mt-1">
+                        <option value="">Select Type</option>
+                        <option value="single">Single</option>
+                        <option value="variant">Variant</option>
+                        <option value="bulk">Bulk</option>
+                    </select>
+                </div>
+
+                {{-- ---------- SINGLE ---------- --}}
                 <div id="singleFields" class="hidden">
-                    <div class="grid grid-cols-3 gap-3 mb-3 mt-2">
+                    <div class="grid grid-cols-3 gap-3 mt-2">
                         <div>
-                            <label class="block text-sm font-semibold mb-2">Regular Price</label>
-                            <input type="number" step="0.01" name="single_regular_price" placeholder="Regular Price"
-                                class="single_regular_price w-full border border-gray-300 rounded-xl px-4 py-2
-                           focus:ring-2 focus:ring-black focus:outline-none">
+                            <label class="block text-sm font-semibold mb-1">Regular Price <span class="text-red-500">*</span></label>
+                            <input type="number" step="0.01" min="0"
+                                name="single_regular_price"
+                                placeholder="Regular Price"
+                                class="single_regular_price w-full border border-gray-300 rounded-xl px-4 py-2">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold mb-2">Sale Price</label>
-                            <input type="number" step="0.01" name="single_sale_price" placeholder="Sale Price"
-                                class="single_sale_price w-full border border-gray-300 rounded-xl px-4 py-2
-                           focus:ring-2 focus:ring-black focus:outline-none">
+                            <label class="block text-sm font-semibold mb-1">Sale Price</label>
+                            <input type="number" step="0.01" min="0"
+                                name="single_sale_price"
+                                placeholder="Sale Price"
+                                class="single_sale_price w-full border border-gray-300 rounded-xl px-4 py-2">
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold mb-2">Stock</label>
-                            <input type="number" name="single_stock" id="single_stock" placeholder="Stock"
-                                class="single_stock w-full border border-gray-300 rounded-xl px-4 py-2
-                           focus:ring-2 focus:ring-black focus:outline-none">
+                            <label class="block text-sm font-semibold mb-1">Stock <span class="text-red-500">*</span></label>
+                            <input type="number" min="0"
+                                name="single_stock"
+                                placeholder="Stock"
+                                class="single_stock w-full border border-gray-300 rounded-xl px-4 py-2">
                         </div>
                     </div>
                 </div>
 
+                {{-- ---------- VARIANT ---------- --}}
                 <div id="variantFields" class="hidden">
-                    <div class="mb-4">
+
+                    <div class="mb-3">
+                        <label class="text-sm font-semibold">Primary Variant Attribute <span class="text-red-500">*</span></label>
                         <select name="primary_variant" id="primary_variant"
-                            class="border rounded-xl px-3 py-2 w-full primaryVariant">
-                            <option value="">Select Variant</option>
+                            class="border rounded-xl px-3 py-2 w-full mt-1">
+                            <option value="">Select Primary Attribute</option>
                             @foreach ($variantValues as $attr)
+                                {{-- $variantValues = AttributeType::with('get_variant_value')->get() --}}
                                 <option value="{{ $attr->id }}">{{ $attr->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="grid grid-cols-7 gap-3 font-semibold mb-2">
+
+                    {{-- Column headers --}}
+                    <div class="grid grid-cols-7 gap-3 font-semibold text-sm mb-2 text-gray-600">
                         <div>Primary Value</div>
                         <div>Secondary Value</div>
                         <div>Regular Price</div>
@@ -115,123 +168,124 @@
                         <div>Image</div>
                         <div>Action</div>
                     </div>
+
                     <div id="variantWrapper">
-                        <div class="variant-row grid grid-cols-7 gap-3 mb-4">
-                            <div>
-                                <select name="variants[0][primary_value]"
-                                    class="border rounded-xl px-3 py-2 w-full primaryValue">
-                                    <option value="">Select</option>
-                                </select>
-                            </div>
-                            <div>
-                                <select name="variants[0][secondary_value]"
-                                    class="border rounded-xl px-3 py-2 w-full secondaryValue">
-                                    <option value="">Select</option>
-                                </select>
-                            </div>
-                            <div>
-                                <input type="number" name="variants[0][regular_price]" placeholder="Regular Price"
-                                    class="border rounded-xl px-3 py-2 w-full regular_price">
-                            </div>
-                            <div>
-                                <input type="number" name="variants[0][sale_price]" placeholder="Sale Price"
-                                    class="border rounded-xl px-3 py-2 w-full sale_price">
-                            </div>
-                            <div>
-                                <input type="number" name="variants[0][stock]" placeholder="Stock"
-                                    class="border rounded-xl px-3 py-2 w-full stock">
-                            </div>
-                            <!-- IMAGE + PREVIEW -->
-                            <div>
-                                <input type="file" name="variants[0][image]"
-                                    class="variantImage border rounded-xl px-3 py-2 w-full">
-                                <img class="imagePreview mt-2 w-16 h-16 object-cover rounded hidden">
-                            </div>
-                            {{-- <div>
-                                <button type="button" class="removeVariant bg-red-500 text-white px-3 py-2 rounded">
-                                    Remove
-                                </button>
-                            </div> --}}
-                        </div>
+                        {{-- First row (index 0) — built by JS on primary_variant change --}}
                     </div>
-                    <button type="button" id="addVariant" class="bg-black text-white px-4 py-2 rounded-xl">
-                        Add Variant
+
+                    <button type="button" id="addVariant"
+                        class="mt-2 bg-black text-white px-4 py-2 rounded-xl text-sm">
+                        + Add Variant Row
                     </button>
                 </div>
 
-                <!-- BULK -->
-
+                {{-- ---------- BULK ---------- --}}
                 <div id="bulkFields" class="hidden">
-                    <div class="grid grid-cols-3 gap-4 mb-5">
-                        @foreach ($variantValues as $attribute)
-                            <div>
-                                <label class="font-semibold text-sm">
-                                    {{ $attribute->name }}
-                                </label>
-                                <select name="bulk_attributes[{{ $attribute->id }}][]" multiple
-                                    class="select2 border rounded-xl px-3 py-2 w-full">
-                                    @foreach ($attribute->get_variant_value as $value)
-                                        <option value="{{ $value->id }}">
-                                            {{ $value->value }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        @endforeach
+
+                    {{-- Bulk Attribute multi-selects --}}
+                    <div class="mb-4">
+                        <label class="text-sm font-semibold block mb-2">Applicable Attributes</label>
+                        <div class="grid grid-cols-3 gap-4">
+                            @foreach ($variantValues as $attribute)
+                                <div>
+                                    <label class="font-semibold text-sm">{{ $attribute->name }}</label>
+                                    <select name="bulk_attributes[{{ $attribute->id }}][]"
+                                        multiple
+                                        class="select2 border rounded-xl px-3 py-2 w-full mt-1">
+                                        @foreach ($attribute->get_variant_value as $value)
+                                            <option value="{{ $value->id }}">{{ $value->value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
+
+                    {{-- Bulk price range rows --}}
+                    <div class="grid grid-cols-5 gap-3 font-semibold text-sm mb-2 text-gray-600">
+                        <div>Min Qty</div>
+                        <div>Max Qty</div>
+                        <div>Regular Price</div>
+                        <div>Sale Price</div>
+                        <div></div>
+                    </div>
+
                     <div id="bulkWrapper">
                         <div class="bulk-row grid grid-cols-5 gap-3 mb-3">
                             <div>
-                                <input type="number" name="bulk[0][minimum]" placeholder="Minimum Qty"
-                                    class="border rounded-xl px-3 py-2 minimum">
+                                <input type="number" min="1"
+                                    name="bulk[0][minimum]"
+                                    placeholder="Min Qty"
+                                    class="minimum w-full border rounded-xl px-3 py-2">
                             </div>
                             <div>
-                                <input type="number" name="bulk[0][maximum]" placeholder="Maximum Qty"
-                                    class="border rounded-xl px-3 py-2 maximum">
+                                <input type="number" min="1"
+                                    name="bulk[0][maximum]"
+                                    placeholder="Max Qty"
+                                    class="maximum w-full border rounded-xl px-3 py-2">
                             </div>
                             <div>
-                                <input type="number" name="bulk[0][regular_price]" placeholder="Regular Price"
-                                    class="border rounded-xl px-3 py-2 bulk_regular_price">
+                                <input type="number" step="0.01" min="0"
+                                    name="bulk[0][regular_price]"
+                                    placeholder="Regular Price"
+                                    class="bulk_regular_price w-full border rounded-xl px-3 py-2">
                             </div>
                             <div>
-                                <input type="number" name="bulk[0][sale_price]" placeholder="Sale Price"
-                                    class="border rounded-xl px-3 py-2 bulk_sale_price">
+                                <input type="number" step="0.01" min="0"
+                                    name="bulk[0][sale_price]"
+                                    placeholder="Sale Price"
+                                    class="bulk_sale_price w-full border rounded-xl px-3 py-2">
                             </div>
-                            <button type="button" class="removeBulk bg-red-500 text-white px-3 py-2 rounded hidden">
-                                Remove
-                            </button>
+                            <div class="flex items-center">
+                                {{-- First row has no remove button --}}
+                            </div>
                         </div>
                     </div>
-                    <button type="button" id="addBulk" class="bg-blue-600 text-white px-4 py-2 rounded">
-                        Add Range
+
+                    <button type="button" id="addBulk"
+                        class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-xl text-sm">
+                        + Add Price Range
                     </button>
                 </div>
-            </div>
 
-            <!-- STEP 3 -->
+            </div>{{-- end step-2 --}}
 
+            {{-- ======================================================== --}}
+            {{-- STEP 3 — Gallery Images                                   --}}
+            {{-- ======================================================== --}}
             <div class="step step-3 hidden">
-                <label class="text-sm font-semibold">Gallery Images</label>
-                <div class="image-wrapper border-2 border-dashed p-5 rounded-xl text-center">
-                    <input type="file" name="gallery_images[]" class="gallery-images-input hidden"
-                        id="galleryImage" multiple>
-                    <button type="button" class="choose-image-btn bg-black text-white px-4 py-2 rounded-xl">
+                <label class="text-sm font-semibold">Gallery Images <span class="text-red-500">*</span></label>
+                <div class="image-wrapper border-2 border-dashed p-5 rounded-xl text-center mt-1">
+                    <input type="file" name="gallery_images[]"
+                        class="gallery-images-input hidden" id="galleryImage"
+                        multiple accept="image/*">
+                    <button type="button"
+                        class="choose-image-btn bg-black text-white px-4 py-2 rounded-xl">
                         Choose Images
                     </button>
-                    <div class="gallery-preview flex flex-wrap gap-3 mt-4"></div>
+                    <p class="text-gray-400 text-xs mt-2">You can select multiple images</p>
+                    <div class="gallery-preview flex flex-wrap gap-3 mt-4 justify-center"></div>
+                </div>
+            </div>{{-- end step-3 --}}
+
+            {{-- Navigation --}}
+            <div class="flex justify-between mt-6">
+                <button type="button" id="prevBtn"
+                    class="hidden bg-gray-500 text-white px-5 py-2 rounded-full">
+                    ← Previous
+                </button>
+                <div class="flex gap-3 ml-auto">
+                    <button type="button" id="nextBtn"
+                        class="bg-black text-white px-5 py-2 rounded-full">
+                        Next →
+                    </button>
+                    <button type="submit" id="save_product"
+                        class="hidden bg-[#363636] text-white px-5 py-2 rounded-full">
+                        Submit
+                    </button>
                 </div>
             </div>
 
-            <!-- NAVIGATION -->
-
-            <div class="flex justify-between mt-6">
-                <button type="button" id="prevBtn"
-                    class="hidden bg-gray-500 text-white px-5 py-2 rounded-full">Previous</button>
-                <button type="button" id="nextBtn"
-                    class="bg-black text-white px-5 py-2 rounded-full">Next</button>
-                <button type="submit" id="save_product"
-                    class="hidden bg-green-600 text-white px-5 py-2 rounded-full">Submit</button>
-            </div>
         </form>
     </div>
 </div>

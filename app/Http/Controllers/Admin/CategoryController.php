@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -29,13 +30,8 @@ class CategoryController extends Controller
                 ],
                 'category_status' => 'required|boolean',
                 'parent_id' => 'nullable|exists:categories,id',
-                'gender' => $isSubCategory ? 'nullable' : 'required|in:male,female,others',
             ];
-            if (empty($request['category_id']) && !$request->has('existing_image')) {
-                $rules['category_image'] = 'required|image|mimes:jpeg,png,jpg';
-            } elseif ($request->hasFile('category_image')) {
-                $rules['category_image'] = 'image|mimes:jpeg,png,jpg';
-            }
+
             $request->validate($rules);
             if ($request->category_id) {
                 $category = Category::findOrFail($request->category_id);
@@ -47,7 +43,6 @@ class CategoryController extends Controller
             $category->name = $request->category_name;
             $category->status = $request->category_status;
             $category->parent_id = $request->parent_id ?? null;
-            $category->gender = $isSubCategory ? null : $request->gender;
             $category->admin_id = Auth::guard('admin')->id();
             if ($request->hasFile('category_image')) {
                 $img_name = time() . '_' . $request->file('category_image')->getClientOriginalName();

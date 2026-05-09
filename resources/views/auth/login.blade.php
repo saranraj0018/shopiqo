@@ -16,6 +16,12 @@
             background: #f0f4f8;
             padding: 1.5rem;
             font-family: 'DM Sans', sans-serif;
+            height: 100dvh;
+            /* exact viewport height, no overflow */
+            padding: 1rem;
+            /* reduced padding */
+            overflow: hidden;
+            /* prevent any bleed */
         }
 
         /* ── Card ─────────────────────────────────────── */
@@ -30,8 +36,15 @@
         }
 
         @keyframes sq-fadeup {
-            from { opacity: 0; transform: translateY(18px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ── Left panel ───────────────────────────────── */
@@ -54,7 +67,7 @@
             width: 220px;
             height: 220px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .sq-left-circle2 {
@@ -64,7 +77,7 @@
             width: 180px;
             height: 180px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .sq-left-circle3 {
@@ -74,7 +87,7 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.07);
+            border: 1px solid rgba(255, 255, 255, 0.07);
         }
 
         .sq-brand {
@@ -109,7 +122,7 @@
 
         .sq-tagline {
             font-size: 11px;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255, 255, 255, 0.4);
             letter-spacing: 0.1em;
             text-transform: uppercase;
         }
@@ -129,7 +142,7 @@
             align-items: center;
             gap: 10px;
             font-size: 13px;
-            color: rgba(255,255,255,0.65);
+            color: rgba(255, 255, 255, 0.65);
         }
 
         .sq-feature-dot {
@@ -320,7 +333,7 @@
         .sq-spinner {
             width: 18px;
             height: 18px;
-            border: 2.5px solid rgba(255,255,255,0.35);
+            border: 2.5px solid rgba(255, 255, 255, 0.35);
             border-top-color: white;
             border-radius: 50%;
             animation: sq-spin 0.7s linear infinite;
@@ -328,7 +341,9 @@
         }
 
         @keyframes sq-spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* ── Divider ──────────────────────────────────── */
@@ -373,8 +388,10 @@
             }
 
             .sq-right {
-                width: 100%;
-                padding: 2rem 1.5rem;
+                overflow-y: auto;
+                /* add this */
+                padding: 2.25rem 2.5rem;
+                /* slightly reduced */
             }
 
             .sq-card {
@@ -382,26 +399,20 @@
             }
         }
     </style>
-
     <div class="sq-page">
         <div class="sq-card">
-
-            {{-- ── Left panel ── --}}
             <div class="sq-left">
                 <div class="sq-left-circle1"></div>
                 <div class="sq-left-circle2"></div>
                 <div class="sq-left-circle3"></div>
-
                 <div class="sq-brand">
                     <div class="sq-logo-mark">
-                        <img src="{{ asset('assets/images/Shopiqologo.svg') }}"
-                             alt="Shopiqo"
-                             style="height: 38px; width: auto; object-fit: contain;">
+                        <img src="{{ asset('assets/images/Shopiqologo.svg') }}" alt="Shopiqo"
+                            style="height: 38px; width: auto; object-fit: contain;">
                     </div>
                     <div class="sq-brand-name">Shopiq<span>o</span></div>
                     <div class="sq-tagline">Admin Dashboard</div>
                 </div>
-
                 <div class="sq-features">
                     <div class="sq-feature">
                         <div class="sq-feature-dot"></div>
@@ -421,48 +432,42 @@
                     </div>
                 </div>
             </div>
-
             {{-- ── Right panel ── --}}
             <div class="sq-right">
-
                 <div class="sq-badge">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
                     Secure login
                 </div>
-
                 <h2 class="sq-welcome">Welcome back</h2>
                 <p class="sq-sub">Sign in to your Shopiqo dashboard</p>
-
-                <form
-                    method="POST"
-                    action="{{ route('admin.authenticate') }}"
-                    x-data="{ showPw: false, loading: false }"
-                    @submit="loading = true"
-                    novalidate
-                >
+                <form method="POST" action="{{ route('admin.authenticate') }}" x-data="{ showPw: false, loading: false }"  @submit="loading = true" novalidate>
                     @csrf
-
                     {{-- Email --}}
                     <div class="sq-field">
                         <label class="sq-label" for="email">Email address</label>
                         <div class="sq-input-wrap">
-                            <input
-                                id="email"
-                                type="email"
-                                name="email"
-                                value="{{ old('email') }}"
-                                class="sq-input"
-                                placeholder="you@example.com"
-                                autocomplete="email"
-                                autofocus
-                            />
+                            <input id="email" type="email" name="email" value="{{ old('email') }}"
+                                class="sq-input" placeholder="you@example.com" autocomplete="email" autofocus />
                             <span class="sq-input-icon" aria-hidden="true">
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                                </svg>
                             </span>
                         </div>
                         @error('email')
                             <p class="sq-error">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="8" x2="12" y2="12" />
+                                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                                </svg>
                                 {{ $message }}
                             </p>
                         @enderror
@@ -475,41 +480,56 @@
                             <a href="#" class="sq-forgot">Forgot password?</a>
                         </div>
                         <div class="sq-input-wrap">
-                            <input
-                                id="password"
-                                :type="showPw ? 'text' : 'password'"
-                                name="password"
-                                class="sq-input"
-                                placeholder="••••••••"
-                                autocomplete="current-password"
-                            />
-                            <button
-                                type="button"
-                                class="sq-toggle-btn"
-                                @click="showPw = !showPw"
-                                :aria-label="showPw ? 'Hide password' : 'Show password'"
-                            >
+                            <input id="password" :type="showPw ? 'text' : 'password'" name="password" class="sq-input"
+                                placeholder="••••••••" autocomplete="current-password" />
+                            <button type="button" class="sq-toggle-btn" @click="showPw = !showPw"
+                                :aria-label="showPw ? 'Hide password' : 'Show password'">
                                 <template x-if="!showPw">
-                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
                                 </template>
                                 <template x-if="showPw">
-                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                                        <path
+                                            d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                                        <path
+                                            d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                                        <line x1="2" y1="2" x2="22" y2="22" />
+                                    </svg>
                                 </template>
                             </button>
                         </div>
                         @error('password')
                             <p class="sq-error">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <line x1="12" y1="8" x2="12" y2="12" />
+                                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                                </svg>
                                 {{ $message }}
                             </p>
                         @enderror
                     </div>
-
                     {{-- Submit --}}
                     <button type="submit" class="sq-btn" :disabled="loading">
                         <template x-if="!loading">
                             <span style="display:flex;align-items:center;gap:8px;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                    <polyline points="10 17 15 12 10 7" />
+                                    <line x1="15" y1="12" x2="3" y2="12" />
+                                </svg>
                                 Sign In
                             </span>
                         </template>
@@ -520,18 +540,13 @@
                             </span>
                         </template>
                     </button>
-
                 </form>
-
                 <div class="sq-divider">or</div>
-
                 <p class="sq-footer">
                     Don't have an account?
                     <a href="{{ route('admin.register') }}">Sign up</a>
                 </p>
-
             </div>
         </div>
     </div>
-
 </x-layouts.auth>

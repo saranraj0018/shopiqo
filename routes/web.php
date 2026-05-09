@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\Web\HomeController;
 use Illuminate\Support\Facades\Route;
 require __DIR__ . '/admin.php';
 
-Route::get('/', function () {
-    return view('frontend.home');
-});
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/login', function () {
     return view('frontend.login', [
@@ -44,7 +44,6 @@ Route::get('/order', function () {
     ]);
 })->name('order.index');
 
-
 Route::get('/order/advance-payment', function () {
     return view('frontend.order.advancepaymentpage', [
         'currentStep' => 2,
@@ -52,14 +51,12 @@ Route::get('/order/advance-payment', function () {
     ]);
 })->name('order.advancepayment');
 
-
 Route::get('/order/sample-process', function () {
     return view('frontend.order.sampleprocess', [
         'currentStep' => 3,
         'title' => 'Sample Process'
     ]);
 })->name('order.sampleprocess');
-
 
 Route::get('/order/sample-review', function () {
     return view('frontend.order.samplereview', [

@@ -1,6 +1,5 @@
 @php
 $categories = [
-
 ['image' => 'assets/images/categoriecard/categorie.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
 Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
 'assets/images/categoriecard/categoriecardicon.svg','wishlist' => true,],
@@ -24,15 +23,12 @@ Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','
 ['image' => 'assets/images/categoriecard/categorie5.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
 Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
 null,'wishlist' => true,],
-
 ];
 @endphp
 
 <section class="relative bg-black text-white py-14 sm:py-16 lg:py-12 overflow-hidden">
-
-    <!-- ✅ Mobile padding 25px -->
+    <!-- Mobile padding 25px -->
     <div class="relative max-w-6xl mx-auto px-14 sm:px-6 lg:px-8">
-
         <!-- Badge -->
         <div class="flex justify-center mb-5">
             <span
@@ -40,21 +36,18 @@ null,'wishlist' => true,],
                 Popular categories
             </span>
         </div>
-
         <!-- Title -->
         <div class="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
             <h2 class="text-[24px] sm:text-[30px] lg:text-[40px] font-medium leading-tight">
                 Explore our most loved corporate gift categories
             </h2>
         </div>
-
-        <!-- ✅ Grid FIXED -->
+        <!-- Grid FIXED -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @foreach($categories as $item)
             @include('frontend.components.homeproductcard', ['item' => $item])
             @endforeach
         </div>
-
         <!-- Button -->
         <div class="flex justify-center mt-10">
             <a href="/shop"
@@ -62,6 +55,5 @@ null,'wishlist' => true,],
                 See more
             </a>
         </div>
-
     </div>
 </section>

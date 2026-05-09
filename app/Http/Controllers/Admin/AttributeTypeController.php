@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\AttributeType;
 use App\Models\AttributeValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class AttributeController extends Controller
+class AttributeTypeController extends Controller
 {
     public function view(Request $request)
     {
@@ -19,26 +20,23 @@ class AttributeController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'attribute' => 'required|exists:attribute_types,id',
-            'attribute_value' => 'required|string'
+            'name' => [
+                'required',
+                'max:255',
+                'unique:attribute_types,name,' . $request->attribute_type_id,
+            ],
         ]);
-
         try {
-            $attributeId = $request->attribute;
-            $values = explode(',', $request->attribute_value);
-            $values = array_filter(array_map(function ($value) {
-                return trim($value);
-            }, $values));
-            foreach ($values as $value) {
-                $exists = AttributeValue::where(['attribute_type_id' => $attributeId, 'value' => $value])->exists();
-                if (!$exists) {
-                    $attribute_value = new AttributeValue();
-                    $attribute_value->attribute_type_id = $attributeId;
-                    $attribute_value->value = $value;
-                    $attribute_value->save();
-                }
+            if ($request->attribute_type_id) {
+                $attribute = AttributeType::findOrFail($request->attribute_type_id);
+                $message = 'AttributeType updated successfully';
+            } else {
+                $attribute = new AttributeType();
+                $message = 'AttributeType saved successfully';
             }
-
+            $attribute->name = $request->attribute_name;
+            $attribute->created_by = Auth::guard('admin')->id();
+            $attribute->save();
             return response()->json([
                 'success' => true,
                 'message' => 'Attribute values saved successfully'

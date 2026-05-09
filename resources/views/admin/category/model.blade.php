@@ -1,4 +1,4 @@
-<div id="categoryModal" x-data="{ previewUrl: null, exiting_image: '', form: { name: '', status: '1', cat_id: 0, cat_image: '', gender: '', parent_id: '' } }" class="fixed inset-0 hidden items-center justify-center z-50">
+<div id="categoryModal" x-data="{ previewUrl: null, exiting_image: '', form: { name: '', status: '1', cat_id: 0, cat_image: '',  parent_id: '' } }" class="fixed inset-0 hidden items-center justify-center z-50">
     <div class="absolute inset-0 bg-black/40" onclick="$('#categoryModal').hide()"></div>
     <div class="bg-white p-8 rounded-2xl shadow-2xl w-[600px] max-w-[90%] relative z-10">
         <h2 class="text-2xl font-bold mb-6 text-gray-800" id="category_label">Add Category</h2>
@@ -24,8 +24,7 @@
                 </div>
             </div>
             <div>
-                <label class="block text-gray-700 font-medium mb-2">Category Image<span
-                        class="text-red-500">*</span></label>
+                <label class="block text-gray-700 font-medium mb-2">Category Image</label>
                 <input type="file" name="category_image" id="category_image" accept=".png, .jpg, .jpeg"
                     x-ref="fileInput"
                     @change="
@@ -51,15 +50,6 @@
                         @foreach ($categories_all as $category)
                             <option value="{{ $category->id }}">{{ $category->name ?? '' }}</option>
                         @endforeach
-                    </select>
-                </div>
-                <div class="w-full" x-show="!form.parent_id">
-                    <label class="block text-gray-700 font-medium mb-2">Gender<span class="text-red-500">*</span></label>
-                    <select name="gender" x-model="form.gender" id="gender" class="form-input w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[#363636]">
-                        <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="others">Others</option>
                     </select>
                 </div>
             </div>

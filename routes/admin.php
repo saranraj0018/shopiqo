@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\AttributeController;
-use App\Http\Controllers\admin\AuthController;
-use App\Http\Controllers\admin\CategoryController;
-use App\Http\Controllers\admin\CouponController;
-use App\Http\Controllers\admin\DashBoardController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +39,9 @@ Route::prefix('admin')->group(function () {
         //attribute values
         Route::get('/attribute-list', [AttributeController::class, 'view'])->name('view_attribute');
         Route::post('/attribute-save', [AttributeController::class, 'save'])->name('save_attribute');
+
+        Route::get('/attribute-type', [AttributeController::class, 'view'])->name('view_attribute_type');
+        Route::post('/attribute-type-save', [AttributeController::class, 'save'])->name('save_attribute_type');
 
         //coupon
         Route::get('/coupon-list', [CouponController::class, 'view'])->name('view_coupon');
