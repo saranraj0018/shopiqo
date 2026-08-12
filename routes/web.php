@@ -1,18 +1,28 @@
 <?php
 
+use App\Http\Controllers\Admin\ShopController;
 use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\UserLoginController;
+use App\Http\Controllers\Web\WishlistController;
 use Illuminate\Support\Facades\Route;
+
 require __DIR__ . '/admin.php';
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/save-wishlist', [WishlistController::class, 'saveWishlist'])->name('save_wishlist');
 
 Route::get('/login', function () {
     return view('frontend.login', [
         'title' => 'Login'
     ]);
-});
+})->name('login');
 
+
+Route::post('/user-logout', [UserLoginController::class, 'userLogout'])->name('user_logout');
+
+Route::post('/user/authenticate', [UserLoginController::class, 'userAuthenticate'])->name('user_authenticate');
+Route::post('/user/register/update', [UserLoginController::class, 'userRegisterUpdate'])->name('user_register_update');
 Route::get('/login/personal', function () {
     return view('frontend.login.personalbuyer.index', [
         'title' => 'Personal Login'
@@ -31,11 +41,8 @@ Route::get('/login/vendor', function () {
     ]);
 })->name('login.vendor');
 
-Route::get('/shop', function () {
-    return view('frontend.shop',[
-        'title' => 'Shop'
-        ]);
-});
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
+Route::get('/shop/single-product/{id}', [ShopController::class, 'show'])->name('shop.single-product');
 
 Route::get('/order', function () {
     return view('frontend.order', [
@@ -74,11 +81,11 @@ Route::get('/order/order-success', function () {
 })->name('order.ordersuccess');
 
 
-Route::get('/shop/single-product', function () {
-    return view('frontend.productpage', [
-        'title' => 'Product Details'
-    ]);
-});
+// Route::get('/shop/single-product', function () {
+//     return view('frontend.productpage', [
+//         'title' => 'Product Details'
+//     ]);
+// });
 
 Route::get('/cart', function () {
     return view('frontend.cart', [

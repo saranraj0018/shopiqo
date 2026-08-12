@@ -3,14 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Coupon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CouponController extends Controller
 {
     public function view(Request $request)
     {
-        $coupons = Coupon::orderBy('created_at', 'desc')->paginate(10);
+        $admin = Admin::where('id', Auth::guard('admin')->id())->first();
+        if($admin->role_id == 1){
+            $coupons = Coupon::orderBy('created_at', 'desc')->paginate(10);
+        }else{
+            $coupons = Coupon::where('created_by', $admin->id)->orderBy('created_at', 'desc')->paginate(10);
+        }
         return view('admin.coupon.view', compact('coupons'));
     }
 
@@ -31,7 +38,7 @@ class CouponController extends Controller
 
         $request->validate($rules);
         try {
-            
+
             if (!empty($request->coupon_id)) {
                 $coupon = Coupon::find($request->coupon_id);
                 if (!$coupon) {
@@ -56,6 +63,7 @@ class CouponController extends Controller
             $coupon->order_count   = $request->order_count ?? 0;
             $coupon->expires_at    = $request->expires_at;
             $coupon->status        = $request->status;
+            $coupon->created_by    = Auth::guard('admin')->id();
             $coupon->save();
 
             return response()->json([

@@ -16,7 +16,7 @@
                         <th class="px-3 py-2">Apply For</th>
                         <th class="px-3 py-2">Status</th>
                         <th class="px-3 py-2">Expires At</th>
-                        <th class="px-3 py-2">User</th>
+                        <th class="px-3 py-2">Created By</th>
                         <th class="px-3 py-2">Created At</th>
                         <th class="px-3 py-2 text-center">Actions</th>
                     </tr>

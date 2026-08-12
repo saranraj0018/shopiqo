@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\AttributeType;
 use App\Models\AttributeValue;
 use Illuminate\Http\Request;
@@ -12,23 +13,29 @@ class AttributeTypeController extends Controller
 {
     public function view(Request $request)
     {
-        $this->data['attributes'] = AttributeType::with('get_variant_value')->paginate(10);
-        $this->data['attribute_name'] = AttributeType::get();
-        return view('admin.attribute.view')->with($this->data);
+        $admin = Admin::where('id', Auth::guard('admin')->id())->first();
+        if($admin->role_id == 1){
+            $this->data['attributes'] = AttributeType::paginate(10);
+            $this->data['attribute_name'] = AttributeType::get();
+        }else{
+            $this->data['attributes'] = AttributeType::where('created_by', $admin->id)->paginate(10);
+            $this->data['attribute_name'] = AttributeType::where('created_by', $admin->id)->get();
+        }
+        return view('admin.attribute_type.view')->with($this->data);
     }
 
     public function save(Request $request)
     {
         $request->validate([
-            'name' => [
+            'attribute_name' => [
                 'required',
                 'max:255',
-                'unique:attribute_types,name,' . $request->attribute_type_id,
+                'unique:attribute_types,name,' . $request->attribute_id,
             ],
         ]);
         try {
-            if ($request->attribute_type_id) {
-                $attribute = AttributeType::findOrFail($request->attribute_type_id);
+            if ($request->attribute_id) {
+                $attribute = AttributeType::findOrFail($request->attribute_id);
                 $message = 'AttributeType updated successfully';
             } else {
                 $attribute = new AttributeType();
@@ -39,7 +46,7 @@ class AttributeTypeController extends Controller
             $attribute->save();
             return response()->json([
                 'success' => true,
-                'message' => 'Attribute values saved successfully'
+                'message' => 'Attribute Type saved successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([

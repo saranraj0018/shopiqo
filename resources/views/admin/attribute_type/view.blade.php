@@ -13,19 +13,20 @@
                 <tr class="bg-[#363636] text-white text-sm uppercase tracking-wider">
                     <th class="px-3 py-2">ID</th>
                     <th class="px-3 py-2">Name</th>
+                    <th class="px-3 py-2">Created By</th>
                     <th class="px-3 py-2 text-center">Actions</th>
                 </tr>
                 </thead>
                 <tbody id="attributeTableBody" class="divide-y divide-gray-200">
                 @foreach($attributes as $attr)
-                @php
-                    $att_name = $attr->get_variant_value->pluck('value');
-                @endphp
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-4 py-3 font-medium text-gray-900">{{ $loop->iteration }}</td>
                         <td class="px-4 py-3">{{ $attr->name }}</td>
+                        <td class="px-4 py-3">
+                                {{ $attr->admin?->name ?? '—' }}
+                        </td>
                         <td class="px-4 py-3 flex justify-center gap-4">
-                            <button class="text-blue-600 hover:text-blue-800 transition editAttributeBtn" data-id="{{ $attr->id }}" data-attribute="{{ $attr->name  }}">
+                            <button class="text-blue-600 hover:text-blue-800 transition editAttributeBtn" data-attribute_id="{{ $attr->id }}" data-attribute_name="{{ $attr->name  }}">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </button>
                         </td>
@@ -37,7 +38,7 @@
         <div class="p-4">
             {{ $attributes->links() }}
         </div>
-        @include('admin.attribute_type.model',['attribute' => $attribute_name])
+        @include('admin.attribute_type.model')
     </div>
 </x-layouts.app>
 <script src="{{ asset('admin/js/attribute_type.js') }}?v={{ time() }}"></script>

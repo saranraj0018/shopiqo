@@ -10,4 +10,9 @@ class AttributeValue extends Model
     {
         return $this->belongsTo(AttributeType::class, 'attribute_type_id');
     }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'created_by');
+    }
 }

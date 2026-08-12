@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\AttributeType;
 use App\Models\AttributeValue;
 use App\Models\BulkProduct;
@@ -13,6 +14,7 @@ use App\Models\ProductGalleryImage;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantValue;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -28,10 +30,16 @@ class ProductController extends Controller
                 'sub_category' => $sub_category
             ]);
         }
-
-        $this->data['category'] = Category::whereNull('parent_id')->where('status', 1)->get();
-        $this->data['variants'] = AttributeType::with('get_variant_value')->get();
-        $this->data['product_lists'] = Product::with('product_variant', 'product_variant.variantValues', 'product_gallery_image')->get();
+        $admin = Admin::where('id', Auth::guard('admin')->id())->first();
+        if($admin->role_id == 1){
+            $this->data['category'] = Category::whereNull('parent_id')->where('status', 1)->get();
+            $this->data['variants'] = AttributeType::with('get_variant_value')->get();
+            $this->data['product_lists'] = Product::with('product_variant', 'product_variant.variantValues', 'product_gallery_image','admin')->get();
+        }else{
+            $this->data['category'] = Category::whereNull('parent_id')->where('status', 1)->where('created_by', $admin->id)->get();
+            $this->data['variants'] = AttributeType::with('get_variant_value')->where('created_by', $admin->id)->get();
+            $this->data['product_lists'] = Product::with('product_variant', 'product_variant.variantValues', 'product_gallery_image','admin')->where('created_by', $admin->id)->get();
+        }
         return view('admin.product.view_product')->with($this->data);
     }
 
@@ -83,15 +91,14 @@ class ProductController extends Controller
             $request->validate($rules);
 
             /* -------------------- SAVE PRODUCT -------------------- */
-            $product = empty($request->product_id)
-                ? new Product()
-                : Product::findOrFail($request->product_id);
+            $product = empty($request->product_id) ? new Product() : Product::findOrFail($request->product_id);
             $product->category_id     = $request->category_id;
             $product->sub_category_id = $request->sub_category_id;
             $product->name            = $request->product_name;
             $product->product_type    = $request->product_type;
             $product->product_code    = $request->product_code;
             $product->description     = $request->description ?? '';
+            $product->created_by      = Auth::guard('admin')->id();
 
             // Single product values
             if ($request->product_type == 'single') {

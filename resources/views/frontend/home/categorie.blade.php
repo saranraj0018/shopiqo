@@ -1,6 +1,7 @@
 @php
+
 $categories = [
-['image' => 'assets/images/categoriecard/categorie.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
+['image' => 'assets/images/categoriecard/categorie.png','title' => 'f Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
 Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
 'assets/images/categoriecard/categoriecardicon.svg','wishlist' => true,],
 
@@ -44,7 +45,7 @@ null,'wishlist' => true,],
         </div>
         <!-- Grid FIXED -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            @foreach($categories as $item)
+            @forelse($products as $item)
             @include('frontend.components.homeproductcard', ['item' => $item])
             @endforeach
         </div>

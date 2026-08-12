@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,8 +14,14 @@ class CategoryController extends Controller
 {
     public function view()
     {
-        $this->data['categories'] = Category::paginate(10);
-        $this->data['categories_all'] = Category::whereNull('parent_id')->get();
+        $admin = Admin::where('id', Auth::guard('admin')->id())->first();
+        if($admin->role_id == 1){
+            $this->data['categories'] = Category::paginate(10);
+            $this->data['categories_all'] = Category::whereNull('parent_id')->get();
+        }else{
+            $this->data['categories'] = Category::where('created_by', $admin->id)->paginate(10);
+            $this->data['categories_all'] = Category::where('created_by', $admin->id)->whereNull('parent_id')->get();
+        }
         return view('admin.category.view')->with($this->data);
     }
 
@@ -43,7 +50,7 @@ class CategoryController extends Controller
             $category->name = $request->category_name;
             $category->status = $request->category_status;
             $category->parent_id = $request->parent_id ?? null;
-            $category->admin_id = Auth::guard('admin')->id();
+            $category->created_by = Auth::guard('admin')->id();
             if ($request->hasFile('category_image')) {
                 $img_name = time() . '_' . $request->file('category_image')->getClientOriginalName();
                 $request->file('category_image')->storeAs('categories', $img_name, 'public');

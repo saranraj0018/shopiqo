@@ -32,7 +32,6 @@
     },
 
     submitForm() {
-        console.log('Form submitted:', this.form);
         // Add create/update API logic here
         this.closeModal();
     },
@@ -50,72 +49,57 @@
 
     <form @submit.prevent="submitForm" class="flex flex-col justify-start items-start w-full  h-[75vh] overflow-y-scroll">
         <div class="p-5 space-y-5 flex-1 w-full h-fit">
-
             {{-- Step 1: Product Information --}}
             <div x-show="stepNumber === 0" class="space-y-4">
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <x-label>Product Name</x-label>
                         <x-input type="text" x-model="form.name" placeholder="eg .., Flower" />
                     </div>
-
                     <div>
                         <x-label>Category ID</x-label>
-
                         <x-select x-model="form.category_id">
                             <option value="Table">Table</option>
                             <option value="Chair">Chair</option>
                             <option value="Dinning">Dinning</option>
                         </x-select>
                     </div>
-
-
                     <div>
                         <x-label>Description</x-label>
                         <x-textarea placeholder="Enter Description" x-model="form.description"></x-textarea>
                     </div>
-
                     <div>
                         <x-label>Benefits</x-label>
                         <x-textarea placeholder="Enter Benifits" x-model="form.benefits" />
                     </div>
-
-
                     <div class="col-span-2">
                         <x-label>Image URL</x-label>
                         <span x-text="JSON.stringify(form.image)"></span>
-                        <x-file @file-changed="console.log('changed')" mimes="image/png,image/jpeg"   />
+                        <x-file @file-changed="console.log('changed')" mimes="image/png,image/jpeg" />
                     </div>
                 </div>
             </div>
-
             {{-- Step 2: Product Details --}}
             <div x-show="stepNumber === 1" class="space-y-4">
-
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 space-y-5">
                     <div>
                         <x-label>Sale Price</x-label>
                         <x-input placeholder="eg .., 500.00" type="number" step="0.01" x-model="form.sale_price" />
                     </div>
-
                     <div>
                         <x-label>Regular Price</x-label>
                         <x-input placeholder="eg .., 550.00" type="number" step="0.01"
                             x-model="form.regular_price" />
                     </div>
-
                     <div>
                         <x-label>Purchase Price</x-label>
                         <x-input placeholder="eg .., 700.00" type="number" step="0.01"
                             x-model="form.purchase_price" />
                     </div>
-
                     <div class="col-span-2">
                         <x-label>Weight</x-label>
                         <x-input placeholder="eg .., 05" type="number" step="0.01" x-model="form.weight" />
                     </div>
-
                     <div>
                         <x-label>Weight Unit</x-label>
                         <x-select x-model="form.weight_unit">
@@ -125,9 +109,6 @@
                             <option value="l">l</option>
                         </x-select>
                     </div>
-
-
-
                     <div>
                         <x-label>Tax Type</x-label>
                         <x-select x-model="form.tax_type">
@@ -137,22 +118,18 @@
                             <option value="2">Exclusive</option>
                         </x-select>
                     </div>
-
                     <div class="col-span-2">
                         <x-label>Tax Percentage</x-label>
                         <x-input placeholder="eg .., 18" type="number" step="0.01" x-model="form.tax_percentage" />
                     </div>
-
                     <div class="flex items-center space-x-2 col-span-2">
                         <input type="checkbox" x-model="form.is_featured_product" class="h-4 w-4" />
                         <x-label class="block text-sm font-medium">Is Featured Product</x-label>
                     </div>
                 </div>
             </div>
-
             {{-- Step 3: Review & Save --}}
             <div x-show="stepNumber === 2" class="space-y-4">
-
                 <div class="bg-gray-50 rounded-lg p-4 shadow-sm">
                     <h4 class="text-md font-medium mb-2">Product Information</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -183,7 +160,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="bg-gray-50 rounded-lg p-4 shadow-sm">
                     <h4 class="text-md font-medium mb-2">Pricing & Details</h4>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -220,18 +196,14 @@
                 </div>
             </div>
         </div>
-
         {{-- Form Buttons --}}
         <div class="flex items-center gap-5 justify-between mt-6 w-full">
             <x-button varient="ghost" type="button" @click="prevStep()" x-show="stepNumber > 0">Back</x-button>
-
             <div class="flex justify-between items-center w-full">
                 <x-button varient="primary" type="button" @click="nextStep()"
                     x-show="stepNumber < steps.length - 1">Next</x-button>
-
                 <x-button varient="primary" type="submit" x-show="stepNumber === steps.length - 1">Save</x-button>
             </div>
         </div>
     </form>
-
 </div>

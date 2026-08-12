@@ -1,22 +1,10 @@
-<section class="relative bg-black text-white pt-[9rem] pb-0 px-4 sm:px-6 lg:px-8 overflow-hidden">
 
+<section class="relative bg-black text-white pt-[9rem] pb-0 px-4 sm:px-6 lg:px-8 overflow-hidden">
     <div class="pointer-events-none absolute inset-0">
         <div class="absolute left-0 top-0 h-[300px] w-[300px] rounded-full bg-white/5 blur-3xl"></div>
         <div class="absolute right-0 bottom-0 h-[280px] w-[280px] rounded-full bg-white/5 blur-3xl"></div>
     </div>
-
     @php
-    $productImages = [
-    asset('assets/images/jacket.png'),
-    asset('assets/images/jacket.png'),
-    asset('assets/images/jacket.png'),
-    asset('assets/images/jacket.png'),
-    asset('assets/images/jacket.png'),
-    asset('assets/images/jacket.png'),
-    asset('assets/images/jacket.png'),
-
-
-    ];
 
     $priceRows = [
     ['qty' => '36-99', 'price' => '₹62.09'],
@@ -29,15 +17,12 @@
     @endphp
 
     <div class="relative z-10 max-w-[60rem] mx-auto">
-        <!-- Breadcrumb -->
         <div class="text-center text-[13px] text-white/70 mb-8">
-
             @if(Request::segment(1))
             <span class="text-white capitalize">
                 {{ Request::segment(1) }}
             </span>
             @endif
-
             @if(Request::segment(2))
             <span class="mx-1">/</span>
             <span class="text-white capitalize">
@@ -47,60 +32,64 @@
         </div>
 
         <div class="flex flex-col xl:flex-row gap-[30px]">
+<div class="relative flex flex-col xl:flex-row gap-[20px] w-full xl:w-[50%]">
 
-            <div
-                class="relative gap-[20px] flex flex-col md:flex-col xl:flex-row w-full xl:w-[50%] items-center xl:items-start">
-                <div
-                    class="order-1 xl:order-2 relative w-full h-[300px] xl:h-[350px] flex px-[40px] sm:px-0 flex flex-row-reverse gap-[20px]">
-                    <button onclick="toggleHeart(this)"
-                        class="absolute top-6 right-16 sm:top-4 sm:right-4 xl:top-6 xl:left-[25rem] w-9 h-9 rounded-full bg-black/80 text-white flex items-center justify-center shadow z-10">
-                        <i class="fa-solid fa-heart text-[13px] text-white"></i>
-                    </button>
+    <!-- Desktop Thumbnails -->
+    <div
+        class="hidden xl:flex flex-col gap-4 overflow-y-auto hide-scrollbar w-[90px] h-[350px]">
+        @foreach($product->product_gallery_image as $index => $img)
+        <button
+            onclick="changeMainImage('{{ asset('storage/' . $img->image_path) }}', this)"
+            class="thumb-btn border-2 rounded-[10px] {{ $index === 0 ? 'border-black' : 'border-transparent' }}">
+            <img
+                src="{{ asset('storage/' . $img->image_path) }}"
+                class="w-full h-[80px] object-cover rounded-[10px]">
+        </button>
+        @endforeach
+    </div>
 
-                    <img id="mainProductImage" src="{{ $productImages[0] }}" class="w-full">
+    <!-- Main Image -->
+    <div class="relative flex-1 w-full h-[300px] xl:h-[350px]">
 
-                    <div
-                        class="order-2 xl:order-1 flex flex-row xl:flex-col gap-3 xl:gap-6 overflow-x-auto xl:overflow-y-auto xl:overflow-x-hidden hide-scrollbar w-[74%] sm:w-[18%]">
-                        @foreach($productImages as $index => $img)
-                        <button onclick="changeMainImage('{{ $img }}', this)"
-                            class="thumb-btn {{ $index === 0 ? 'border-white' : 'border-transparent' }} transition ">
-                            <img src="{{ $img }}" class=" w-full rounded-[10px] ">
-                        </button>
-                        @endforeach
-                    </div>
-                </div>
+        <!-- Heart Button -->
+        <button onclick="toggleHeart(this)"
+            class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/80 text-white flex items-center justify-center shadow z-10">
+            <i class="fa-solid fa-heart text-[13px] text-white"></i>
+        </button>
 
-                <div
-                    class="order-2 xl:order-1 flex flex-row xl:flex-col gap-4 xl:gap-6 overflow-x-auto xl:overflow-y-auto xl:overflow-x-hidden md:hidden hide-scrollbar w-[77%] sm:w-[18%]">
-                    @foreach($productImages as $index => $img)
-                    <button onclick="changeMainImage('{{ $img }}', this)"
-                        class="thumb-btn {{ $index === 0 ? 'border-white' : 'border-transparent' }} transition ">
-                        <img src="{{ $img }}" class=" h-[60px] max-w-[60px] rounded-[10px] ">
-                    </button>
-                    @endforeach
-                </div>
+        <img
+            id="mainProductImage"
+            src="{{ asset('storage/' . $product->main_image) }}"
+            class="w-full h-full object-cover rounded-[12px]">
+    </div>
 
+    <!-- Mobile Thumbnails -->
+    <div
+        class="flex xl:hidden gap-4 overflow-x-auto hide-scrollbar w-full pt-2">
+        @foreach($product->product_gallery_image as $index => $img)
+        <button
+            onclick="changeMainImage('{{ asset('storage/' . $img->image_path) }}', this)"
+            class="thumb-btn min-w-[70px] border-2 rounded-[10px] overflow-hidden {{ $index === 0 ? 'border-black' : 'border-transparent' }}">
+            <img
+                src="{{ asset('storage/' . $img->image_path) }}"
+                class="w-[70px] h-[70px] object-cover">
+        </button>
+        @endforeach
+    </div>
 
-
-            </div>
-
+</div>
             <div class="w-full sm:w-[50%] p-[15px] sm:p-0">
-
                 <p class="text-[11px] text-white/60 mb-1">Brand: Polo</p>
-
                 <h1 class="text-[22px] sm:text-[28px] font-medium">
                     Unisex Highneck Jacket
                 </h1>
-
                 <div class="flex items-end gap-2 mt-2">
                     <span class="text-[26px] font-semibold">₹120</span>
                     <span class="text-[13px] text-white/70 pb-[4px]">/piece</span>
                     <span class="text-[13px] text-white/60 pb-[4px]">4.5</span>
                 </div>
-
                 <div class="mt-6">
                     <p class="text-[11px] text-white/80 mb-3">Choose Color</p>
-
                     <div class="flex gap-2">
                         <div class="w-7 h-7 rounded-full border border-white bg-black"></div>
                         <div class="w-7 h-7 rounded-full bg-blue-500"></div>
@@ -109,19 +98,13 @@
                         <div class="w-7 h-7 rounded-full bg-red-500"></div>
                     </div>
                 </div>
-
                 <div class="mt-8">
                     <p class="text-[12px] mb-3 text-white/90">Upload Your Design/Logo*</p>
-
-                    <label
-                        class="group relative flex flex-col items-center justify-center h-[120px] w-full sm:w-[80%] rounded-xl border border-dashed border-white/30 bg-white/[0.02] cursor-pointer transition-all duration-300 hover:bg-white/[0.05] hover:border-white/50">
-
-                        <div
-                            class="mb-2 flex items-center justify-center w-10 h-10 rounded-full bg-white/10 group-hover:bg-white/20 transition">
+                    <label class="group relative flex flex-col items-center justify-center h-[120px] w-full sm:w-[80%] rounded-xl border border-dashed border-white/30 bg-white/[0.02] cursor-pointer transition-all duration-300 hover:bg-white/[0.05] hover:border-white/50">
+                        <div  class="mb-2 flex items-center justify-center w-10 h-10 rounded-full bg-white/10 group-hover:bg-white/20 transition">
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="w-5 h-5 text-white/70 group-hover:text-white transition" fill="none"
                                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M4 16l4-4a3 3 0 014 0l4 4m0 0l4-4M12 12V4m0 0l-3 3m3-3l3 3" />
                             </svg>

@@ -477,7 +477,7 @@
                     <div class="sq-field">
                         <div class="sq-label-row">
                             <label class="sq-label" for="password" style="margin-bottom:0;">Password</label>
-                            <a href="#" class="sq-forgot">Forgot password?</a>
+                            {{-- <a href="#" class="sq-forgot">Forgot password?</a> --}}
                         </div>
                         <div class="sq-input-wrap">
                             <input id="password" :type="showPw ? 'text' : 'password'" name="password" class="sq-input"

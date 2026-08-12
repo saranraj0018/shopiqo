@@ -11,7 +11,10 @@ async function sendRequest(url, data, method = "POST", onSuccess = null, onError
         let options = {
             method: method,
             headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+                Accept: "application/json",
             },
         };
 

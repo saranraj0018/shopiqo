@@ -1,16 +1,11 @@
-<div
-    class="w-full rounded-[18px] border border-white/20 bg-black px-5 md:px-6 py-5 md:py-6 shadow-[0_0_30px_rgba(255,255,255,0.04)] relative overflow-hidden">
-
+<div class="w-full rounded-[18px] border border-white/20 bg-black px-5 md:px-6 py-5 md:py-6 shadow-[0_0_30px_rgba(255,255,255,0.04)] relative overflow-hidden">
     <div
         class="hidden md:block absolute inset-y-0 right-0 w-[45%] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_65%)] pointer-events-none">
     </div>
-
     <div class="relative z-10">
         <h2 class="text-white text-[24px] md:text-[28px] font-medium mb-6">Profile Information</h2>
-
         <form action="#" method="POST" enctype="multipart/form-data" class="space-y-5">
             @csrf
-
             <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div class="w-[86px] h-[86px] rounded-full border border-white/25 overflow-hidden shrink-0">
                     <div

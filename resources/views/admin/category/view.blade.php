@@ -16,6 +16,7 @@
                     <th class="px-3 py-2">Gender</th>
                     <th class="px-3 py-2">Image</th>
                     <th class="px-3 py-2">Status</th>
+                    <th class="px-3 py-2">Created By</th>
                     <th class="px-3 py-2">Created At</th>
                     <th class="px-3 py-2 text-center">Actions</th>
                 </tr>
@@ -39,6 +40,9 @@
                             {{ $cat->status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                             {{ $cat->status ? 'Active' : 'Inactive' }}
                         </span>
+                        </td>
+                         <td class="px-4 py-3">
+                                {{ $cat->admin?->name ?? '—' }}
                         </td>
                         <td class="px-4 py-3">
                             {{ $cat->created_at->format('d M Y, h:i A') }}

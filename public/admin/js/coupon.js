@@ -42,7 +42,6 @@ $(function () {
 
     function toggleOrderCount() {
         let applyFor = $("#apply_for").val();
-        console.log(applyFor);
         if (applyFor === "2") {
             $("#order_count_tab").show();
         } else {
@@ -144,7 +143,6 @@ $(function () {
             formData,
             "POST",
             function (res) {
-                console.log(res);
                 hideLoader();
                 if (res.success) {
                     showToast(res.message, "success", 2000);

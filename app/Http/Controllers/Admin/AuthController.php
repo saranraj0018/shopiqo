@@ -86,12 +86,4 @@ class AuthController extends Controller
         Auth::guard('admin')->logout();
         return redirect()->route('admin.login');
     }
-
-    public function user_logout(Request $request): \Illuminate\Http\RedirectResponse
-    {
-        Auth::guard('admin')->logout();
-        $request->session()->invalidate(); // Invalidate session
-        $request->session()->regenerateToken(); // Regenerate CSRF token for security
-        return redirect()->route('admin.login')->with('success', 'You have been logged out successfully.');
-    }
 }

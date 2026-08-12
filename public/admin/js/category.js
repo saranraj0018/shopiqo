@@ -19,7 +19,6 @@ $(function () {
         let status = $(this).data("status");
         let parent_id = $(this).data("parent_id");
         let image = $(this).data("image");
-        console.log(parent_id);
         // open modal
         $("#categoryModal").css("display", "flex");
         $("#category_label").text("Edit Category");
@@ -91,7 +90,6 @@ $(function () {
                         });
                     }, 500);
                 } else {
-                    console.log("test3");
                     showToast("Something went wrong!", "error", 2000);
                 }
                 $saveBtn

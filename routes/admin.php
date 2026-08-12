@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\AttributeController;
+use App\Http\Controllers\Admin\AttributeTypeController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashBoardController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\TicketController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function () {
@@ -40,12 +43,21 @@ Route::prefix('admin')->group(function () {
         Route::get('/attribute-list', [AttributeController::class, 'view'])->name('view_attribute');
         Route::post('/attribute-save', [AttributeController::class, 'save'])->name('save_attribute');
 
-        Route::get('/attribute-type', [AttributeController::class, 'view'])->name('view_attribute_type');
-        Route::post('/attribute-type-save', [AttributeController::class, 'save'])->name('save_attribute_type');
+        Route::get('/attribute-type', [AttributeTypeController::class, 'view'])->name('view_attribute_type');
+        Route::post('/attribute-type-save', [AttributeTypeController::class, 'save'])->name('save_attribute_type');
 
         //coupon
         Route::get('/coupon-list', [CouponController::class, 'view'])->name('view_coupon');
         Route::post('/coupon-save', [CouponController::class, 'save'])->name('save_coupon');
         Route::post('/coupon-delete', [CouponController::class, 'destroy'])->name('delete_coupon');
+
+        Route::prefix('orders')->controller(OrderController::class)->group(function () {
+            Route::get('/list', 'view')->name('view.orders');
+            Route::post('/update-status', 'updateStatus')->name('update.order.status');
+        });
+
+        // ticket lists
+        Route::get('/ticket-lists', [TicketController::class, 'index'])->name('ticket_lists');
+        Route::post('/ticket-save', [TicketController::class, 'saveTicket'])->name('ticket_save');
     });
 });

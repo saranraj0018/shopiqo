@@ -10,4 +10,9 @@ class AttributeType extends Model
     {
         return $this->hasMany(AttributeValue::class, 'attribute_type_id', 'id');
     }
+
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'created_by');
+    }
 }

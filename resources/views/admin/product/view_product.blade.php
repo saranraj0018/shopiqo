@@ -15,6 +15,7 @@
                         <th class="px-3 py-2">Image</th>
                         <th class="px-3 py-2">Category</th>
                         <th class="px-3 py-2">Product Type</th>
+                        <th class="px-3 py-2">Created By</th>
                         <th class="px-3 py-2 text-center">Actions</th>
                     </tr>
                 </thead>
@@ -33,6 +34,7 @@
                             </td>
                             <td class="px-4 py-3">{{ $product->get_category->name ?? '' }}</td>
                             <td class="px-4 py-3">{{ $product->product_type ?? '' }}</td>
+                            <td class="px-4 py-3">{{ $product->admin?->name ?? '—' }}</td>
                             <td class="px-4 py-3 flex justify-center gap-4">
                                 <button class="text-blue-600 editProductBtn"
                                     data-product='@json($product)'>
