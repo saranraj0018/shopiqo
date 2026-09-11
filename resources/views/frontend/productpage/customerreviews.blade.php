@@ -1,81 +1,6 @@
 <section class="w-full bg-black text-white py-8 sm:py-10">
     <div class="max-w-[1180px] mx-auto px-8 sm:px-6 lg:px-8">
 
-        @php
-        $reviews = [
-        [
-        'name' => 'Anika Sharma',
-        'avatar' => 'https://i.pravatar.cc/60?img=32',
-        'rating' => 4,
-        'time' => '3 Days ago',
-        'review' => 'I’m thrilled with my recent purchase, the "Zenith" jacket from Peak Performance. The material is
-        top-notch and feels great. Its design is modern and unique. I always get compliments when I wear it. Shopping
-        here was easy, and I’ll definitely be back!',
-        'images' => [
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        ],
-        ],
-        [
-        'name' => 'Rohan Patel',
-        'avatar' => 'https://i.pravatar.cc/60?img=12',
-        'rating' => 4,
-        'time' => '5 Days ago',
-        'review' => 'I’m so happy with my new "Apex" hoodie from Trailblaze Gear. The fabric is so soft and comfy. The
-        style is both trendy and special. I get so many good comments every time I put it on. Buying from this site was
-        a breeze, and I can’t wait to shop again!',
-        'images' => [
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        ],
-        ],
-        [
-        'name' => 'Arjun Reddy',
-        'avatar' => 'https://i.pravatar.cc/60?img=14',
-        'rating' => 4,
-        'time' => '4 Days ago',
-        'review' => 'I’m very happy with my new "Voyager" pants from Active Edge. The fabric is excellent and feels
-        amazing. The design is both fashionable and special. I’ve gotten lots of compliments whenever I wear them.
-        Shopping here was fun, and I’m eager to return for more!',
-        'images' => [
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        ],
-        ],
-        [
-        'name' => 'Diya Menon',
-        'avatar' => 'https://i.pravatar.cc/60?img=47',
-        'rating' => 5,
-        'time' => '6 Days ago',
-        'review' => 'I’m really pleased with my latest find, the "Summit" tee from Rugged Outfitters. The material is
-        high-quality and feels wonderful. Its look is both cool and different. I’ve gotten tons of praise every time I
-        use it. Shopping on this site was great, and I’m excited to buy more!',
-        'images' => [],
-        ],
-        [
-        'name' => 'Priya Singh',
-        'avatar' => 'https://i.pravatar.cc/60?img=24',
-        'rating' => 4,
-        'time' => '2 Days ago',
-        'review' => 'I’m super happy with my recent purchase, the "Nomad" vest from Outdoor Pro. The material is
-        fantastic and feels awesome. Its style is both chic and original. I’ve received many compliments every time I
-        use it. Shopping on this site was a delight, and I’m looking forward to future purchases!',
-        'images' => [
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        asset('assets/images/jacket.png'),
-        ],
-        ],
-        ];
-        @endphp
-
         <style>
         .review-scrollbar::-webkit-scrollbar {
             width: 4px;
@@ -123,22 +48,34 @@
                     <div id="acc1"
                         class="accordion-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out border-t-0">
                         <div class="px-4">
-                            <div class="flex justify-between gap-4 py-4 border-b border-white/15">
-                                <p class="text-[11px] text-white/70">Material Type</p>
-                                <p class="text-[11px] text-white/70 text-right">Stainless Steel, Aluminum</p>
-                            </div>
+                            @if ($variantMatrix && $variantMatrix['cols']->first()->id !== 'default')
                             <div class="flex justify-between gap-4 py-4 border-b border-white/15">
                                 <p class="text-[11px] text-white/70">Available Colors</p>
-                                <p class="text-[11px] text-white/70 text-right">Silver, Black, Blue, Gold</p>
+                                <p class="text-[11px] text-white/70 text-right lowercase">
+                                    {{ $variantMatrix['cols']->pluck('value')->implode(', ') }}
+                                </p>
                             </div>
+                            @endif
+                            @if ($variantMatrix)
+                            <div class="flex justify-between gap-4 py-4 border-b border-white/15">
+                                <p class="text-[11px] text-white/70">Available Sizes</p>
+                                <p class="text-[11px] text-white/70 text-right uppercase">
+                                    {{ $variantMatrix['rows']->pluck('value')->implode(', ') }}
+                                </p>
+                            </div>
+                            @endif
                             <div class="flex justify-between gap-4 py-4 border-b border-white/15">
                                 <p class="text-[11px] text-white/70">Minimum Order Quantity</p>
-                                <p class="text-[11px] text-white/70 text-right">50 units</p>
+                                <p class="text-[11px] text-white/70 text-right">{{ $moq }} {{ Str::plural('unit', $moq) }}</p>
                             </div>
+                            @if ($product->production_min_days || $product->production_max_days)
                             <div class="flex justify-between gap-4 py-4">
                                 <p class="text-[11px] text-white/70">Production Time</p>
-                                <p class="text-[11px] text-white/70 text-right">7–10 days</p>
+                                <p class="text-[11px] text-white/70 text-right">
+                                    {{ $product->production_min_days ?? $product->production_max_days }}–{{ $product->production_max_days ?? $product->production_min_days }} days
+                                </p>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -159,16 +96,18 @@
                         <div class="px-4 py-4 space-y-4">
                             <div class="border-b border-white/15 pb-4">
                                 <p class="text-[11px] text-white/50 mb-2">Logo Placement</p>
-                                <p class="text-[11px] text-white/80">Logo area: 4cm × 8.0cm on barrel</p>
+                                <p class="text-[11px] text-white/80">
+                                    Fully adjustable — choose front, back, or both, then drag your logo anywhere on the
+                                    product photo to set the exact spot.
+                                </p>
                             </div>
 
                             <div class="border-b border-white/15 pb-4">
                                 <p class="text-[11px] text-white/50 mb-2">Print Types</p>
                                 <div class="flex flex-wrap gap-2">
-                                    <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">Screen Print</span>
-                                    <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">Embroidery</span>
-                                    <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">Laser
-                                        Engraving</span>
+                                    @foreach ($printTypes as $type)
+                                    <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">{{ $type }}</span>
+                                    @endforeach
                                 </div>
                             </div>
 
@@ -178,96 +117,6 @@
                                     <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">PNG</span>
                                     <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">JPG</span>
                                     <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">SVG</span>
-                                    <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">AI</span>
-                                    <span class="px-2.5 py-1 rounded-full bg-white/20 text-[10px]">PDF</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-[16px] border border-white/15 bg-[#050505] overflow-hidden">
-                    <button type="button" onclick="toggleAccordion('acc3','icon3')"
-                        class="w-full flex items-center justify-between px-4 py-4 text-left">
-                        <span class="text-[13px] font-medium">Size & Fit Guide</span>
-                        <svg id="icon3" xmlns="http://www.w3.org/2000/svg"
-                            class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 15l-6-6-6 6" />
-                        </svg>
-                    </button>
-
-                    <div id="acc3"
-                        class="accordion-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out border-t-0">
-                        <div class="px-4 py-4 space-y-4">
-                            <div class="border-b border-white/15 pb-4">
-                                <p class="text-[11px] text-white/50 mb-2">Available Sizes</p>
-                                <div class="flex flex-wrap gap-2">
-                                    <span
-                                        class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[10px]">S</span>
-                                    <span
-                                        class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[10px]">M</span>
-                                    <span
-                                        class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[10px]">L</span>
-                                    <span
-                                        class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center text-[10px]">XL</span>
-                                    <span
-                                        class="w-8 h-7 rounded-full bg-white/20 flex items-center justify-center text-[10px] px-2">XXL</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <p class="text-[11px] text-white/50 mb-2">Fit Description</p>
-                                <p class="text-[11px] text-white/70 leading-5">
-                                    Regular fit, true to size. If you prefer a looser fit, consider ordering one size
-                                    up.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="rounded-[16px] border border-white/15 bg-[#050505] overflow-hidden">
-                    <button type="button" onclick="toggleAccordion('acc4','icon4')"
-                        class="w-full flex items-center justify-between px-4 py-4 text-left">
-                        <span class="text-[13px] font-medium">Use Cases</span>
-                        <svg id="icon4" xmlns="http://www.w3.org/2000/svg"
-                            class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 15l-6-6-6 6" />
-                        </svg>
-                    </button>
-
-                    <div id="acc4"
-                        class="accordion-content max-h-0 opacity-0 overflow-hidden transition-all duration-300 ease-in-out border-t-0">
-                        <div class="px-4 py-4 space-y-4">
-                            <div class="flex gap-3">
-                                <span class="mt-[6px] w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
-                                <div>
-                                    <p class="text-[11px] text-white font-medium">Corporate Gifting</p>
-                                    <p class="text-[10px] text-white/50 mt-1">
-                                        Perfect for employee appreciation, client gifts, and company milestones
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-3">
-                                <span class="mt-[6px] w-1.5 h-1.5 rounded-full bg-yellow-400 shrink-0"></span>
-                                <div>
-                                    <p class="text-[11px] text-white font-medium">Events & Promotions</p>
-                                    <p class="text-[10px] text-white/50 mt-1">
-                                        Ideal for trade shows, conferences, and promotional campaigns
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-3">
-                                <span class="mt-[6px] w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0"></span>
-                                <div>
-                                    <p class="text-[11px] text-white font-medium">Team Uniforms</p>
-                                    <p class="text-[10px] text-white/50 mt-1">
-                                        Great for branded team wear and creating a unified company identity
-                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -316,69 +165,36 @@
 
                 <div>
                     <div class="flex items-end gap-2 leading-none">
-                        <h2 class="text-[76px] sm:text-[90px] font-semibold tracking-[-4px] text-white">4.5</h2>
+                        <h2 class="text-[76px] sm:text-[90px] font-semibold tracking-[-4px] text-white">{{ $reviewStats['average'] }}</h2>
                         <span class="text-[22px] sm:text-[30px] text-white mb-2">/5</span>
                     </div>
 
-                    <p class="text-[10px] text-white/45 mt-2">(50 New Reviews)</p>
+                    <p class="text-[10px] text-white/45 mt-2">
+                        ({{ $reviewStats['count'] }} {{ Str::plural('Review', $reviewStats['count']) }})
+                    </p>
 
                     <div class="mt-7 space-y-4 w-[80%] sm:w-full">
+                        @for ($star = 5; $star >= 1; $star--)
                         <div class="flex items-center gap-3">
                             <div class="flex-1 h-[4px] bg-white/15 rounded-full overflow-hidden">
-                                <div class="w-[100%] h-full bg-white rounded-full"></div>
+                                <div class="h-full bg-white rounded-full" style="width: {{ $reviewStats['breakdown'][$star] }}%"></div>
                             </div>
                             <div class="w-[26px] text-[11px] text-white flex items-center gap-1">
-                                <span class="text-[#f5c84c]">★</span>5
+                                <span class="text-[#f5c84c]">★</span>{{ $star }}
                             </div>
                         </div>
-
-                        <div class="flex items-center gap-3">
-                            <div class="flex-1 h-[4px] bg-white/15 rounded-full overflow-hidden">
-                                <div class="w-[75%] h-full bg-white rounded-full"></div>
-                            </div>
-                            <div class="w-[26px] text-[11px] text-white flex items-center gap-1">
-                                <span class="text-[#f5c84c]">★</span>4
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3">
-                            <div class="flex-1 h-[4px] bg-white/15 rounded-full overflow-hidden">
-                                <div class="w-[50%] h-full bg-white rounded-full"></div>
-                            </div>
-                            <div class="w-[26px] text-[11px] text-white flex items-center gap-1">
-                                <span class="text-[#f5c84c]">★</span>3
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3">
-                            <div class="flex-1 h-[4px] bg-white/15 rounded-full overflow-hidden">
-                                <div class="w-[25%] h-full bg-white rounded-full"></div>
-                            </div>
-                            <div class="w-[26px] text-[11px] text-white flex items-center gap-1">
-                                <span class="text-[#f5c84c]">★</span>2
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3">
-                            <div class="flex-1 h-[4px] bg-white/15 rounded-full overflow-hidden">
-                                <div class="w-[16%] h-full bg-white rounded-full"></div>
-                            </div>
-                            <div class="w-[26px] text-[11px] text-white flex items-center gap-1">
-                                <span class="text-[#f5c84c]">★</span>1
-                            </div>
-                        </div>
+                        @endfor
                     </div>
 
+                    @php $galleryImages = $approvedReviews->pluck('image')->filter()->take(3); @endphp
+                    @if ($galleryImages->isNotEmpty())
                     <div class="flex gap-2 mt-7 flex-wrap">
-                        <img src="{{ asset('assets/images/jacket.png') }}"
-                            class="w-[58px] h-[58px] rounded-[10px] object-cover border border-white/10 bg-white/5">
-
-                        <img src="{{ asset('assets/images/jacket.png') }}"
-                            class="w-[58px] h-[58px] rounded-[10px] object-cover border border-white/10 bg-white/5">
-
-                        <img src="{{ asset('assets/images/jacket.png') }}"
-                            class="w-[58px] h-[58px] rounded-[10px] object-cover border border-white/10 bg-white/5">
+                        @foreach ($galleryImages as $img)
+                        <img src="{{ asset('storage/' . $img) }}" onclick="openImagePreview('{{ asset('storage/' . $img) }}')"
+                            class="w-[58px] h-[58px] rounded-[10px] object-cover border border-white/10 bg-white/5 cursor-pointer">
+                        @endforeach
                     </div>
+                    @endif
                 </div>
 
                 <div>
@@ -392,11 +208,11 @@
                         <div class="flex items-center gap-2">
                             <span class="text-[10px] text-white/60">Sort by</span>
                             <div class="relative">
-                                <select
+                                <select id="reviewSort"
                                     class="appearance-none bg-black border border-white/15 rounded-full h-[34px] pl-4 pr-9 text-[11px] text-white outline-none">
-                                    <option>Newest</option>
-                                    <option>Oldest</option>
-                                    <option>Top Rating</option>
+                                    <option value="newest">Newest</option>
+                                    <option value="oldest">Oldest</option>
+                                    <option value="top">Top Rating</option>
                                 </select>
                                 <span
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 text-[10px] pointer-events-none">⌄</span>
@@ -416,6 +232,8 @@
                             <h3 class="text-[14px] sm:text-[18px] font-medium text-black mb-4">
                                 Write a Review
                             </h3>
+
+                            <input type="hidden" id="reviewProductId" value="{{ $product->id }}">
 
                             <div class="mb-4">
                                 <label class="block text-[12px] sm:text-[14px] font-medium text-black mb-3">
@@ -470,13 +288,15 @@
                                     </p>
 
                                     <p class="text-[11px] text-gray-400">
-                                        Max 3 images, JPG or PNG
+                                        1 image, JPG or PNG (optional)
                                     </p>
 
-                                    <input id="reviewPhotos" type="file" accept="image/png, image/jpeg" multiple
+                                    <input id="reviewPhotos" type="file" accept="image/png, image/jpeg"
                                         class="hidden">
                                 </label>
                             </div>
+
+                            <p id="reviewFormError" class="text-[12px] text-red-500 mb-3 hidden"></p>
 
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <button type="button" onclick="closeReviewModal()"
@@ -484,7 +304,7 @@
                                     Cancel
                                 </button>
 
-                                <button type="button"
+                                <button type="button" id="submitReviewBtn"
                                     class="h-[36px] rounded-[14px] bg-black text-white text-[12px] font-medium hover:opacity-90 transition">
                                     Submit Review
                                 </button>
@@ -493,45 +313,54 @@
                     </dialog>
 
                     <div id="reviewsList" class="space-y-8">
-                        @foreach ($reviews as $review)
-                        <div class="review-item hidden gap-3 sm:gap-4">
+                        @forelse ($approvedReviews as $review)
+                        @php
+                            $reviewerName = $review->user->name ?? 'Anonymous';
+                            $initials = collect(explode(' ', $reviewerName))
+                                ->map(fn($part) => mb_substr($part, 0, 1))
+                                ->take(2)
+                                ->implode('');
+                        @endphp
+                        <div class="review-item hidden gap-3 sm:gap-4" data-rating="{{ $review->rating }}"
+                            data-timestamp="{{ $review->created_at->timestamp }}">
                             <div class="shrink-0">
-                                <img src="{{ $review['avatar'] }}"
-                                    class="w-10 h-10 rounded-full object-cover border border-white/10">
+                                <div class="w-10 h-10 rounded-full border border-white/10 bg-white/10 flex items-center justify-center text-[11px] font-medium text-white uppercase">
+                                    {{ $initials }}
+                                </div>
                             </div>
 
                             <div class="flex-1 min-w-0">
                                 <h4 class="text-[12px] font-medium text-white">
-                                    {{ $review['name'] }}
+                                    {{ $reviewerName }}
                                 </h4>
 
                                 <div class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1 mb-2">
                                     <div class="flex items-center gap-[2px] text-[#f5c84c] text-[11px]">
-                                        @for ($i = 1; $i <= 5; $i++) <i
-                                            class="fa-solid fa-star {{ $i <= $review['rating'] ? '' : 'opacity-25' }}">
-                                            </i>
-                                            @endfor
+                                        @for ($i = 1; $i <= 5; $i++)
+                                        <i class="fa-solid fa-star {{ $i <= $review->rating ? '' : 'opacity-25' }}"></i>
+                                        @endfor
                                     </div>
 
                                     <span class="text-white/45 text-[10px]">★</span>
-                                    <span class="text-white/45 text-[10px]">{{ $review['time'] }}</span>
+                                    <span class="text-white/45 text-[10px]">{{ $review->created_at->diffForHumans() }}</span>
                                 </div>
 
                                 <p class="text-[10px] sm:text-[11px] leading-[1.8] text-white/65 max-w-[860px]">
-                                    {{ $review['review'] }}
+                                    {{ $review->review }}
                                 </p>
 
-                                @if(count($review['images']) > 0)
+                                @if ($review->image)
                                 <div class="flex gap-2 mt-4 flex-wrap">
-                                    @foreach($review['images'] as $img)
-                                    <img src="{{ $img }}" onclick="openImagePreview('{{ $img }}')"
+                                    <img src="{{ asset('storage/' . $review->image) }}"
+                                        onclick="openImagePreview('{{ asset('storage/' . $review->image) }}')"
                                         class="w-[42px] h-[42px] rounded-md object-cover cursor-pointer border border-gray-700">
-                                    @endforeach
                                 </div>
                                 @endif
                             </div>
                         </div>
-                        @endforeach
+                        @empty
+                        <p class="text-[12px] text-white/50">No reviews yet — be the first to review this product.</p>
+                        @endforelse
                     </div>
 
                     <div id="previewModal"
@@ -636,13 +465,31 @@ document.addEventListener('keydown', function(e) {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const itemsPerPage = 3;
-    const reviewItems = document.querySelectorAll('.review-item');
+    const reviewsList = document.getElementById('reviewsList');
     const paginationContainer = document.getElementById('reviewPagination');
+    let reviewItems = document.querySelectorAll('.review-item');
 
     if (!reviewItems.length || !paginationContainer) return;
 
     const totalPages = Math.ceil(reviewItems.length / itemsPerPage);
     let currentPage = 1;
+
+    // Reorders the actual DOM nodes (server already renders them newest-first),
+    // then re-reads the NodeList so pagination reflects the new order.
+    const sortSelect = document.getElementById('reviewSort');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function () {
+            const mode = this.value;
+            const sorted = Array.from(reviewItems).sort(function (a, b) {
+                if (mode === 'top') return b.dataset.rating - a.dataset.rating;
+                if (mode === 'oldest') return a.dataset.timestamp - b.dataset.timestamp;
+                return b.dataset.timestamp - a.dataset.timestamp; // newest
+            });
+            sorted.forEach(function (item) { reviewsList.appendChild(item); });
+            reviewItems = document.querySelectorAll('.review-item');
+            showPage(1, false);
+        });
+    }
 
     function showPage(page, shouldScroll = false) {
         currentPage = page;
@@ -773,6 +620,73 @@ stars.forEach((star, index) => {
                 s.classList.remove('text-yellow-400');
                 s.classList.add('text-gray-300');
                 svg.setAttribute('fill', 'none');
+            }
+        });
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const submitBtn = document.getElementById('submitReviewBtn');
+    if (!submitBtn) return;
+
+    const errorEl = document.getElementById('reviewFormError');
+
+    submitBtn.addEventListener('click', function () {
+        errorEl.classList.add('hidden');
+
+        const productId = document.getElementById('reviewProductId').value;
+        const rating = document.getElementById('selectedRating').value;
+        const text = document.getElementById('reviewText').value.trim();
+        const photoInput = document.getElementById('reviewPhotos');
+
+        if (!rating) {
+            errorEl.textContent = 'Please select a rating.';
+            errorEl.classList.remove('hidden');
+            return;
+        }
+        if (!text) {
+            errorEl.textContent = 'Please write your review.';
+            errorEl.classList.remove('hidden');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        formData.append('rating', rating);
+        formData.append('review', text);
+        if (photoInput.files && photoInput.files[0]) {
+            formData.append('image', photoInput.files[0]);
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        showLoader();
+
+        sendRequest('/product/review', formData, 'POST', function (res) {
+            hideLoader();
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Review';
+
+            if (res.status === 'unauthenticated') {
+                showToast('Please sign in to write a review.', 'error', 2500);
+                return;
+            }
+            if (res.status === 'saved') {
+                showToast('Review submitted — thank you!', 'success', 2000);
+                setTimeout(function () { window.location.reload(); }, 700);
+            }
+        }, function (err) {
+            hideLoader();
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Review';
+            if (err.errors) {
+                const firstError = Object.values(err.errors)[0][0];
+                errorEl.textContent = firstError;
+                errorEl.classList.remove('hidden');
+            } else {
+                showToast(err.message || 'Something went wrong.', 'error', 2000);
             }
         });
     });

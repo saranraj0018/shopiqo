@@ -75,13 +75,13 @@ function validateField(field) {
  */
 function showToast(message, type = "success", duration = 3000) {
     const colors = {
-        success: "bg-white text-[#363636] border border-[#363636]",
+        success: "bg-white text-[#0b2545] border border-[#0b2545]",
         error: "bg-white text-red-500 border border-red-500",
         warning: "bg-white text-blue-500 border border-blue-500",
     };
 
     const icons = {
-        success: `<svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="#363636" stroke-width="2" viewBox="0 0 24 24">
+        success: `<svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="#0b2545" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
                   </svg>`,
         error: `<svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="red" stroke-width="2" viewBox="0 0 24 24">

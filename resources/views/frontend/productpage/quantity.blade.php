@@ -140,6 +140,7 @@
             </div>
 
             <!-- SIZE -->
+            @if ($variantMatrix)
             <div class="mb-6">
 
                 <div class="flex justify-between mb-3">
@@ -153,35 +154,82 @@
                 </div>
 
                 <div class="bg-white/10 rounded-xl p-4">
-
-                    <div class="grid grid-cols-5 gap-3">
-
-                        @foreach(['XS','S','M','L','XL','2XL','3XL','4XL'] as $size)
-                        <div>
-                            <p class="text-[11px] mb-1 text-white">{{ $size }}</p>
-                            <input type="text" value="0"
-                                class="w-full h-[28px] rounded bg-white text-black text-[12px] px-2">
-                        </div>
-                        @endforeach
-
+                    <div class="overflow-x-auto">
+                        <table id="sizeQuantityTable" class="min-w-full text-center border-separate border-spacing-y-1">
+                            <thead>
+                                <tr>
+                                    <th class="text-left text-[11px] text-white/70 uppercase px-2 pb-2">Size</th>
+                                    @foreach ($variantMatrix['cols'] as $col)
+                                    <th class="text-[11px] text-white/70 lowercase px-2 pb-2 whitespace-nowrap">{{ $col->value }}</th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($variantMatrix['rows'] as $row)
+                                <tr>
+                                    <td class="text-[11px] text-white lowercase px-2 py-1">{{ $row->value }}</td>
+                                    @foreach ($variantMatrix['cols'] as $col)
+                                        @php
+                                            $cell = $variantMatrix['cells']["{$row->id}_{$col->id}"] ?? null;
+                                            $isBulk = $variantMatrix['type'] === 'bulk';
+                                            // "variant" cells carry stock/price for one specific combo;
+                                            // "bulk" cells are just `true` — every combo is orderable and
+                                            // priced later by the grand-total tier lookup, not per cell.
+                                            $available = $cell && ($isBulk || $cell['stock'] > 0);
+                                        @endphp
+                                        <td class="px-2 py-1">
+                                            @if ($available)
+                                            <input type="number" min="0"
+                                                @if (!$isBulk) max="{{ $cell['stock'] }}" data-price="{{ $cell['price'] }}" @endif
+                                                value="0"
+                                                data-col-id="{{ $col->id }}"
+                                                class="qty-input w-[60px] h-[28px] rounded bg-white text-black text-[12px] px-2 text-center"
+                                                name="{{ $isBulk ? "bulk_quantities[{$row->id}][{$col->id}]" : "quantities[{$cell['variant_id']}]" }}">
+                                            @else
+                                            <input type="text" value="—" disabled
+                                                title="{{ $cell ? 'Out of stock' : 'Not available' }}"
+                                                class="w-[60px] h-[28px] rounded bg-white/20 text-white/30 text-[12px] px-2 text-center cursor-not-allowed">
+                                            @endif
+                                        </td>
+                                    @endforeach
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="border-t border-white/20">
+                                    <td class="text-[11px] text-white font-semibold px-2 pt-2">Total</td>
+                                    @foreach ($variantMatrix['cols'] as $col)
+                                    <td class="col-total text-[12px] text-white font-semibold px-2 pt-2" data-col-id="{{ $col->id }}">0</td>
+                                    @endforeach
+                                </tr>
+                                <tr>
+                                    <td class="text-[11px] text-white/70 px-2 pt-1">Grand Total</td>
+                                    <td class="text-[12px] text-white px-2 pt-1" colspan="{{ $variantMatrix['cols']->count() }}">
+                                        <span id="grandTotalQty">0</span> units
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
-
                 </div>
             </div>
+            @endif
 
             <!-- QUANTITY + PRICE -->
             <div class="mb-5">
 
                 <!-- TITLE -->
                 <p class="text-[11px] text-white/80 mb-2 uppercase">
-                    Quantity (MOQ: 50 Units)
+                    Quantity (MOQ: {{ $moq }} {{ Str::plural('Unit', $moq) }})
                 </p>
 
                 <!-- ROW -->
                 <div class="flex items-center gap-20">
 
                     <!-- NUMBER INPUT -->
-                    <input type="number" value="50" min="50" class="w-[140px] h-[40px] bg-black border border-white/50 rounded-lg px-3 text-white text-[13px] outline-none appearance-none
+                    <input type="number" id="orderQtyInput" value="{{ $moq }}" min="{{ $moq }}"
+                        @if ($variantMatrix) readonly title="Set quantities in the table above" @endif
+                        class="w-[140px] h-[40px] bg-black border border-white/50 rounded-lg px-3 text-white text-[13px] outline-none appearance-none
             [appearance:textfield]
             [&::-webkit-inner-spin-button]:opacity-100
             [&::-webkit-inner-spin-button]:cursor-pointer
@@ -189,7 +237,9 @@
 
                     <!-- PRICE -->
                     <div>
-                        <p class="text-[30px] font-semibold leading-none">₹1,200</p>
+                        <p class="text-[30px] font-semibold leading-none" id="orderPriceDisplay">
+                            {{ $displayPrice ? '₹' . number_format($displayPrice * $moq, 2) : 'Get a Quote' }}
+                        </p>
                         <p class="text-[11px] text-white/60 mt-1">
                             Inclusive of all taxes
                         </p>
@@ -197,6 +247,15 @@
 
                 </div>
             </div>
+
+            @if ($variantMatrix)
+            <script>
+                window.__productPricing = {
+                    type: @json($variantMatrix['type']),
+                    tiers: @json($variantMatrix['type'] === 'bulk' ? $variantMatrix['tiers'] : []),
+                };
+            </script>
+            @endif
 
             <!-- BUTTONS -->
             <div class="flex gap-3 mb-6">
@@ -257,6 +316,94 @@
 
 </section>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const DISPLAY_PRICE = {{ $displayPrice ?? 'null' }};
+    const pricing = window.__productPricing || null; // { type, tiers } — only set when a size/color matrix exists
+    const qtyInput = document.getElementById('orderQtyInput');
+    const priceDisplay = document.getElementById('orderPriceDisplay');
+
+    function formatCurrency(n) {
+        return '₹' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function updateOrderSummary(totalQty, totalPrice) {
+        if (qtyInput) qtyInput.value = totalQty;
+        if (priceDisplay) priceDisplay.textContent = totalPrice !== null ? formatCurrency(totalPrice) : 'Get a Quote';
+    }
+
+    // Bulk pricing is tiered by total quantity ordered, not per cell.
+    function bulkUnitPriceForQty(totalQty) {
+        if (!pricing || !pricing.tiers.length) return null;
+        if (totalQty < pricing.tiers[0].minimum) return pricing.tiers[0].price;
+        const tier = pricing.tiers.find(function (t) {
+            return totalQty >= t.minimum && (t.maximum === null || totalQty <= t.maximum);
+        });
+        // Above the highest tier's max: keep billing at the best (last) tier's rate.
+        return tier ? tier.price : pricing.tiers[pricing.tiers.length - 1].price;
+    }
+
+    const table = document.getElementById('sizeQuantityTable');
+
+    if (table) {
+        const grandTotalEl = document.getElementById('grandTotalQty');
+
+        function recalcTotals() {
+            const totals = {};
+            let grandTotal = 0;
+            let variantTotalPrice = 0;
+            let hasPricedItem = false;
+
+            table.querySelectorAll('.qty-input').forEach(function (input) {
+                const colId = input.dataset.colId;
+                const qty = parseInt(input.value, 10) || 0;
+                totals[colId] = (totals[colId] || 0) + qty;
+                grandTotal += qty;
+
+                if (pricing && pricing.type === 'variant' && qty > 0 && input.dataset.price) {
+                    variantTotalPrice += qty * parseFloat(input.dataset.price);
+                    hasPricedItem = true;
+                }
+            });
+
+            table.querySelectorAll('.col-total').forEach(function (cell) {
+                cell.textContent = totals[cell.dataset.colId] || 0;
+            });
+            if (grandTotalEl) grandTotalEl.textContent = grandTotal;
+
+            if (pricing && pricing.type === 'bulk') {
+                const unitPrice = grandTotal > 0 ? bulkUnitPriceForQty(grandTotal) : null;
+                updateOrderSummary(grandTotal, unitPrice !== null ? unitPrice * grandTotal : null);
+            } else {
+                updateOrderSummary(grandTotal, hasPricedItem ? variantTotalPrice : null);
+            }
+        }
+
+        table.addEventListener('input', function (e) {
+            if (!e.target.classList.contains('qty-input')) return;
+
+            const max = parseInt(e.target.max, 10);
+            let val = parseInt(e.target.value, 10) || 0;
+            if (val < 0) val = 0;
+            if (!isNaN(max) && val > max) val = max;
+            e.target.value = val;
+
+            recalcTotals();
+        });
+
+        recalcTotals();
+    } else if (qtyInput && DISPLAY_PRICE !== null) {
+        // No size/color matrix (a "single" product) — the quantity box drives its own price.
+        qtyInput.addEventListener('input', function () {
+            const min = parseInt(qtyInput.min, 10) || 1;
+            let val = parseInt(qtyInput.value, 10) || 0;
+            if (val < min) val = min;
+            qtyInput.value = val;
+            updateOrderSummary(val, val * DISPLAY_PRICE);
+        });
+    }
+});
+</script>
 
 <script>
 function toggleLogoRequest() {

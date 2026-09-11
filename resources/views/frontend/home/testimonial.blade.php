@@ -1,49 +1,3 @@
-    @php
-    $testimonials = [
-    [
-    'name' => 'Avery F.',
-    'rating' => '4.7',
-    'image' => 'assets/images/home/testimonial/testimonial1.png',
-    'message' => 'I was thoroughly impressed with the quality of the corporate gifts I ordered from this company. The
-    embroidery details and packaging were excellent.',
-    ],
-    [
-    'name' => 'Riley M.',
-    'rating' => '4.2',
-    'image' => 'assets/images/home/testimonial/testimonial2.png',
-    'message' => 'I recently ordered a batch of customized journals for our team, and they turned out fantastic. The
-    quality was superb and the customization was exactly what we wanted.',
-    ],
-    [
-    'name' => 'Jordan M.',
-    'rating' => '4.5',
-    'image' => 'assets/images/home/testimonial/testimonial3.png',
-    'message' => 'I have been using this company for all my corporate gift needs, and they never disappoint. The service
-    is top-notch, highly recommended.',
-    ],
-    [
-    'name' => 'Sophia K.',
-    'rating' => '4.8',
-    'image' => 'assets/images/home/testimonial/testimonial1.png',
-    'message' => 'Beautiful presentation, smooth ordering process, and premium finishing. Everything looked exactly as
-    expected and felt high quality.',
-    ],
-    [
-    'name' => 'Noah T.',
-    'rating' => '4.6',
-    'image' => 'assets/images/home/testimonial/testimonial2.png',
-    'message' => 'Fast delivery, clean branding, and great material quality. It matched the premium look we wanted for
-    our company event.',
-    ],
-    [
-    'name' => 'Emma J.',
-    'rating' => '4.9',
-    'image' => 'assets/images/home/testimonial/testimonial3.png',
-    'message' => 'The support team was helpful from start to finish. Customization, delivery, and product quality were
-    all handled really well.',
-    ],
-    ];
-    @endphp
     <section class="relative overflow-hidden bg-black py-16 sm:py-12 text-white">
         <!-- background glow -->
         <div class="absolute inset-0 pointer-events-none">
@@ -62,12 +16,13 @@
                 </span>
             </div>
 
+            @if ($testimonials->isNotEmpty())
             <!-- slider -->
             <div class="swiper testimonialSlider">
                 <div class="swiper-wrapper">
-                    @foreach ($testimonials as $testimonial)
+                    @foreach ($testimonials as $review)
                     <div class="swiper-slide">
-                        @include('frontend.components.testimonialcard', ['testimonial' => $testimonial])
+                        @include('frontend.components.testimonialcard', ['review' => $review])
                     </div>
                     @endforeach
                 </div>
@@ -91,9 +46,11 @@
                     </svg>
                 </button>
             </div>
+            @endif
         </div>
     </section>
 
+    @if ($testimonials->isNotEmpty())
     <script>
 document.addEventListener("DOMContentLoaded", function() {
     new Swiper(".testimonialSlider", {
@@ -119,3 +76,4 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
     </script>
+    @endif

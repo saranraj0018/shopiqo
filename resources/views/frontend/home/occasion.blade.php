@@ -2,9 +2,6 @@
 
         <!-- Background glow -->
         <div class="absolute inset-0">
-            <!-- <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.06),transparent_35%)]"> -->
-            </div>
-            <!-- <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(0,120,255,0.10),transparent_30%)]"></div> -->
             <div
                 class="absolute inset-0 opacity-20 bg-[linear-gradient(to_bottom,transparent,rgba(255,255,255,0.02),transparent)]">
             </div>
@@ -32,121 +29,31 @@
 
             <!-- Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-
-                <!-- Card 1 -->
+                @forelse ($occasions as $occasion)
                 <div
                     class="group relative rounded-2xl p-[1px] bg-[linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.05),rgba(255,255,255,0.16))] shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
                     <div
                         class="relative h-full rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,12,0.95),rgba(7,10,14,0.98))] px-5 py-6 backdrop-blur-xl transition duration-300 group-hover:border-white/15 group-hover:bg-[linear-gradient(180deg,rgba(12,12,16,0.96),rgba(8,12,18,1))]">
                         <div
                             class="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-
-                            <img src="{{ asset('assets/images/heroicon/Frame.svg') }}" alt="Corporate events"
-                                class="h-5 w-5 object-contain opacity-90">
+                            @if ($occasion->icon)
+                                <img src="{{ asset('storage/' . $occasion->icon) }}" alt="{{ $occasion->name }}"
+                                    class="h-5 w-5 object-contain opacity-90">
+                            @else
+                                <img src="{{ asset('assets/images/heroicon/Frame.svg') }}" alt="{{ $occasion->name }}"
+                                    class="h-5 w-5 object-contain opacity-90">
+                            @endif
                         </div>
 
-                        <h3 class="text-xl font-medium text-white mb-2">Corporate events</h3>
+                        <h3 class="text-xl font-medium text-white mb-2">{{ $occasion->name }}</h3>
                         <p class="text-sm text-white/45 leading-6">
-                            Curated products for corporate events
+                            Curated products for {{ \Illuminate\Support\Str::lower($occasion->name) }}
                         </p>
                     </div>
                 </div>
-
-                <!-- Card 2 -->
-                <div
-                    class="group relative rounded-2xl p-[1px] bg-[linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.05),rgba(255,255,255,0.16))] shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-                    <div
-                        class="relative h-full rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,12,0.95),rgba(7,10,14,0.98))] px-5 py-6 backdrop-blur-xl transition duration-300 group-hover:bg-[linear-gradient(180deg,rgba(12,12,16,0.96),rgba(8,12,18,1))]">
-                        <div
-                            class="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-
-                            <img src="{{ asset('assets/images/heroicon/Frame1.svg') }}" alt="Employee onboarding"
-                                class="h-5 w-5 object-contain opacity-90">
-                        </div>
-
-                        <h3 class="text-xl font-medium text-white mb-2">Employee onboarding</h3>
-                        <p class="text-sm text-white/45 leading-6">
-                            Curated products for employee onboarding
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div
-                    class="group relative rounded-2xl p-[1px] bg-[linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.05),rgba(255,255,255,0.16))] shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-                    <div
-                        class="relative h-full rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,12,0.95),rgba(7,10,14,0.98))] px-5 py-6 backdrop-blur-xl transition duration-300 group-hover:bg-[linear-gradient(180deg,rgba(12,12,16,0.96),rgba(8,12,18,1))]">
-                        <div
-                            class="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-
-                            <img src="{{ asset('assets/images/heroicon/Frame2.svg') }}" alt="Festivals & Diwali gifts"
-                                class="h-5 w-5 object-contain opacity-90">
-                        </div>
-
-                        <h3 class="text-xl font-medium text-white mb-2">Festivals &amp; Diwali gifts</h3>
-                        <p class="text-sm text-white/45 leading-6">
-                            Curated products for festivals &amp; diwali gifts
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div
-                    class="group relative rounded-2xl p-[1px] bg-[linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.05),rgba(255,255,255,0.16))] shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-                    <div
-                        class="relative h-full rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,12,0.95),rgba(7,10,14,0.98))] px-5 py-6 backdrop-blur-xl transition duration-300 group-hover:bg-[linear-gradient(180deg,rgba(12,12,16,0.96),rgba(8,12,18,1))]">
-                        <div
-                            class="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-
-                            <img src="{{ asset('assets/images/heroicon/Frame3.svg') }}" alt="Client gifts"
-                                class="h-5 w-5 object-contain opacity-90">
-                        </div>
-
-                        <h3 class="text-xl font-medium text-white mb-2">Client gifts</h3>
-                        <p class="text-sm text-white/45 leading-6">
-                            Curated products for client gifts
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div
-                    class="group relative rounded-2xl p-[1px] bg-[linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.05),rgba(255,255,255,0.16))] shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-                    <div
-                        class="relative h-full rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,12,0.95),rgba(7,10,14,0.98))] px-5 py-6 backdrop-blur-xl transition duration-300 group-hover:bg-[linear-gradient(180deg,rgba(12,12,16,0.96),rgba(8,12,18,1))]">
-                        <div
-                            class="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-
-                            <img src="{{ asset('assets/images/heroicon/Frame4.svg') }}" alt="Award ceremonies"
-                                class="h-5 w-5 object-contain opacity-90">
-                        </div>
-
-                        <h3 class="text-xl font-medium text-white mb-2">Award ceremonies</h3>
-                        <p class="text-sm text-white/45 leading-6">
-                            Curated products for award ceremonies
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 6 -->
-                <div
-                    class="group relative rounded-2xl p-[1px] bg-[linear-gradient(135deg,rgba(255,255,255,0.18),rgba(255,255,255,0.05),rgba(255,255,255,0.16))] shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-                    <div
-                        class="relative h-full rounded-2xl bg-[linear-gradient(180deg,rgba(10,10,12,0.95),rgba(7,10,14,0.98))] px-5 py-6 backdrop-blur-xl transition duration-300 group-hover:bg-[linear-gradient(180deg,rgba(12,12,16,0.96),rgba(8,12,18,1))]">
-                        <div
-                            class="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-
-                            <img src="{{ asset('assets/images/heroicon/Frame5.svg') }}" alt="Trade shows"
-                                class="h-5 w-5 object-contain opacity-90">
-                        </div>
-
-                        <h3 class="text-xl font-medium text-white mb-2">Trade shows</h3>
-                        <p class="text-sm text-white/45 leading-6">
-                            Curated products for trade shows
-                        </p>
-                    </div>
-                </div>
-
+                @empty
+                {{-- No active occasions configured in admin yet --}}
+                @endforelse
             </div>
         </div>
     </section>

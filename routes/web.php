@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ShopController;
 use App\Http\Controllers\Web\HomeController;
+use App\Http\Controllers\Web\ReviewController;
 use App\Http\Controllers\Web\UserLoginController;
 use App\Http\Controllers\Web\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,7 @@ require __DIR__ . '/admin.php';
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/save-wishlist', [WishlistController::class, 'saveWishlist'])->name('save_wishlist');
+Route::post('/product/review', [ReviewController::class, 'store'])->name('product.review.store');
 
 Route::get('/login', function () {
     return view('frontend.login', [

@@ -54,4 +54,9 @@ class Product extends Model
     {
         return $this->hasMany(Wishlist::class,'product_id');
     }
+
+    public function occasions()
+    {
+        return $this->belongsToMany(Occasion::class, 'product_occasion_tags');
+    }
 }

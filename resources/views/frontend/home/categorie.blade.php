@@ -1,32 +1,3 @@
-@php
-
-$categories = [
-['image' => 'assets/images/categoriecard/categorie.png','title' => 'f Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
-Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
-'assets/images/categoriecard/categoriecardicon.svg','wishlist' => true,],
-
-['image' => 'assets/images/categoriecard/categorie1.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
-Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
-null,'wishlist' => true,],
-
-['image' => 'assets/images/categoriecard/categorie2.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
-Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
-'assets/images/categoriecard/categoriecardicon.svg','wishlist' => true,],
-
-['image' => 'assets/images/categoriecard/categorie3.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
-Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
-null,'wishlist' => true,],
-
-['image' => 'assets/images/categoriecard/categorie4.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
-Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
-'assets/images/categoriecard/categoriecardicon.svg','wishlist' => true,],
-
-['image' => 'assets/images/categoriecard/categorie5.png','title' => 'Bella + Canvas Poly-Cotton Short-Sleeve T-Shirt -
-Unisex','subtitle' => 'Short-Sleeve T-Shirt T-Shirt - Unisex','price' => '120','rating' => '4.5','badge' =>
-null,'wishlist' => true,],
-];
-@endphp
-
 <section class="relative bg-black text-white py-14 sm:py-16 lg:py-12 overflow-hidden">
     <!-- Mobile padding 25px -->
     <div class="relative max-w-6xl mx-auto px-14 sm:px-6 lg:px-8">
@@ -47,7 +18,9 @@ null,'wishlist' => true,],
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             @forelse($products as $item)
             @include('frontend.components.homeproductcard', ['item' => $item])
-            @endforeach
+            @empty
+            <p class="text-white/50 col-span-full text-center">No products available yet.</p>
+            @endforelse
         </div>
         <!-- Button -->
         <div class="flex justify-center mt-10">

@@ -32,7 +32,7 @@
                     x-transition:leave="transition ease-in duration-150"
                     x-transition:leave-start="opacity-100 transform scale-100"
                     x-transition:leave-end="opacity-0 transform scale-95">
-                    <form method="POST" action="{{ route('user_logout') }}">
+                    <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
                             class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">

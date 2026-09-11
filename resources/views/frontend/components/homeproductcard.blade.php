@@ -6,8 +6,9 @@
         $salePrice = $item->sale_price;
         $regularPrice = $item->regular_price;
     }
-    $item->is_in_wishlist = auth()->check()
-        ? auth()->user()->wishlists()->where('product_id', $item->id)->exists()
+    // Customers log in via the "user" guard, not the default "web" guard.
+    $item->is_in_wishlist = auth()->guard('user')->check()
+        ? auth()->guard('user')->user()->wishlists()->where('product_id', $item->id)->exists()
         : false;
 @endphp
 <div class="w-full bg-white rounded-[20px] overflow-hidden border border-black/10 shadow-sm">

@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashBoardController;
+use App\Http\Controllers\Admin\OccasionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\TicketController;
@@ -24,13 +25,17 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('auth:admin')->group(function () {
         Route::get('/dashboard', [DashBoardController::class, 'index'])->name('dashboard');
-        Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-        Route::post('/user_logout', [AuthController::class, 'user_logout'])->name('user_logout');
+        Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
         // category
         Route::get('/category-list', [CategoryController::class, 'view'])->name('view_category');
         Route::post('/category-save', [CategoryController::class, 'save'])->name('save_category');
         Route::post('/category-delete', [CategoryController::class, 'destroy'])->name('delete_category');
+
+        // occasions (home "Browse by need" cards)
+        Route::get('/occasion-list', [OccasionController::class, 'view'])->name('view_occasion');
+        Route::post('/occasion-save', [OccasionController::class, 'save'])->name('save_occasion');
+        Route::post('/occasion-delete', [OccasionController::class, 'destroy'])->name('delete_occasion');
 
         // products
         Route::get('/product-list', [ProductController::class, 'index'])->name('product_list');

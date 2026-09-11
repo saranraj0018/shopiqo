@@ -4,6 +4,7 @@
 <ul class="mt-4 space-y-3 text-sm font-medium text-white">
     <x-menu.item route="dashboard" name="Dashboard" icon="fa-home" />
     <x-menu.item route="view_category" name="Category" icon="fa-layer-group" />
+    <x-menu.item route="view_occasion" name="Occasions" icon="fa-solid fa-gift" />
     <x-menu.item route="view_attribute_type" name="Attributes" icon="fas fa-sliders-h" />
     <x-menu.item route="view_attribute" name="Attribute Values" icon="fas fa-sliders-h" />
     <x-menu.item route="product_list" name="Product" icon="fa fa-boxes w-5" />

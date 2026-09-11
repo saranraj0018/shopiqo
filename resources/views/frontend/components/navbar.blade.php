@@ -32,9 +32,10 @@
                             <input type="text" placeholder="Search"
                                 class="w-full bg-transparent text-[13px] lg:text-[15px] text-white placeholder:text-white/65 outline-none border-none">
                         </div>
-                        @if (!session()->get('user'))
+
+                        @guest('user')
                             <a href="/login"
-                                class="LoginPopup border border-zinc-300 rounded-full py-1 px-2 md:px-3 text-[11px] md:text-[16px] hover:bg-black hover:text-white transition text-center">
+                                class="LoginPopup hidden xl:flex items-center gap-3 bg-white text-black rounded-full pl-3 pr-4 h-[42px] hover:bg-white/90 transition">
                                 Login / Signup
                             </a>
                         @else
@@ -63,7 +64,7 @@
                                         d="M15.75 6.75a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.12a7.5 7.5 0 0 1 15 0" />
                                 </svg>
                             </a>
-                        @endif
+                        @endguest
                     </div>
                     <a href="tel:9629035372"
                         class="hidden xl:flex items-center gap-3 bg-white text-black rounded-full pl-3 pr-4 h-[42px] hover:bg-white/90 transition">
@@ -88,20 +89,27 @@
                         <input type="text" placeholder="Search"
                             class="  w-full bg-transparent text-[14px] text-white placeholder:text-white/65 outline-none border-none">
                     </div>
-                    <a href="/wishlist" class="flex items-center justify-center hover:opacity-80 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="m12 21-1.45-1.32C5.4 15.02 2 11.93 2 8.13 2 5.04 4.42 2.6 7.5 2.6c1.74 0 3.41.81 4.5 2.09A6.04 6.04 0 0 1 16.5 2.6C19.58 2.6 22 5.04 22 8.13c0 3.8-3.4 6.89-8.55 11.55L12 21Z" />
-                        </svg>
-                    </a>
-                    <a href="/cart" class="flex items-center justify-center hover:opacity-80 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13 5.4 5M7 13l-1.2 4.2A1 1 0 0 0 6.76 18H19M19 18a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm-11 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z" />
-                        </svg>
-                    </a>
+                    @auth('user')
+                        <a href="/wishlist" class="flex items-center justify-center hover:opacity-80 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m12 21-1.45-1.32C5.4 15.02 2 11.93 2 8.13 2 5.04 4.42 2.6 7.5 2.6c1.74 0 3.41.81 4.5 2.09A6.04 6.04 0 0 1 16.5 2.6C19.58 2.6 22 5.04 22 8.13c0 3.8-3.4 6.89-8.55 11.55L12 21Z" />
+                            </svg>
+                        </a>
+                        <a href="/cart" class="flex items-center justify-center hover:opacity-80 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-[20px] h-[20px]" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13 5.4 5M7 13l-1.2 4.2A1 1 0 0 0 6.76 18H19M19 18a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm-11 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z" />
+                            </svg>
+                        </a>
+                    @else
+                        <a href="/login"
+                            class="LoginPopup border border-white/40 rounded-full py-1 px-3 text-[12px] hover:bg-white hover:text-black transition whitespace-nowrap">
+                            Login / Signup
+                        </a>
+                    @endauth
                     <button id="menuToggle" type="button" class="flex items-center justify-center">
                         <svg id="openIcon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 block" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -122,7 +130,7 @@
                 class="h-[46px] md:h-[50px] flex items-center gap-6 md:gap-10 overflow-x-auto whitespace-nowrap text-[13px] md:text-[15px]"
                 style="scrollbar-width:none; -ms-overflow-style:none;">
 
-                <a href="/shop?category=all"
+                <a href="/shop?category=all"44444444444
                     class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
                     <span>Christmas</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
@@ -178,10 +186,7 @@
             </div>
         </div>
     </div>
-
-
     <div id="mobileOverlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden md:hidden"></div>
-
     <div id="mobileMenu"
         class="fixed top-0 left-0 h-full w-[280px] bg-black/95 backdrop-blur-xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
 
@@ -204,7 +209,11 @@
                 <a href="/shop" class="hover:text-white/80 transition">Shop</a>
                 <a href="/how-it-works" class="hover:text-white/80 transition">How it works</a>
                 <a href="/contact" class="hover:text-white/80 transition">Contact Us</a>
-                <a href="/profile" class="hover:text-white/80 transition">My Account</a>
+                @auth('user')
+                    <a href="/profile" class="hover:text-white/80 transition">My Account</a>
+                @else
+                    <a href="/login" class="LoginPopup hover:text-white/80 transition">Login / Signup</a>
+                @endauth
             </nav>
 
             <a href="tel:9629035372"

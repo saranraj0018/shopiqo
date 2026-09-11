@@ -12,10 +12,12 @@ class WishlistController extends Controller
     public function saveWishlist(Request $request)
     {
         $productId = $request->product_id;
-        if (!Auth::check()) {
+        // Customers log in via the "user" guard (see UserLoginController::userAuthenticate),
+        // not the default "web" guard — must check the same guard login uses.
+        if (!Auth::guard('user')->check()) {
             return response()->json(['status' => 'unauthenticated']);
         }
-        $user = Auth::user();
+        $user = Auth::guard('user')->user();
         $wishlist = Wishlist::where('user_id', $user->id)
             ->where('product_id', $productId)
             ->first();
