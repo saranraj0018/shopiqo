@@ -597,7 +597,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 function openReviewModal() {
+    @auth('user')
     document.getElementById('reviewModal').showModal();
+    @else
+    window.location.href = '{{ route('login') }}';
+    @endauth
 }
 
 function closeReviewModal() {

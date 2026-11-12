@@ -1,32 +1,78 @@
 <x-layouts.app>
-<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-5">
-<div class="max-w-7xl mx-auto space-y-5">
-<h1 class="text-3xl font-semibold text-slate-800">Dashboard</h1>
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-    <div class="bg-[#BDE3C3] rounded-2xl shadow-md p-6 hover:scale-105 transition">
-        <p class="text-[#14532D] text-sm font-medium">Total Customers</p>
-        <h2 class="text-3xl font-bold text-[#064E3B] mt-2">567,899</h2>
-        <p class="text-green-700 text-sm mt-1 font-medium">↑ 2.5%</p>
+<div class="min-h-screen p-1">
+<div class="max-w-7xl mx-auto space-y-6">
+<div>
+    <h1 class="text-2xl font-semibold text-slate-900">Dashboard</h1>
+    <p class="text-sm text-slate-500 mt-1">Overview of store performance</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+    <div class="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+        <div class="flex items-center justify-between">
+            <span class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                <i class="fa-solid fa-users text-lg"></i>
+            </span>
+            <span class="inline-flex items-center gap-1 text-emerald-600 bg-emerald-50 text-xs font-semibold px-2 py-1 rounded-full">
+                <i class="fa-solid fa-arrow-up text-[10px]"></i> 2.5%
+            </span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium mt-4">Total Customers</p>
+        <h2 class="text-2xl font-bold text-slate-900 mt-1">567,899</h2>
     </div>
-    <div class="bg-[#E5BEB5] rounded-2xl shadow-md p-6 hover:scale-105 transition">
-        <p class="text-[#7C2D12] text-sm font-medium">Revenue</p>
-        <h2 class="text-3xl font-bold text-[#431407] mt-2">$3,465M</h2>
-        <p class="text-green-700 text-sm mt-1 font-medium">↑ 1.2%</p>
+
+    <div class="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+        <div class="flex items-center justify-between">
+            <span class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <i class="fa-solid fa-sack-dollar text-lg"></i>
+            </span>
+            <span class="inline-flex items-center gap-1 text-emerald-600 bg-emerald-50 text-xs font-semibold px-2 py-1 rounded-full">
+                <i class="fa-solid fa-arrow-up text-[10px]"></i> 1.2%
+            </span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium mt-4">Revenue</p>
+        <h2 class="text-2xl font-bold text-slate-900 mt-1">$3,465M</h2>
     </div>
-    <div class="bg-[#91ADC8] rounded-2xl shadow-md p-6 hover:scale-105 transition">
-        <p class="text-[#0C4A6E] text-sm font-medium">Orders</p>
-        <h2 class="text-3xl font-bold text-[#082F49] mt-2">1,136</h2>
-        <p class="text-red-600 text-sm mt-1 font-medium">↓ 0.3%</p>
+
+    <div class="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+        <div class="flex items-center justify-between">
+            <span class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center">
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
+            </span>
+            <span class="inline-flex items-center gap-1 text-rose-600 bg-rose-50 text-xs font-semibold px-2 py-1 rounded-full">
+                <i class="fa-solid fa-arrow-down text-[10px]"></i> 0.3%
+            </span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium mt-4">Orders</p>
+        <h2 class="text-2xl font-bold text-slate-900 mt-1">1,136</h2>
     </div>
-    <div class="bg-[#FEEBF6] rounded-2xl shadow-md p-6 hover:scale-105 transition">
-        <p class="text-[#831843] text-sm font-medium">Pending</p>
-        <h2 class="text-3xl font-bold text-[#4C0519] mt-2">320</h2>
-        <p class="text-red-600 text-sm mt-1 font-medium">↓ 1.1%</p>
+
+    <div class="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+        <div class="flex items-center justify-between">
+            <span class="w-11 h-11 rounded-xl bg-fuchsia-50 text-fuchsia-600 flex items-center justify-center">
+                <i class="fa-solid fa-clock text-lg"></i>
+            </span>
+            <span class="inline-flex items-center gap-1 text-rose-600 bg-rose-50 text-xs font-semibold px-2 py-1 rounded-full">
+                <i class="fa-solid fa-arrow-down text-[10px]"></i> 1.1%
+            </span>
+        </div>
+        <p class="text-slate-500 text-sm font-medium mt-4">Pending</p>
+        <h2 class="text-2xl font-bold text-slate-900 mt-1">320</h2>
     </div>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="chart-card"><h2>Bar Chart</h2><div id="barChart"></div></div>
-    <div class="chart-card"><h2>Pie Chart</h2><div id="pieChart"></div></div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-5">
+        <h2 class="text-sm font-semibold text-slate-700 mb-4">Sales Overview</h2>
+        <div id="barChart" class="h-56 rounded-xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center text-slate-400 text-sm">
+            Chart data coming soon
+        </div>
+    </div>
+    <div class="bg-white rounded-2xl border border-slate-200/70 shadow-sm p-5">
+        <h2 class="text-sm font-semibold text-slate-700 mb-4">Order Distribution</h2>
+        <div id="pieChart" class="h-56 rounded-xl bg-slate-50 border border-dashed border-slate-200 flex items-center justify-center text-slate-400 text-sm">
+            Chart data coming soon
+        </div>
+    </div>
 </div>
 </div>
 </div>

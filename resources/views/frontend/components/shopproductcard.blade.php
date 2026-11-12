@@ -1,7 +1,11 @@
 @php
-    if ($item->product_type === 'variant' || ($item->product_type === 'bulk' && $item->leastPricedVariant)) {
+    if ($item->product_type === 'variant' && $item->leastPricedVariant) {
         $salePrice = $item->leastPricedVariant->sale_price;
         $regularPrice = $item->leastPricedVariant->regular_price;
+    } elseif ($item->product_type === 'bulk') {
+        // Cheapest tier if one exists, otherwise the per-piece fallback price.
+        $salePrice = $item->leastPricedBulkTier->sale_price ?? $item->per_piece_price;
+        $regularPrice = $item->leastPricedBulkTier->regular_price ?? $item->per_piece_price;
     } else {
         $salePrice = $item->sale_price;
         $regularPrice = $item->regular_price;

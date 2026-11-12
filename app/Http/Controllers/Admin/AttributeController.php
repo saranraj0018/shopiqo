@@ -27,7 +27,7 @@ class AttributeController extends Controller
     public function save(Request $request)
     {
         $request->validate([
-            'attribute' => 'required|exists:attribute_types,id',
+            'attribute' => 'required|exists:variant_attributes,id',
             'attribute_value' => 'required|string'
         ]);
 
@@ -38,10 +38,10 @@ class AttributeController extends Controller
                 return trim($value);
             }, $values));
             foreach ($values as $value) {
-                $exists = AttributeValue::where(['attribute_type_id' => $attributeId, 'value' => $value])->exists();
+                $exists = AttributeValue::where(['attribute_id' => $attributeId, 'value' => $value])->exists();
                 if (!$exists) {
                     $attribute_value = new AttributeValue();
-                    $attribute_value->attribute_type_id = $attributeId;
+                    $attribute_value->attribute_id = $attributeId;
                     $attribute_value->value = $value;
                     $attribute_value->created_by = Auth::guard('admin')->id();
                     $attribute_value->save();

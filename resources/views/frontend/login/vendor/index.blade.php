@@ -44,24 +44,27 @@
 
             <div class="relative mt-6">
                 <form id="loginForm" class="form-panel active-form space-y-5">
+                    @csrf
                     <div>
                         <label class="block text-[14px] font-medium mb-2">Email Address</label>
-                        <input type="email" placeholder="your@email.com" class="input-style">
+                        <input type="email" placeholder="your@email.com" class="input-style" id="v_login_email" name="email">
                     </div>
 
                     <div>
                         <label class="block text-[14px] font-medium mb-2">Password</label>
-                        <input type="password" placeholder="Password" class="input-style">
+                        <input type="password" placeholder="Password" class="input-style" id="v_login_password" name="password">
                     </div>
 
                     <div class="flex justify-end -mt-2">
                         <a href="#" class="text-[14px] text-white/85 hover:text-white transition">Forgot Password?</a>
                     </div>
 
-                    <a href="/"
+                    <p id="vendorLoginError" class="text-[12px] text-red-400 hidden"></p>
+
+                    <button type="submit" id="vendorLoginSubmit"
                         class="w-full h-[46px] rounded-full bg-white text-black text-[14px] font-semibold hover:bg-white/90 transition flex items-center justify-center">
                         Submit Request
-                    </a>
+                    </button>
 
                     <p class="text-center text-[14px] text-white/65">
                         Don’t have an account?
@@ -70,56 +73,59 @@
                 </form>
 
                 <form id="signupForm" class="form-panel hidden-form space-y-4">
+                    @csrf
                     <div>
                         <label class="block text-[13px] font-medium mb-2">Full Name</label>
-                        <input type="text" placeholder="Enter your full name" class="input-style">
+                        <input type="text" placeholder="Enter your full name" class="input-style" id="v_full_name" name="full_name">
                     </div>
 
                     <div>
                         <label class="block text-[13px] font-medium mb-2">Email Address</label>
-                        <input type="email" placeholder="your@email.com" class="input-style">
+                        <input type="email" placeholder="your@email.com" class="input-style" id="v_email" name="email">
                     </div>
 
                     <div>
                         <label class="block text-[13px] font-medium mb-2">Phone Number</label>
-                        <input type="text" placeholder="+91 98765 43210" class="input-style">
+                        <input type="text" placeholder="+91 98765 43210" class="input-style" id="v_phone_number" name="phone_number">
                     </div>
 
                     <div>
                         <label class="block text-[13px] font-medium mb-2">Password</label>
-                        <input type="password" placeholder="Create a strong password" class="input-style">
+                        <input type="password" placeholder="Create a strong password" class="input-style" id="v_password" name="password">
                     </div>
 
                     <div>
                         <label class="block text-[13px] font-medium mb-2">Business Name</label>
-                        <input type="text" placeholder="Your Business Name" class="input-style">
+                        <input type="text" placeholder="Your Business Name" class="input-style" id="v_business_name" name="business_name">
                     </div>
 
                     <div>
                         <label class="block text-[13px] font-medium mb-2">Business Type</label>
-                        <input type="text" placeholder="Select type" class="input-style">
+                        <input type="text" placeholder="Select type" class="input-style" id="v_business_type" name="business_type">
                     </div>
 
                     <div>
-                        <label class="block text-[13px] font-medium mb-2">GST Number</label>
-                        <input type="text" placeholder="GST123456" class="input-style">
+                        <label class="block text-[13px] font-medium mb-2">GST Number <span class="font-normal text-white/40">(Optional)</span></label>
+                        <input type="text" placeholder="GST123456" class="input-style" id="v_gst_number" name="gst_number">
                     </div>
 
                     <div>
                         <label class="block text-[13px] font-medium mb-2">Business Address</label>
-                        <textarea placeholder="Complete business address" class="textarea-style"></textarea>
+                        <textarea placeholder="Complete business address" class="textarea-style" id="v_business_address" name="business_address"></textarea>
                     </div>
 
                     <div>
                         <label class="block text-[13px] font-medium mb-2">Products You Offer</label>
                         <textarea placeholder="Custom pens, promotional bags, corporate gifts..."
-                            class="textarea-style"></textarea>
+                            class="textarea-style" id="v_products_offered" name="products_offered"></textarea>
                     </div>
 
-                    <a href="/"
+                    <p id="vendorSignupError" class="text-[12px] text-red-400 hidden"></p>
+
+                    <button type="submit" id="vendorSignupSubmit"
                         class="w-full h-[46px] rounded-full bg-white text-black text-[14px] font-semibold hover:bg-white/90 transition flex items-center justify-center">
                         Submit for Approval
-                    </a>
+                    </button>
 
                     <p class="text-center text-[14px] text-white/65">
                         Already have an account?
@@ -282,5 +288,87 @@ bottomLoginBtn.addEventListener('click', showLogin);
 
 loginForm.style.display = 'block';
 signupForm.style.display = 'none';
+
+document.addEventListener('DOMContentLoaded', function () {
+    const loginErrorEl = document.getElementById('vendorLoginError');
+    const loginSubmit = document.getElementById('vendorLoginSubmit');
+
+    loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        loginErrorEl.classList.add('hidden');
+
+        const email = document.getElementById('v_login_email').value.trim();
+        const password = document.getElementById('v_login_password').value;
+        if (!email || !password) {
+            loginErrorEl.textContent = 'Email and password are required.';
+            loginErrorEl.classList.remove('hidden');
+            return;
+        }
+
+        loginSubmit.disabled = true;
+        showLoader();
+
+        sendRequest('/admin/authenticate', { email: email, password: password }, 'POST', function (res) {
+            hideLoader();
+            loginSubmit.disabled = false;
+            if (res.success) {
+                showToast(res.message, 'success', 1500);
+                setTimeout(function () { window.location.href = res.redirect; }, 500);
+            } else {
+                loginErrorEl.textContent = res.message;
+                loginErrorEl.classList.remove('hidden');
+            }
+        }, function (err) {
+            hideLoader();
+            loginSubmit.disabled = false;
+            loginErrorEl.textContent = err.message || 'Something went wrong.';
+            loginErrorEl.classList.remove('hidden');
+        });
+    });
+
+    const signupErrorEl = document.getElementById('vendorSignupError');
+    const signupSubmit = document.getElementById('vendorSignupSubmit');
+
+    signupForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        signupErrorEl.classList.add('hidden');
+
+        const required = ['v_full_name', 'v_email', 'v_phone_number', 'v_password', 'v_business_name'];
+        for (const id of required) {
+            if (!document.getElementById(id).value.trim()) {
+                signupErrorEl.textContent = 'Please fill in all required fields.';
+                signupErrorEl.classList.remove('hidden');
+                document.getElementById(id).focus();
+                return;
+            }
+        }
+
+        signupSubmit.disabled = true;
+        showLoader();
+
+        const formData = new FormData(signupForm);
+        sendRequest('/vendor/register', formData, 'POST', function (res) {
+            hideLoader();
+            signupSubmit.disabled = false;
+            if (res.success) {
+                showToast(res.message, 'success', 3000);
+                signupForm.reset();
+                setTimeout(showLogin, 800);
+            } else {
+                signupErrorEl.textContent = res.message;
+                signupErrorEl.classList.remove('hidden');
+            }
+        }, function (err) {
+            hideLoader();
+            signupSubmit.disabled = false;
+            if (err.errors) {
+                signupErrorEl.textContent = Object.values(err.errors)[0][0];
+            } else {
+                signupErrorEl.textContent = err.message || 'Something went wrong.';
+            }
+            signupErrorEl.classList.remove('hidden');
+        });
+    });
+});
 </script>
 @endsection

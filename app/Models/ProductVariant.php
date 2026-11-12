@@ -13,8 +13,6 @@ class ProductVariant extends Model
         'stock',
         'pri_attribute_id',
         'cover_image',
-        'minimum',
-        'maximum'
     ];
 
     public function variantValues()

@@ -3,6 +3,12 @@
 @section('content')
 
 @include('frontend.order.index')
+
+@php
+    $isReady = (int) $order->sample_stage === 5;
+    $previewImage = $order->orderDetails->first()->product_image ?? null;
+@endphp
+
 <div class="w-full bg-black text-white px-4 sm:px-6 pt-[4rem] pb-10">
     <!-- Breadcrumb -->
     <div class="text-center text-[13px] text-white/70 mb-8 mt-8 md:hidden">
@@ -20,14 +26,26 @@
     </div>
     <div class="max-w-[750px] mx-auto">
 
+        @unless($isReady)
+        <p class="text-center text-[13px] text-white/50 mb-4">
+            Your sample isn't marked ready for review yet — you can still preview what's been submitted so far.
+        </p>
+        @endunless
+
         <div class="rounded-[18px] border border-white/40 p-3 bg-black">
             <div class="rounded-[14px] min-h-[300px] sm:min-h-[420px] flex items-center justify-center px-4 py-8">
 
-                <img onclick="openImagePreview()" src="{{ asset('assets/images/jacket.png') }}" alt="Jacket Preview"
+                @if($previewImage)
+                <img onclick="openImagePreview()" src="{{ asset('storage/' . $previewImage) }}" alt="Sample Preview"
                     class="max-h-[260px] sm:max-h-[380px] w-auto object-contain cursor-pointer ">
+                @else
+                <p class="text-white/40 text-[13px]">No preview image available yet.</p>
+                @endif
 
             </div>
         </div>
+
+        <p id="sampleActionError" class="hidden mt-4 text-center text-[13px] text-red-400"></p>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
             <button onclick="openRequestPopup()"
@@ -35,10 +53,17 @@
                 Request Changes
             </button>
 
-            <a href="/order/order-success"
+            @if($isReady)
+            <button id="approveSampleBtn" onclick="approveSample()"
                 class="w-full h-[44px] rounded-[8px] bg-white text-black text-[13px] sm:text-[14px] font-medium hover:bg-white/90 transition duration-300 flex items-center justify-center">
-                Approve Sample & Start Production
-            </a>
+                Approve Sample &amp; Start Production
+            </button>
+            @else
+            <span
+                class="w-full h-[44px] rounded-[8px] bg-white/10 text-white/40 text-[13px] sm:text-[14px] font-medium flex items-center justify-center cursor-not-allowed">
+                Awaiting Design Team
+            </span>
+            @endif
         </div>
     </div>
 </div>
@@ -62,7 +87,9 @@
 
         <p class="text-[13px] text-black/70 mb-3">What needs to be changed?</p>
 
-        <textarea
+        <p id="requestPopupError" class="hidden mb-2 text-[12px] text-red-600"></p>
+
+        <textarea id="sampleChangeDescription"
             class="w-full h-[120px] rounded-[14px] bg-[#eaeaea] p-4 text-[13px] outline-none placeholder:text-black/40"
             placeholder="Add comments about what needs to be changed..."></textarea>
 
@@ -74,9 +101,9 @@
 
                 <img src="{{ asset('assets/images/Group.svg') }}" class="w-10 h-10 mb-2 opacity-60" alt="Upload Icon">
 
-                <p class="text-[12px] text-black/40">Click to upload new logo</p>
+                <p id="sampleChangeImageLabel" class="text-[12px] text-black/40">Click to upload new logo</p>
 
-                <input type="file" class="hidden">
+                <input type="file" id="sampleChangeImage" accept="image/*" class="hidden">
             </label>
         </div>
 
@@ -86,7 +113,7 @@
                 Cancel
             </button>
 
-            <button
+            <button id="submitSampleChangeBtn" onclick="submitSampleChangeRequest()"
                 class="w-1/2 h-[44px] rounded-[10px] bg-black text-white text-[14px] font-medium hover:bg-black/90 transition">
                 Submit Request
             </button>
@@ -105,7 +132,7 @@
 
     <div id="imagePreviewBox" class="scale-90 opacity-0 transition-all duration-300 flex items-center justify-center">
 
-        <img src="{{ asset('assets/images/jacket.png') }}"
+        <img src="{{ $previewImage ? asset('storage/' . $previewImage) : '' }}"
             class="max-h-[85vh] max-w-[90vw] object-contain rounded-[12px] shadow-lg">
     </div>
 
@@ -168,6 +195,75 @@ function closeRequestPopup() {
 }
 
 document.getElementById('requestPopup').addEventListener('click', closeRequestPopup);
+
+document.getElementById('sampleChangeImage').addEventListener('change', function () {
+    document.getElementById('sampleChangeImageLabel').textContent = this.files[0] ? this.files[0].name : 'Click to upload new logo';
+});
+
+function submitSampleChangeRequest() {
+    const errorEl = document.getElementById('requestPopupError');
+    errorEl.classList.add('hidden');
+
+    const description = document.getElementById('sampleChangeDescription').value.trim();
+    if (!description) {
+        errorEl.textContent = 'Please describe what needs to be changed.';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+
+    const btn = document.getElementById('submitSampleChangeBtn');
+    btn.disabled = true;
+    showLoader();
+
+    const formData = new FormData();
+    formData.append('description', description);
+    const image = document.getElementById('sampleChangeImage').files[0];
+    if (image) formData.append('image', image);
+
+    sendRequest('{{ route('order.sample.request_changes') }}', formData, 'POST', function (res) {
+        hideLoader();
+        btn.disabled = false;
+        if (res.success) {
+            showToast(res.message, 'success', 2500);
+            closeRequestPopup();
+            setTimeout(() => window.location.href = '/order/sample-process', 800);
+        } else {
+            errorEl.textContent = res.message || 'Something went wrong.';
+            errorEl.classList.remove('hidden');
+        }
+    }, function (err) {
+        hideLoader();
+        btn.disabled = false;
+        errorEl.textContent = err.errors ? Object.values(err.errors)[0][0] : (err.message || 'Something went wrong.');
+        errorEl.classList.remove('hidden');
+    });
+}
+
+function approveSample() {
+    const errorEl = document.getElementById('sampleActionError');
+    errorEl.classList.add('hidden');
+
+    const btn = document.getElementById('approveSampleBtn');
+    btn.disabled = true;
+    showLoader();
+
+    sendRequest('{{ route('order.sample.approve') }}', {}, 'POST', function (res) {
+        hideLoader();
+        if (res.success) {
+            showToast(res.message, 'success', 1500);
+            setTimeout(() => window.location.href = res.redirect, 700);
+        } else {
+            btn.disabled = false;
+            errorEl.textContent = res.message || 'Something went wrong.';
+            errorEl.classList.remove('hidden');
+        }
+    }, function (err) {
+        hideLoader();
+        btn.disabled = false;
+        errorEl.textContent = err.message || 'Something went wrong.';
+        errorEl.classList.remove('hidden');
+    });
+}
 </script>
 
 @endsection

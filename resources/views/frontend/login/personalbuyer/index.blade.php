@@ -118,7 +118,7 @@
                         </div>
                         <div>
                             <label class="block text-[14px] font-medium mb-2">Email Address</label>
-                            <input type="email" placeholder="your@email.com" id="email" name="email"
+                            <input type="email" placeholder="your@email.com" id="signup_email" name="email"
                                 class="w-full h-[42px] rounded-[8px] border border-white/15 bg-white/[0.03] px-4 text-[13px] text-white placeholder:text-white/30 outline-none shadow-[inset_0_8px_20px_rgba(255,255,255,0.04)] focus:border-white/25">
                         </div>
                         <div>
@@ -128,7 +128,7 @@
                         </div>
                         <div>
                             <label class="block text-[14px] font-medium mb-2">Password</label>
-                            <input type="password" placeholder="Create a strong password" id="password" name="password"
+                            <input type="password" placeholder="Create a strong password" id="signup_password" name="password"
                                 class="w-full h-[42px] rounded-[8px] border border-white/15 bg-white/[0.03] px-4 text-[13px] text-white placeholder:text-white/30 outline-none shadow-[inset_0_8px_20px_rgba(255,255,255,0.04)] focus:border-white/25">
                             <input type="hidden" name="password_confirmation" id="password_confirmation">
                         </div>

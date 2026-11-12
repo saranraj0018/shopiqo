@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OccasionController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\TicketController;
+use App\Http\Controllers\Admin\VendorController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function () {
@@ -59,10 +60,16 @@ Route::prefix('admin')->group(function () {
         Route::prefix('orders')->controller(OrderController::class)->group(function () {
             Route::get('/list', 'view')->name('view.orders');
             Route::post('/update-status', 'updateStatus')->name('update.order.status');
+            Route::post('/update-sample-stage', 'updateSampleStage')->name('update.order.sample_stage');
         });
 
         // ticket lists
         Route::get('/ticket-lists', [TicketController::class, 'index'])->name('ticket_lists');
         Route::post('/ticket-save', [TicketController::class, 'saveTicket'])->name('ticket_save');
+
+        // vendor approvals
+        Route::get('/vendor-list', [VendorController::class, 'view'])->name('view_vendor');
+        Route::post('/vendor-approve', [VendorController::class, 'approve'])->name('approve_vendor');
+        Route::post('/vendor-reject', [VendorController::class, 'reject'])->name('reject_vendor');
     });
 });

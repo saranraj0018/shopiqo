@@ -13,7 +13,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f0f4f8;
+            background: #f1f5f9;
             padding: 1.5rem;
             font-family: 'DM Sans', sans-serif;
             height: 100dvh;
@@ -50,7 +50,7 @@
         /* ── Left panel ───────────────────────────────── */
         .sq-left {
             width: 42%;
-            background: #0b2545;
+            background: linear-gradient(160deg, #0f172a 0%, #1e1b4b 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -117,7 +117,7 @@
         }
 
         .sq-brand-name span {
-            color: #7CB3FF;
+            color: #a5b4fc;
         }
 
         .sq-tagline {
@@ -149,7 +149,7 @@
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: #7CB3FF;
+            background: #818cf8;
             flex-shrink: 0;
         }
 
@@ -169,8 +169,8 @@
             gap: 5px;
             font-size: 11px;
             font-weight: 500;
-            background: #EEF4FF;
-            color: #134074;
+            background: #eef2ff;
+            color: #4338ca;
             padding: 4px 12px;
             border-radius: 20px;
             margin-bottom: 1.1rem;
@@ -181,7 +181,7 @@
         .sq-welcome {
             font-family: 'DM Serif Display', serif;
             font-size: 28px;
-            color: #0b2545;
+            color: #0f172a;
             letter-spacing: -0.3px;
             margin-bottom: 4px;
         }
@@ -230,9 +230,9 @@
         }
 
         .sq-input:focus {
-            border-color: #134074;
+            border-color: #4f46e5;
             background: #ffffff;
-            box-shadow: 0 0 0 3.5px rgba(19, 64, 116, 0.1);
+            box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.12);
         }
 
         .sq-input-icon {
@@ -263,7 +263,7 @@
         }
 
         .sq-toggle-btn:hover {
-            color: #134074;
+            color: #4f46e5;
         }
 
         /* ── Field row: label + forgot ────────────────── */
@@ -276,7 +276,7 @@
 
         .sq-forgot {
             font-size: 12px;
-            color: #134074;
+            color: #4f46e5;
             text-decoration: none;
             font-weight: 500;
         }
@@ -301,7 +301,7 @@
             padding: 12px;
             border: none;
             border-radius: 10px;
-            background: #0b2545;
+            background: #4f46e5;
             color: white;
             font-family: 'DM Sans', sans-serif;
             font-size: 14.5px;
@@ -317,7 +317,7 @@
         }
 
         .sq-btn:hover:not(:disabled) {
-            background: #134074;
+            background: #4338ca;
         }
 
         .sq-btn:active:not(:disabled) {
@@ -372,7 +372,7 @@
         }
 
         .sq-footer a {
-            color: #13315c;
+            color: #4f46e5;
             font-weight: 500;
             text-decoration: none;
         }

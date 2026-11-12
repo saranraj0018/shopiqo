@@ -1,10 +1,9 @@
-<section class="bg-black text-white py-8 px-8 sm:px-4">
-
-    <div class="max-w-[50rem] mx-auto flex justify-end">
-
-        <!-- RIGHT PANEL -->
-        <div class="w-full max-w-[380px]">
-
+{{--
+    Continues the right column that index.blade.php opened and left
+    unclosed, so the sticky product image on the left stays pinned all
+    the way through this file's content too. The matching closing tags
+    for that row/column/container/section are at the bottom of this file.
+--}}
             <!-- Logo creation -->
             <div class="mb-7">
                 <h3 class="text-[15px] font-medium text-white mb-1">
@@ -47,6 +46,14 @@
             </div>
 
 
+            {{--
+                Pushed to the `modals` stack rendered at the very end of <body> (see
+                frontend.app) instead of staying nested here — this content sits inside
+                a `relative z-10` ancestor (index.blade.php's page wrapper), which caps
+                its own stacking context at z-10 regardless of this popup's z-[9999], so
+                nested here it always rendered BEHIND the fixed z-50 navbar header.
+            --}}
+            @push('modals')
             <!-- POPUP -->
             <div id="logoPopup" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-[9999] px-8">
 
@@ -86,8 +93,9 @@
                                     Upload PNG/JPG logo screenshot
                                 </p>
 
-                                <input type="file" class="hidden" accept=".png,.jpg,.jpeg">
+                                <input type="file" id="logoRequestImageInput" class="hidden" accept=".png,.jpg,.jpeg">
                             </label>
+                            <p id="logoRequestFileName" class="text-[11px] text-black/50 mt-2 hidden"></p>
                         </div>
 
                         <!-- Instructions -->
@@ -96,13 +104,15 @@
                                 Additional Instructions
                             </p>
 
-                            <textarea rows="5" placeholder="Examples:
+                            <textarea id="logoRequestInstructions" rows="5" placeholder="Examples:
 • Make logo 5 cm wider
 • Place logo on left sleeve
 • Use bold text for tagline
 • Match Pantone color code..."
                                 class="w-full rounded-[10px] border border-black/5 bg-black/[0.04] px-3 py-3 text-[14px] text-black placeholder:text-black/25 outline-none resize-none"></textarea>
                         </div>
+
+                        <p id="logoRequestError" class="text-[12px] text-red-500 mb-3 hidden"></p>
 
                         <!-- Estimated Cost -->
                         <div
@@ -128,7 +138,7 @@
                                 Cancel
                             </button>
 
-                            <button
+                            <button type="button" id="submitLogoRequestBtn"
                                 class="w-full sm:w-1/2 h-[46px] rounded-full bg-[#1d1d1f] text-[16px] text-white hover:bg-black transition">
                                 Submit Request
                             </button>
@@ -138,6 +148,7 @@
 
                 </div>
             </div>
+            @endpush
 
             <!-- SIZE -->
             @if ($variantMatrix)
@@ -182,7 +193,9 @@
                                             <input type="number" min="0"
                                                 @if (!$isBulk) max="{{ $cell['stock'] }}" data-price="{{ $cell['price'] }}" @endif
                                                 value="0"
+                                                data-row-id="{{ $row->id }}"
                                                 data-col-id="{{ $col->id }}"
+                                                data-variant-id="{{ $cell['variant_id'] ?? '' }}"
                                                 class="qty-input w-[60px] h-[28px] rounded bg-white text-black text-[12px] px-2 text-center"
                                                 name="{{ $isBulk ? "bulk_quantities[{$row->id}][{$col->id}]" : "quantities[{$cell['variant_id']}]" }}">
                                             @else
@@ -253,6 +266,7 @@
                 window.__productPricing = {
                     type: @json($variantMatrix['type']),
                     tiers: @json($variantMatrix['type'] === 'bulk' ? $variantMatrix['tiers'] : []),
+                    basePrice: @json($variantMatrix['type'] === 'bulk' ? $variantMatrix['basePrice'] : null),
                 };
             </script>
             @endif
@@ -260,15 +274,15 @@
             <!-- BUTTONS -->
             <div class="flex gap-3 mb-6">
 
-                <button
+                <button type="button" id="addToCartBtn"
                     class="w-1/2 h-[44px] border border-white/60 rounded-lg text-white text-[14px] hover:bg-white/10 transition">
                     Add to Cart
                 </button>
 
-                <a href="/order"
+                <button type="button" id="proceedBtn"
                     class="w-1/2 h-[44px] bg-white text-black rounded-lg text-[14px] font-medium hover:bg-white/90 transition flex items-center justify-center">
                     Proceed
-                </a>
+                </button>
 
             </div>
 
@@ -310,10 +324,11 @@
                 </ul>
             </div>
 
+            {{-- Closes the right column, row, container and section that
+                 index.blade.php opened. --}}
+            </div>
         </div>
-
     </div>
-
 </section>
 
 <script>
@@ -332,15 +347,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (priceDisplay) priceDisplay.textContent = totalPrice !== null ? formatCurrency(totalPrice) : 'Get a Quote';
     }
 
-    // Bulk pricing is tiered by total quantity ordered, not per cell.
+    // Bulk pricing is tiered by total quantity ordered, not per cell. A
+    // quantity that doesn't land inside any admin-defined range (too small
+    // for the lowest tier, or bigger than the highest tier's max) bills at
+    // the product's own mandatory per-piece price instead of guessing at a
+    // discount rate nobody configured.
     function bulkUnitPriceForQty(totalQty) {
         if (!pricing || !pricing.tiers.length) return null;
-        if (totalQty < pricing.tiers[0].minimum) return pricing.tiers[0].price;
         const tier = pricing.tiers.find(function (t) {
             return totalQty >= t.minimum && (t.maximum === null || totalQty <= t.maximum);
         });
-        // Above the highest tier's max: keep billing at the best (last) tier's rate.
-        return tier ? tier.price : pricing.tiers[pricing.tiers.length - 1].price;
+        return tier ? tier.price : pricing.basePrice;
     }
 
     const table = document.getElementById('sizeQuantityTable');
@@ -424,6 +441,11 @@ function toggleLogoRequest() {
 
 <script>
 function openPopup() {
+    @guest('user')
+    showToast('Please sign in to request logo creation.', 'error', 2500);
+    return;
+    @endguest
+
     const popup = document.getElementById('logoPopup');
     const box = document.getElementById('popupBox');
 
@@ -449,9 +471,196 @@ function closePopup() {
     }, 300);
 }
 
-document.getElementById('logoPopup').addEventListener('click', function(e) {
-    if (e.target.id === 'logoPopup') {
-        closePopup();
+// #logoPopup now lives in the `modals` stack rendered at the end of <body>
+// (after this script tag in source order), so wait for DOMContentLoaded
+// rather than grabbing it immediately — it doesn't exist in the DOM yet
+// at the point this script tag itself is parsed.
+document.addEventListener('DOMContentLoaded', function () {
+    const popupEl = document.getElementById('logoPopup');
+    if (!popupEl) return;
+    popupEl.addEventListener('click', function (e) {
+        if (e.target.id === 'logoPopup') {
+            closePopup();
+        }
+    });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const PRODUCT_ID = {{ $product->id }};
+
+    const logoRequestImageInput = document.getElementById('logoRequestImageInput');
+    const logoRequestFileName = document.getElementById('logoRequestFileName');
+    if (logoRequestImageInput) {
+        logoRequestImageInput.addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                logoRequestFileName.textContent = this.files[0].name;
+                logoRequestFileName.classList.remove('hidden');
+            } else {
+                logoRequestFileName.classList.add('hidden');
+            }
+        });
+    }
+
+    const submitLogoRequestBtn = document.getElementById('submitLogoRequestBtn');
+    if (submitLogoRequestBtn) {
+        submitLogoRequestBtn.addEventListener('click', function () {
+            const errorEl = document.getElementById('logoRequestError');
+            errorEl.classList.add('hidden');
+
+            if (!logoRequestImageInput.files || !logoRequestImageInput.files[0]) {
+                errorEl.textContent = 'Please upload a reference image.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('product_id', PRODUCT_ID);
+            formData.append('image', logoRequestImageInput.files[0]);
+            formData.append('instructions', document.getElementById('logoRequestInstructions').value.trim());
+
+            submitLogoRequestBtn.disabled = true;
+            showLoader();
+
+            sendRequest('/logo-request', formData, 'POST', function (res) {
+                hideLoader();
+                submitLogoRequestBtn.disabled = false;
+
+                if (res.status === 'unauthenticated') {
+                    showToast('Please sign in to request logo creation.', 'error', 2500);
+                    return;
+                }
+                if (res.status === 'saved') {
+                    showToast(res.message, 'success', 2500);
+                    closePopup();
+                    logoRequestImageInput.value = '';
+                    logoRequestFileName.classList.add('hidden');
+                    document.getElementById('logoRequestInstructions').value = '';
+                }
+            }, function (err) {
+                hideLoader();
+                submitLogoRequestBtn.disabled = false;
+                if (err.errors) {
+                    errorEl.textContent = Object.values(err.errors)[0][0];
+                } else {
+                    errorEl.textContent = err.message || 'Something went wrong.';
+                }
+                errorEl.classList.remove('hidden');
+            });
+        });
+    }
+
+    function buildCartFormData() {
+        const formData = new FormData();
+        formData.append('product_id', PRODUCT_ID);
+
+        const printType = document.getElementById('printTypeSelect');
+        if (printType) formData.append('print_type', printType.value);
+
+        const logoFileInput = document.getElementById('logoFileInput');
+        if (logoFileInput && logoFileInput.files[0]) {
+            formData.append('design_logo', logoFileInput.files[0]);
+        }
+        const logoSide = document.getElementById('logoSideInput');
+        if (logoSide) formData.append('logo_side', logoSide.value);
+        const logoPosX = document.getElementById('logoPosXInput');
+        if (logoPosX) formData.append('logo_position_x', logoPosX.value);
+        const logoPosY = document.getElementById('logoPosYInput');
+        if (logoPosY) formData.append('logo_position_y', logoPosY.value);
+
+        const table = document.getElementById('sizeQuantityTable');
+        let hasQuantity = false;
+
+        if (table) {
+            table.querySelectorAll('.qty-input').forEach(function (input) {
+                const qty = parseInt(input.value, 10) || 0;
+                if (qty < 1) return;
+                hasQuantity = true;
+
+                if (input.dataset.variantId) {
+                    formData.append('quantities[' + input.dataset.variantId + ']', qty);
+                } else {
+                    formData.append('bulk_quantities[' + input.dataset.rowId + '][' + input.dataset.colId + ']', qty);
+                }
+            });
+        } else {
+            const qtyInput = document.getElementById('orderQtyInput');
+            const qty = qtyInput ? (parseInt(qtyInput.value, 10) || 0) : 0;
+            if (qty > 0) {
+                hasQuantity = true;
+                formData.append('quantity', qty);
+            }
+        }
+
+        return { formData: formData, hasQuantity: hasQuantity };
+    }
+
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function () {
+            const built = buildCartFormData();
+            if (!built.hasQuantity) {
+                showToast('Please choose at least one quantity.', 'error', 2000);
+                return;
+            }
+
+            addToCartBtn.disabled = true;
+            showLoader();
+
+            sendRequest('/cart/add', built.formData, 'POST', function (res) {
+                hideLoader();
+                addToCartBtn.disabled = false;
+
+                if (res.status === 'unauthenticated') {
+                    showToast('Please sign in to add items to your cart.', 'error', 2500);
+                    return;
+                }
+                if (res.status === 'added') {
+                    showToast('Added to cart!', 'success', 1500);
+                }
+            }, function (err) {
+                hideLoader();
+                addToCartBtn.disabled = false;
+                showToast(err.message || 'Could not add to cart.', 'error', 2000);
+            });
+        });
+    }
+
+    // "Proceed" is a Buy Now shortcut — add the current selection to the
+    // cart, then go straight to checkout instead of leaving it as a plain
+    // link to /order (which just bounced to an empty cart otherwise).
+    const proceedBtn = document.getElementById('proceedBtn');
+    if (proceedBtn) {
+        proceedBtn.addEventListener('click', function () {
+            const built = buildCartFormData();
+            if (!built.hasQuantity) {
+                showToast('Please choose at least one quantity.', 'error', 2000);
+                return;
+            }
+
+            proceedBtn.disabled = true;
+            showLoader();
+
+            sendRequest('/cart/add', built.formData, 'POST', function (res) {
+                if (res.status === 'unauthenticated') {
+                    hideLoader();
+                    proceedBtn.disabled = false;
+                    showToast('Please sign in to continue.', 'error', 2500);
+                    return;
+                }
+                if (res.status === 'added') {
+                    window.location.href = '/order';
+                    return;
+                }
+                hideLoader();
+                proceedBtn.disabled = false;
+            }, function (err) {
+                hideLoader();
+                proceedBtn.disabled = false;
+                showToast(err.message || 'Could not proceed to checkout.', 'error', 2000);
+            });
+        });
     }
 });
 </script>

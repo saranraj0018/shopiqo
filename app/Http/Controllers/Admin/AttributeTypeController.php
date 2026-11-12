@@ -30,7 +30,7 @@ class AttributeTypeController extends Controller
             'attribute_name' => [
                 'required',
                 'max:255',
-                'unique:attribute_types,name,' . $request->attribute_id,
+                'unique:variant_attributes,name,' . $request->attribute_id,
             ],
         ]);
         try {

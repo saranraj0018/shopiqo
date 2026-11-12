@@ -1,6 +1,6 @@
-<nav class="bg-white w-full border-b border-gray-200 px-5 py-2 shadow-sm flex justify-between items-center">
-    <a href="javascript:void(0)" onclick="toggleSidebar()" class="text-gray-700 hover:text-gray-900" id="menuToggleBtn">
-        <i id="menuIcon" class="fas fa-bars text-xl transition-all duration-300"></i>
+<nav class="bg-white/90 backdrop-blur-sm w-full border-b border-slate-200 px-5 py-2.5 shadow-sm flex justify-between items-center">
+    <a href="javascript:void(0)" onclick="toggleSidebar()" class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition-colors" id="menuToggleBtn">
+        <i id="menuIcon" class="fas fa-bars text-lg transition-all duration-300"></i>
     </a>
     <div class="flex items-center gap-6">
         <ul class="flex items-center gap-4">
@@ -20,12 +20,15 @@
                 </a>
             </li> --}}
             <li class="relative" x-data="{ open: false }">
-                <button @click="open = !open" class="flex items-center gap-2 focus:outline-none">
-                    <span class="text-gray-700">{{ Auth::user()->name }}</span>
-                    <i class="fas fa-chevron-down text-sm"></i>
+                <button @click="open = !open" class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full hover:bg-slate-100 transition-colors focus:outline-none">
+                    <span class="w-7 h-7 rounded-full bg-indigo-600 text-white text-xs font-semibold flex items-center justify-center">
+                        {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+                    </span>
+                    <span class="text-slate-700 text-sm font-medium">{{ Auth::user()->name }}</span>
+                    <i class="fas fa-chevron-down text-xs text-slate-400"></i>
                 </button>
                 <div x-show="open" @click.outside="open = false"
-                    class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg py-2 z-50"
+                    class="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-xl shadow-lg shadow-slate-200/60 py-2 z-50"
                     x-transition:enter="transition ease-out duration-200"
                     x-transition:enter-start="opacity-0 transform scale-95"
                     x-transition:enter-end="opacity-100 transform scale-100"
@@ -35,8 +38,8 @@
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
-                            class="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2">
-                            <i class="fas fa-sign-out-alt text-xl"></i> Logout
+                            class="w-full text-left px-4 py-2 text-sm text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors">
+                            <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
                     </form>
                 </div>

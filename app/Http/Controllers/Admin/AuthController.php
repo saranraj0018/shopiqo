@@ -12,14 +12,18 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
 
-    public function adminAuthenticate(Request $request): \Illuminate\Http\RedirectResponse
+    public function adminAuthenticate(Request $request)
     {
+        $wantsJson = $request->expectsJson();
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required'
         ]);
-        $get_admin = Admin::where('email', $request->email)->first();
         if (!$validator->passes()) {
+            if ($wantsJson) {
+                return response()->json(['success' => false, 'message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+            }
             return redirect()->route('admin.login')
                 ->withErrors($validator)
                 ->withInput($request->only('email'));
@@ -27,20 +31,35 @@ class AuthController extends Controller
         if (!Auth::guard('admin')->attempt([
             'email' => $request['email'],
             'password' => $request['password']
-        ], $request->get('remember'))) {
+        ], $request->boolean('remember'))) {
+            if ($wantsJson) {
+                return response()->json(['success' => false, 'message' => 'Either Email/Password is incorrect'], 401);
+            }
             return redirect()->route('admin.login')->withErrors(['password' => 'Either Email/Password is incorrect'])
                 ->withInput($request->only('email'));
         }
+
         $admin = Auth::guard('admin')->user();
-        session()->put('user', $admin);
-        //        $role_id = Role::pluck('id')->all();
-        if (!empty($admin->role) && !empty($role_id) && !in_array($admin->role, $role_id)) {
+
+        // Vendors who self-registered from the storefront start unapproved —
+        // everyone else (seeded admins, code-gated /admin/register signups) is
+        // approved by default, so this only ever blocks pending vendors.
+        if (!$admin->is_approved) {
             Auth::guard('admin')->logout();
+            $message = 'Your vendor account is still pending approval. We\'ll notify you once it\'s reviewed.';
+            if ($wantsJson) {
+                return response()->json(['success' => false, 'message' => $message], 403);
+            }
             return redirect()->route('admin.login')
-                ->withErrors(['email' => 'You are not authorized to access'])
+                ->withErrors(['email' => $message])
                 ->withInput($request->only('email'));
         }
 
+        session()->put('user', $admin);
+
+        if ($wantsJson) {
+            return response()->json(['success' => true, 'message' => 'Login successful', 'redirect' => route('dashboard')]);
+        }
         return redirect()->route('dashboard');
     }
 

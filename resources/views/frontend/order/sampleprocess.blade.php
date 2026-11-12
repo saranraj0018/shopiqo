@@ -5,23 +5,25 @@
 @include('frontend.order.index')
 
 @php
-$isCompleted = false;
+    $isReady = (int) $order->sample_stage === 5;
 
-$status = ['title' => $isCompleted ? 'Completed Successfully' : 'We will update you soon','date' => now()->format('M d,
-Y')];
+    $status = [
+        'title' => $isReady ? 'Ready for your review!' : 'We will update you soon',
+        'date'  => optional($order->sampleStageLogs->last()->created_at ?? $order->created_at)->format('M d, Y'),
+    ];
 
-@endphp
-
-@php
-$timeline = [
-
-['title' => 'Modul Process Started','date' => 'Dec 8, 2025'],
-['title' => 'Designing Process','date' => 'Dec 8, 2025'],
-['title' => 'Quality Check','date' => 'Dec 8, 2025'],
-['title' => 'Working on Changes','date' => 'Dec 8, 2025'],
-['title' => 'Ready For Review','date' => 'Dec 8, 2025'],
-
-];
+    // One real, dated entry per admin-logged stage update — no log yet for
+    // a stage just means the admin team hasn't reached it.
+    $loggedStages = $order->sampleStageLogs->keyBy('stage');
+    $timeline = collect(\App\Models\Order::SAMPLE_STAGES)->map(function ($label, $stage) use ($loggedStages) {
+        $log = $loggedStages->get($stage);
+        return [
+            'title' => $label,
+            'date'  => $log ? $log->created_at->format('M d, Y') : null,
+            'note'  => $log?->note,
+            'done'  => (bool) $log,
+        ];
+    })->values();
 @endphp
 
 <div class="w-full bg-black text-white px-6 py-10">
@@ -52,6 +54,24 @@ $timeline = [
             </p>
         </div>
 
+        <!-- Timeline -->
+        <div class="mt-6 rounded-[16px] border border-white/15 divide-y divide-white/10">
+            @foreach($timeline as $step)
+            <div class="flex items-center justify-between px-5 py-3">
+                <div class="flex items-center gap-3">
+                    <span class="w-2 h-2 rounded-full {{ $step['done'] ? 'bg-white' : 'bg-white/20' }}"></span>
+                    <div>
+                        <p class="text-[13px] {{ $step['done'] ? 'text-white' : 'text-white/40' }}">{{ $step['title'] }}</p>
+                        @if($step['note'])
+                        <p class="text-[11px] text-white/40 mt-0.5">{{ $step['note'] }}</p>
+                        @endif
+                    </div>
+                </div>
+                <span class="text-[11px] text-white/40">{{ $step['date'] ?? 'Pending' }}</span>
+            </div>
+            @endforeach
+        </div>
+
         <div class="mt-6 flex flex-col sm:flex-row gap-4 w-full">
 
             <button onclick="openRequestPopup()"
@@ -59,10 +79,17 @@ $timeline = [
                 Request Changes
             </button>
 
+            @if($isReady)
             <a href="/order/sample-review"
                 class="w-full sm:w-1/2 py-3 bg-white text-black rounded-[10px] text-[14px] font-medium hover:bg-white/90 text-center">
                 Approve Sample &amp; Start Production
             </a>
+            @else
+            <span
+                class="w-full sm:w-1/2 py-3 bg-white/10 text-white/40 rounded-[10px] text-[14px] font-medium text-center cursor-not-allowed">
+                Awaiting Design Team
+            </span>
+            @endif
 
         </div>
 
@@ -87,7 +114,9 @@ $timeline = [
 
         <p class="text-[13px] text-black/70 mb-3">What needs to be changed?</p>
 
-        <textarea
+        <p id="requestPopupError" class="hidden mb-2 text-[12px] text-red-600"></p>
+
+        <textarea id="sampleChangeDescription"
             class="w-full h-[120px] rounded-[14px] bg-[#eaeaea] p-4 text-[13px] outline-none placeholder:text-black/40"
             placeholder="Add comments about what needs to be changed..."></textarea>
 
@@ -99,9 +128,9 @@ $timeline = [
 
                 <img src="{{ asset('assets/images/Group.svg') }}" class="w-10 h-10 mb-2 opacity-60" alt="Upload Icon">
 
-                <p class="text-[12px] text-black/40">Click to upload new logo</p>
+                <p id="sampleChangeImageLabel" class="text-[12px] text-black/40">Click to upload new logo</p>
 
-                <input type="file" class="hidden">
+                <input type="file" id="sampleChangeImage" accept="image/*" class="hidden">
             </label>
         </div>
 
@@ -111,7 +140,7 @@ $timeline = [
                 Cancel
             </button>
 
-            <button
+            <button id="submitSampleChangeBtn" onclick="submitSampleChangeRequest()"
                 class="w-1/2 h-[44px] rounded-[10px] bg-black text-white text-[14px] font-medium hover:bg-black/90 transition">
                 Submit Request
             </button>
@@ -149,6 +178,49 @@ function closeRequestPopup() {
 }
 
 document.getElementById('requestPopup').addEventListener('click', closeRequestPopup);
+
+document.getElementById('sampleChangeImage').addEventListener('change', function () {
+    document.getElementById('sampleChangeImageLabel').textContent = this.files[0] ? this.files[0].name : 'Click to upload new logo';
+});
+
+function submitSampleChangeRequest() {
+    const errorEl = document.getElementById('requestPopupError');
+    errorEl.classList.add('hidden');
+
+    const description = document.getElementById('sampleChangeDescription').value.trim();
+    if (!description) {
+        errorEl.textContent = 'Please describe what needs to be changed.';
+        errorEl.classList.remove('hidden');
+        return;
+    }
+
+    const btn = document.getElementById('submitSampleChangeBtn');
+    btn.disabled = true;
+    showLoader();
+
+    const formData = new FormData();
+    formData.append('description', description);
+    const image = document.getElementById('sampleChangeImage').files[0];
+    if (image) formData.append('image', image);
+
+    sendRequest('{{ route('order.sample.request_changes') }}', formData, 'POST', function (res) {
+        hideLoader();
+        btn.disabled = false;
+        if (res.success) {
+            showToast(res.message, 'success', 2500);
+            closeRequestPopup();
+            setTimeout(() => window.location.reload(), 800);
+        } else {
+            errorEl.textContent = res.message || 'Something went wrong.';
+            errorEl.classList.remove('hidden');
+        }
+    }, function (err) {
+        hideLoader();
+        btn.disabled = false;
+        errorEl.textContent = err.errors ? Object.values(err.errors)[0][0] : (err.message || 'Something went wrong.');
+        errorEl.classList.remove('hidden');
+    });
+}
 </script>
 
 @endsection

@@ -3,12 +3,12 @@
 @php
 
     $styles = [
-        'primary' => 'bg-[#ab5f00] text-white hover:bg-[#ab5f00]/80',
-        'secondary' => 'bg-[#d98c33]/50 text-gray-800 hover:bg-gray-300',
-        'outline' => 'border border-[#ab5f00] text-[#ab5f00] hover:bg-[#ab5f00] hover:text-white',
-        'danger' => 'bg-[#d7263d] text-white hover:bg-red-700',
-        'ghost' => 'text-[#000] hover:bg-[#d98c33]/20',
-        'link' => 'text-[#000] underline hover:text-gray-700',
+        'primary' => 'bg-indigo-600 text-white hover:bg-indigo-700',
+        'secondary' => 'bg-slate-200 text-slate-800 hover:bg-slate-300',
+        'outline' => 'border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white',
+        'danger' => 'bg-rose-600 text-white hover:bg-rose-700',
+        'ghost' => 'text-slate-700 hover:bg-indigo-50',
+        'link' => 'text-indigo-600 underline hover:text-indigo-800',
     ];
 
     $bg = $styles[$varient];

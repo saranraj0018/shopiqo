@@ -1,43 +1,26 @@
 @php
-$orders = [
+    // Real rows from the notifications table (see App\Models\Notification) —
+    // fired by real triggers: order placed/status change, sample stage
+    // updates, ticket status changes. ProfileController marks them read
+    // right after handing this collection to the view, so `dot` below still
+    // reflects whichever ones were actually unread when this page loaded.
+    $notificationIcon = function (string $title): string {
+        return match (true) {
+            str_contains($title, 'Cancelled'), str_contains($title, 'Rejected') => 'assets/images/profile/Rejected.png',
+            str_contains($title, 'Refunded') => 'assets/images/profile/Returned.png',
+            str_contains($title, 'Delivered'), str_contains($title, 'Payment') => 'assets/images/profile/Successfully.png',
+            str_contains($title, 'Shipped'), str_contains($title, 'Sample') => 'assets/images/profile/Delivery.png',
+            default => 'assets/images/profile/Confirmed.png',
+        };
+    };
 
-    ['title' => 'Order Confirmed','desc' => 'Your order #ORD-2024-1236 has been confirmed and is being processed.','time' =>
-    '4 day ago','icon' => 'assets/images/profile/Confirmed.png'],
-
-    ['title' => 'Order Returned','desc' => 'Your order #ORD-2024-1237 has been returned to our warehouse.','time' => '3 day
-    ago','icon' => 'assets/images/profile/Returned.png','dot' => true],
-
-    ['title' => 'Order Rejected','desc' => 'Order #ORD-2024-1238 was rejected. Contact support for help.','time' => '2 day
-    ago','icon' => 'assets/images/profile/Rejected.png','dot' => true],
-
-    ['title' => 'Order Pending','desc' => 'Your order #ORD-2024-1240 has been returned and a refund has been
-    initiated.','time' => '1 day ago','icon' => 'assets/images/profile/Pending.png'],
-
-    ['title' => 'Order Delivered Successfully','desc' => 'Your order #ORD-2024-1234 has been delivered. We hope you
-    enjoyyour new EV accessories!','time' => '1 day ago','icon' => 'assets/images/profile/Successfully.png'],
-
-    ['title' => 'Order Out for Delivery','desc' => 'Your order #ORD-2024-1235 is out for delivery and will reach you
-    today.','time' => '1 day ago','icon' => 'assets/images/profile/Delivery.png'],
-
-    ['title' => 'Order Rejected','desc' => 'Order #ORD-2024-1238 was rejected. Contact support for help.','time' => '2 day
-    ago','icon' => 'assets/images/profile/Rejected.png','dot' => true],
-
-    ['title' => 'Order Pending','desc' => 'Your order #ORD-2024-1240 has been returned and a refund has been
-    initiated.','time' => '1 day ago','icon' => 'assets/images/profile/Pending.png'],
-
-    ['title' => 'Order Delivered Successfully','desc' => 'Your order #ORD-2024-1234 has been delivered. We hope you
-    enjoyyour new EV accessories!','time' => '1 day ago','icon' => 'assets/images/profile/Successfully.png'],
-
-    ['title' => 'Order Out for Delivery','desc' => 'Your order #ORD-2024-1235 is out for delivery and will reach you
-    today.','time' => '1 day ago','icon' => 'assets/images/profile/Delivery.png'],
-
-    ['title' => 'Order Confirmed','desc' => 'Your order #ORD-2024-1236 has been confirmed and is being processed.','time' =>
-    '4 day ago','icon' => 'assets/images/profile/Confirmed.png'],
-
-    ['title' => 'Order Returned','desc' => 'Your order #ORD-2024-1237 has been returned to our warehouse.','time' => '3 day
-    ago','icon' => 'assets/images/profile/Returned.png','dot' => true],
-
-];
+    $orders = $notifications->map(fn ($n) => [
+        'title' => $n->title,
+        'desc'  => $n->description,
+        'time'  => $n->created_at->diffForHumans(),
+        'icon'  => $notificationIcon($n->title),
+        'dot'   => $n->status === \App\Models\Notification::STATUS_UNREAD,
+    ]);
 @endphp
 
 <section>

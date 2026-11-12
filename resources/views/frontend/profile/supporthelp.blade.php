@@ -1,39 +1,28 @@
 @php
-$tickets = [
-[
-'id' => '#12345',
-'status' => 'Pending',
-'status_color' => 'bg-white text-black',
-'created' => '02/12/2024',
-'updated' => '04/12/2024',
-'description' => 'The user is unable to proceed buy a product. An error message displays: "Your Session timeout."',
-'attachment' => 'Documents.rp'
-],
-[
-'id' => '#12345',
-'status' => 'In Progress',
-'status_color' => 'bg-[#fff3eb] text-[#f97316]',
-'created' => '02/12/2024',
-'updated' => '04/12/2024',
-'description' => 'The user is unable to proceed buy a product. An error message displays: "Your Session timeout."',
-],
-[
-'id' => '#12345',
-'status' => 'On Hold',
-'status_color' => 'bg-[#fff1f3] text-[#f43f5e]',
-'created' => '02/12/2024',
-'updated' => '04/12/2024',
-'description' => 'The user is unable to proceed buy a product. An error message displays: "Your Session timeout."',
-],
-[
-'id' => '#12345',
-'status' => 'Resolved',
-'status_color' => 'bg-[#ecfdf3] text-[#22c55e]',
-'created' => '02/12/2024',
-'updated' => '04/12/2024',
-'description' => 'The user is unable to proceed buy a product. An error message displays: "Your Session timeout."',
-],
-];
+    $statusLabels = [
+        'pending'     => 'Pending',
+        'in_progress' => 'In Progress',
+        'on_hold'     => 'On Hold',
+        'resolved'    => 'Resolved',
+        'rejected'    => 'Rejected',
+    ];
+    $statusColors = [
+        'pending'     => 'bg-white text-black',
+        'in_progress' => 'bg-[#fff3eb] text-[#f97316]',
+        'on_hold'     => 'bg-[#fff1f3] text-[#f43f5e]',
+        'resolved'    => 'bg-[#ecfdf3] text-[#22c55e]',
+        'rejected'    => 'bg-[#f3f4f6] text-[#6b7280]',
+    ];
+
+    $ticketRows = $tickets->map(fn ($t) => [
+        'id'            => '#' . $t->id,
+        'status'        => $statusLabels[$t->status] ?? ucfirst($t->status),
+        'status_color'  => $statusColors[$t->status] ?? 'bg-white text-black',
+        'created'       => $t->created_at->format('d/m/Y'),
+        'updated'       => $t->updated_at->format('d/m/Y'),
+        'description'   => $t->description,
+        'attachment'    => $t->image,
+    ]);
 @endphp
 <section >
     <div class="mx-auto">
@@ -43,35 +32,89 @@ $tickets = [
 
         <!-- Form -->
         <div class="mb-8 w-full lg:w-[55%] px-4 lg:px-0">
-            <label class="mb-2 block text-[13px] font-medium text-white">
-                Description
-            </label>
+            <p id="ticketFormError" class="hidden mb-3 text-[12px] text-red-400"></p>
 
-            <textarea placeholder="Explain About Your Problem"
-                class="h-[90px] w-full rounded-[8px] border border-white/10 bg-white px-4 py-3 text-[13px] text-black outline-none placeholder:text-gray-400"></textarea>
+            <form id="ticketForm">
+                @csrf
+                <label class="mb-2 block text-[13px] font-medium text-white">
+                    Description
+                </label>
 
-            <p class="mt-3 mb-3 text-[12px] text-white/80">
-                Add An Image To Provide More Details (Optional)
-            </p>
+                <textarea name="description" id="ticket_description" placeholder="Explain About Your Problem"
+                    class="h-[90px] w-full rounded-[8px] border border-white/10 bg-white px-4 py-3 text-[13px] text-black outline-none placeholder:text-gray-400"></textarea>
 
-            <label
-                class="flex h-[72px] w-full cursor-pointer items-center justify-center rounded-[12px] border border-dashed border-white/30 bg-transparent text-[13px] text-white/80 transition hover:border-white/50">
-                <input type="file" class="hidden">
-                <span class="flex items-center gap-2">
-                    Attach Image
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1" />
-                    </svg>
-                </span>
-            </label>
+                <p class="mt-3 mb-3 text-[12px] text-white/80">
+                    Add An Image To Provide More Details (Optional)
+                </p>
 
-            <button
-                class="mt-4 h-[40px] min-w-[108px] rounded-full bg-white px-6 text-[14px] font-medium text-black transition hover:bg-white/90">
-                Submit
-            </button>
+                <label
+                    class="flex h-[72px] w-full cursor-pointer items-center justify-center rounded-[12px] border border-dashed border-white/30 bg-transparent text-[13px] text-white/80 transition hover:border-white/50">
+                    <input type="file" name="image" id="ticket_image" accept="image/*" class="hidden">
+                    <span id="ticketImageLabel" class="flex items-center gap-2">
+                        Attach Image
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 16V4m0 0l-4 4m4-4l4 4M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1" />
+                        </svg>
+                    </span>
+                </label>
+
+                <button type="submit" id="ticketSubmitBtn"
+                    class="mt-4 h-[40px] min-w-[108px] rounded-full bg-white px-6 text-[14px] font-medium text-black transition hover:bg-white/90">
+                    Submit
+                </button>
+            </form>
         </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('ticketForm');
+            if (!form) return;
+
+            const errorEl = document.getElementById('ticketFormError');
+            const submitBtn = document.getElementById('ticketSubmitBtn');
+            const imageInput = document.getElementById('ticket_image');
+            const imageLabel = document.getElementById('ticketImageLabel');
+
+            imageInput.addEventListener('change', function () {
+                imageLabel.firstChild.textContent = imageInput.files[0] ? imageInput.files[0].name : 'Attach Image';
+            });
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                errorEl.classList.add('hidden');
+
+                const description = document.getElementById('ticket_description').value.trim();
+                if (!description) {
+                    errorEl.textContent = 'Please describe your problem.';
+                    errorEl.classList.remove('hidden');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                showLoader();
+
+                const formData = new FormData(form);
+                sendRequest('{{ route('support.ticket.store') }}', formData, 'POST', function (res) {
+                    hideLoader();
+                    submitBtn.disabled = false;
+                    if (res.success) {
+                        showToast(res.message, 'success', 2000);
+                        setTimeout(() => window.location.reload(), 700);
+                    } else {
+                        errorEl.textContent = res.message || 'Something went wrong.';
+                        errorEl.classList.remove('hidden');
+                    }
+                }, function (err) {
+                    hideLoader();
+                    submitBtn.disabled = false;
+                    errorEl.textContent = err.errors ? Object.values(err.errors)[0][0] : (err.message || 'Something went wrong.');
+                    errorEl.classList.remove('hidden');
+                });
+            });
+        });
+        </script>
 
         <!-- Tickets -->
         <div class="w-full lg:w-[90%]">
@@ -81,7 +124,7 @@ $tickets = [
 
             <div class="space-y-3 h-[40vh] overflow-auto custom-scroll">
 
-                @foreach($tickets as $ticket)
+                @forelse($ticketRows as $ticket)
                 <div
                     class="rounded-[14px] border border-white/10 bg-white/[0.04] px-4 py-4 backdrop-blur-md shadow-[inset_0_0_40px_rgba(255,255,255,0.03)]">
 
@@ -132,21 +175,23 @@ $tickets = [
                     <div class="mt-3 flex gap-[10px] items-center ">
                         <p class=" text-[11px] font-medium text-white">Attachments:</p>
 
-                        <div
-                            class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-[4px] text-[10px] text-black">
+                        <a href="{{ asset('storage/' . $ticket['attachment']) }}" target="_blank"
+                            class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-[4px] text-[10px] text-black hover:bg-white/90">
 
                             <span
                                 class="flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-white text-[9px]">
                                 📄
                             </span>
 
-                            {{ $ticket['attachment'] }}
-                        </div>
+                            View Attachment
+                        </a>
                     </div>
                     @endif
 
                 </div>
-                @endforeach
+                @empty
+                <p class="text-[12px] text-white/50">No support tickets yet.</p>
+                @endforelse
 
             </div>
         </div>

@@ -6,35 +6,14 @@
     <div class="mt-4">
         <h3 class="text-[15px] sm:text-[16px] font-medium text-white">Categories</h3>
         <div class="mt-3 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-1 gap-y-2 gap-x-3">
+            @forelse ($categories as $category)
             <label class="flex items-center gap-2 text-white/70 cursor-pointer">
-                <input type="checkbox" value="Pens" class="filter-category custom-checkbox">
-                <span class="text-[13px] sm:text-[14px]">Pens</span>
+                <input type="checkbox" value="{{ $category->id }}" class="filter-category custom-checkbox">
+                <span class="text-[13px] sm:text-[14px]">{{ $category->name }}</span>
             </label>
-
-            <label class="flex items-center gap-2 text-white/70 cursor-pointer">
-                <input type="checkbox" value="Bottles" class="filter-category custom-checkbox">
-                <span class="text-[13px] sm:text-[14px]">Bottles</span>
-            </label>
-
-            <label class="flex items-center gap-2 text-white/70 cursor-pointer">
-                <input type="checkbox" value="Bags" class="filter-category custom-checkbox">
-                <span class="text-[13px] sm:text-[14px]">Bags</span>
-            </label>
-
-            <label class="flex items-center gap-2 text-white/70 cursor-pointer">
-                <input type="checkbox" value="Apparel" class="filter-category custom-checkbox">
-                <span class="text-[13px] sm:text-[14px]">Apparel</span>
-            </label>
-
-            <label class="flex items-center gap-2 text-white/70 cursor-pointer">
-                <input type="checkbox" value="Stationery" class="filter-category custom-checkbox">
-                <span class="text-[13px] sm:text-[14px]">Stationery</span>
-            </label>
-
-            <label class="flex items-center gap-2 text-white/70 cursor-pointer">
-                <input type="checkbox" value="Tech Gifts" class="filter-category custom-checkbox">
-                <span class="text-[13px] sm:text-[14px]">Tech Gifts</span>
-            </label>
+            @empty
+            <p class="text-[13px] text-white/40">No categories yet</p>
+            @endforelse
         </div>
     </div>
 
@@ -47,26 +26,26 @@
 
             <div id="rangeTrack" class="absolute top-1/2 -translate-y-1/2 h-1 bg-gray-300 rounded"></div>
 
-            <input type="range" id="minRange" min="30" max="1500" value="30"
+            <input type="range" id="minRange" min="{{ $minPrice }}" max="{{ $maxPrice }}" value="{{ $minPrice }}"
                 class="absolute w-full appearance-none bg-transparent">
 
-            <input type="range" id="maxRange" min="30" max="1500" value="1500"
+            <input type="range" id="maxRange" min="{{ $minPrice }}" max="{{ $maxPrice }}" value="{{ $maxPrice }}"
                 class="absolute w-full appearance-none bg-transparent">
 
             <div id="minTooltip"
                 class="absolute -top-8 text-[10px] sm:text-xs bg-black text-white px-2 py-1 rounded border border-white whitespace-nowrap">
-                ₹30
+                ₹{{ $minPrice }}
             </div>
 
             <div id="maxTooltip"
                 class="absolute -top-8 text-[10px] sm:text-xs bg-black text-white px-2 py-1 rounded border border-white whitespace-nowrap">
-                ₹1500
+                ₹{{ $maxPrice }}
             </div>
         </div>
 
         <div class="flex justify-between text-[13px] sm:text-sm mt-4 text-white/80">
-            <span id="minPrice">₹30</span>
-            <span id="maxPrice">₹1500</span>
+            <span id="minPrice">₹{{ $minPrice }}</span>
+            <span id="maxPrice">₹{{ $maxPrice }}</span>
         </div>
     </div>
 

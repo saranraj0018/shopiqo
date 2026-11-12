@@ -1,4 +1,4 @@
-<header class="absolute top-0 left-0 w-full z-50 text-white">
+<header class="fixed top-0 left-0 w-full z-50 text-white">
     <div class="w-full bg-black backdrop-blur-md border-b border-white/10">
         <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-10">
             <div class="h-[64px] md:h-[68px] flex items-center justify-between gap-4">
@@ -130,59 +130,25 @@
                 class="h-[46px] md:h-[50px] flex items-center gap-6 md:gap-10 overflow-x-auto whitespace-nowrap text-[13px] md:text-[15px]"
                 style="scrollbar-width:none; -ms-overflow-style:none;">
 
-                <a href="/shop?category=all"44444444444
+                <a href="/shop?category=all"
                     class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
-                    <span>Christmas</span>
+                    <span>All Categories</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
                     </svg>
                 </a>
 
-                <a href="/shop?category=stationery"
-                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
-                    <span>Diaries &amp; Calendars 2026</span>
+                @foreach($navCategories as $category)
+                <a href="/shop?category={{ $category->id }}"
+                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0 {{ $loop->last ? 'pr-2' : '' }}">
+                    <span>{{ $category->name }}</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
                     </svg>
                 </a>
-
-                <a href="/shop?category=visiting-cards"
-                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
-                    <span>Visiting Cards &amp; ID Cards</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
-                    </svg>
-                </a>
-
-                <a href="/shop?category=stationery"
-                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
-                    <span>Stationery &amp; Office Supplies</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
-                    </svg>
-                </a>
-
-                <a href="/shop?category=bottles"
-                    class="flex items-center gap-2 text-white/95 hover:text-white transition shrink-0">
-                    <span>Drinkware &amp; Lunchboxes</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
-                    </svg>
-                </a>
-
-                <a href="/shop?category=bags"
-                    class="flex items-center gap-2 text-white/95 hover:text-white transition pr-2 shrink-0">
-                    <span>Bags</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-[12px] h-[12px] md:w-[14px] md:h-[14px]"
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
-                    </svg>
-                </a>
+                @endforeach
             </div>
         </div>
     </div>

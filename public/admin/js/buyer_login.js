@@ -71,13 +71,9 @@ $(function () {
       loginForm.style.display = "block";
       signupForm.style.display = "none";
 
-    $(document).on("click", "#login_personal_form", function (e) {
-        alert(1);
-    });
-
     $(document).on("submit", "#buyerloginForm", function (e) {
         e.preventDefault();
-        let $saveBtn = $("#login_personal_form");
+        let $saveBtn = $("#login_business_form");
         let fields = [
             {
                 id: "#email",
@@ -139,7 +135,7 @@ $(function () {
 
     $(document).on("submit", "#buyersignupForm", function (e) {
         e.preventDefault();
-        let $saveBtn = $("#save_personal_login");
+        let $saveBtn = $("#save_business_signup");
         let fields = [
             {
                 id: "#full_name",
@@ -147,7 +143,7 @@ $(function () {
                 message: "Full Name is required",
             },
             {
-                id: "#email",
+                id: "#signup_email",
                 condition: (val) => val === "",
                 message: "Email is required",
             },
@@ -157,7 +153,7 @@ $(function () {
                 message: "Phone Number is required",
             },
             {
-                id: "#password",
+                id: "#signup_password",
                 condition: (val) => val === "",
                 message: "Password is required",
             },
@@ -170,11 +166,6 @@ $(function () {
                 id: "#designation",
                 condition: (val) => val === "",
                 message: "Designation is required",
-            },
-            {
-                id: "#gst_number",
-                condition: (val) => val === "",
-                message: "GST Number is required",
             },
         ];
         let isValid = true;

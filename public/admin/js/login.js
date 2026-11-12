@@ -145,7 +145,7 @@ $(function () {
                 message: "Full Name is required",
             },
             {
-                id: "#email",
+                id: "#signup_email",
                 condition: (val) => val === "",
                 message: "Email is required",
             },
@@ -155,7 +155,7 @@ $(function () {
                 message: "Phone Number is required",
             },
             {
-                id: "#password",
+                id: "#signup_password",
                 condition: (val) => val === "",
                 message: "Password is required",
             },

@@ -95,7 +95,7 @@ $(document).ready(function () {
         if (type === "variant") {
             $("#variantFields").removeClass("hidden");
             const primAttr = $("#primary_variant").val();
-            if (primAttr) buildFirstVariantRow(primAttr);
+            if (primAttr) buildFirstVariantGroup(primAttr);
         }
 
         if (type === "bulk") {
@@ -118,18 +118,18 @@ $(document).ready(function () {
             variantIndex = 0;
             return;
         }
-        buildFirstVariantRow(id);
+        buildFirstVariantGroup(id);
     });
 
     /*=================================================================
-      BUILD FIRST VARIANT ROW (index 0, no Remove button)
+      BUILD FIRST VARIANT GROUP (index 0, no Remove Variant button)
     =================================================================*/
-    function buildFirstVariantRow(attributeTypeId) {
+    function buildFirstVariantGroup(attributeTypeId) {
         loadVariantOptions(
             attributeTypeId,
             function (primaryHtml, secondaryHtml) {
                 $("#variantWrapper").html(
-                    makeVariantRowHtml(0, primaryHtml, secondaryHtml, false),
+                    makeVariantGroupHtml(0, primaryHtml, secondaryHtml, false),
                 );
                 variantIndex = 1;
             },
@@ -137,7 +137,7 @@ $(document).ready(function () {
     }
 
     /*=================================================================
-      ADD VARIANT ROW
+      ADD VARIANT (new primary-value card, e.g. a new color)
     =================================================================*/
     $("#addVariant").on("click", function () {
         const attributeTypeId = $("#primary_variant").val();
@@ -153,7 +153,7 @@ $(document).ready(function () {
             attributeTypeId,
             function (primaryHtml, secondaryHtml) {
                 $("#variantWrapper").append(
-                    makeVariantRowHtml(
+                    makeVariantGroupHtml(
                         variantIndex,
                         primaryHtml,
                         secondaryHtml,
@@ -165,86 +165,172 @@ $(document).ready(function () {
         );
     });
 
-    $(document).on("click", ".removeVariant", function () {
-        $(this).closest(".variant-row").remove();
+    $(document).on("click", ".removeVariantGroup", function () {
+        $(this).closest(".variant-group").remove();
     });
 
     /*=================================================================
-      VARIANT ROW HTML
+      VARIANT GROUP HTML — one card per primary value (color). The cover
+      image and gallery are uploaded once here and apply to every size
+      row nested inside, instead of re-choosing the same file per combo.
     =================================================================*/
-    function makeVariantRowHtml(
-        idx,
+    function makeVariantGroupHtml(
+        groupIdx,
         primaryHtml,
         secondaryHtml,
-        showRemove,
+        showRemoveGroup,
         data,
     ) {
-        // data is optional — used when rebuilding rows in edit mode
+        // data is optional — used when rebuilding groups in edit mode
         data = data || {};
+        const rows = data.rows && data.rows.length ? data.rows : [{}];
+        const existingGallery = data.existing_gallery || [];
+
+        let rowsHtml = "";
+        rows.forEach(function (rowData, rowIdx) {
+            rowsHtml += makeGroupRowHtml(
+                groupIdx,
+                rowIdx,
+                secondaryHtml,
+                rowIdx !== 0,
+                rowData,
+            );
+        });
+
+        let existingGalleryHtml = "";
+        existingGallery.forEach(function (path) {
+            existingGalleryHtml += `
+            <div class="relative existing-group-gallery-item" data-path="${path}">
+                <input type="hidden" name="variant_groups[${groupIdx}][existing_gallery][]" value="${path}">
+                <img src="/storage/${path}" class="h-16 w-16 rounded object-cover border">
+                <button type="button"
+                        class="removeGroupGalleryImage absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs leading-none">
+                    ×
+                </button>
+            </div>`;
+        });
+
         return `
-        <div class="variant-row grid grid-cols-7 gap-3 mb-4 items-start">
-            <div>
-                <select name="variants[${idx}][primary_value]"
-                        class="border rounded-xl px-3 py-2 w-full primaryValue">
-                    ${primaryHtml}
-                </select>
+        <div class="variant-group border rounded-xl p-4 mb-4" data-group-index="${groupIdx}" data-row-index="${rows.length}">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Primary Value</label>
+                    <select name="variant_groups[${groupIdx}][primary_value]"
+                            class="border rounded-xl px-3 py-2 w-full primaryValue">
+                        ${primaryHtml}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Cover Image</label>
+                    <input type="hidden"
+                           name="variant_groups[${groupIdx}][existing_image]"
+                           value="${data.existing_image || ""}"
+                           class="existingGroupImage">
+                    <input type="file"
+                           name="variant_groups[${groupIdx}][image]"
+                           class="groupImage border rounded-xl px-3 py-2 w-full"
+                           accept="image/*">
+                    <div class="flex gap-2 mt-2 groupImagePreviewWrap">
+                        <img class="groupImagePreview w-16 h-16 object-cover rounded hidden">
+                        ${
+                            data.existing_image
+                                ? `<img src="/storage/${data.existing_image}"
+                                       class="existingGroupImageThumb w-16 h-16 rounded object-cover border">`
+                                : ""
+                        }
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Gallery Images</label>
+                    <input type="file"
+                           name="variant_groups[${groupIdx}][gallery_images][]"
+                           class="groupGalleryImages border rounded-xl px-3 py-2 w-full"
+                           accept="image/*" multiple>
+                    <div class="flex flex-wrap gap-2 mt-2 groupGalleryPreviewWrap">
+                        ${existingGalleryHtml}
+                    </div>
+                </div>
             </div>
-            <div>
-                <select name="variants[${idx}][secondary_value]"
-                        class="border rounded-xl px-3 py-2 w-full secondaryValue">
-                    ${secondaryHtml}
-                </select>
+
+            <div class="grid grid-cols-4 gap-3 font-semibold text-xs mb-2 text-gray-600">
+                <div>Secondary Value</div>
+                <div>Regular Price</div>
+                <div>Sale Price</div>
+                <div>Stock</div>
             </div>
-            <div>
-                <input type="number" step="0.01" min="0"
-                       name="variants[${idx}][regular_price]"
-                       placeholder="Regular Price"
-                       value="${data.regular_price || ""}"
-                       class="regular_price border rounded-xl px-3 py-2 w-full">
-            </div>
-            <div>
-                <input type="number" step="0.01" min="0"
-                       name="variants[${idx}][sale_price]"
-                       placeholder="Sale Price"
-                       value="${data.sale_price || ""}"
-                       class="sale_price border rounded-xl px-3 py-2 w-full">
-            </div>
-            <div>
-                <input type="number" min="0"
-                       name="variants[${idx}][stock]"
-                       placeholder="Stock"
-                       value="${data.stock || ""}"
-                       class="stock border rounded-xl px-3 py-2 w-full">
-            </div>
-            <div>
-                <input type="hidden"
-                       name="variants[${idx}][existing_image]"
-                       value="${data.existing_image || ""}"
-                       class="existingVariantImage">
-                <input type="file"
-                       name="variants[${idx}][image]"
-                       class="variantImage border rounded-xl px-3 py-2 w-full"
-                       accept="image/*">
-                <img class="variantImagePreview mt-2 w-16 h-16 object-cover rounded hidden">
+
+            <div class="group-rows">${rowsHtml}</div>
+
+            <div class="flex gap-2 mt-2">
+                <button type="button" class="addPriceRow bg-blue-600 text-white px-4 py-2 rounded-xl text-sm">
+                    + Add Price
+                </button>
                 ${
-                    data.existing_image
-                        ? `<img src="/storage/${data.existing_image}"
-                               class="existingVariantThumb w-16 h-16 mt-2 rounded object-cover border">`
-                        : ""
-                }
-            </div>
-            <div class="flex items-center">
-                ${
-                    showRemove
-                        ? `<button type="button"
-                               class="removeVariant bg-red-500 text-white px-3 py-2 rounded-xl text-sm">
-                           Remove
-                       </button>`
+                    showRemoveGroup
+                        ? `<button type="button" class="removeVariantGroup bg-red-500 text-white px-4 py-2 rounded-xl text-sm">
+                               Remove Variant
+                           </button>`
                         : ""
                 }
             </div>
         </div>`;
     }
+
+    function makeGroupRowHtml(groupIdx, rowIdx, secondaryHtml, showRemove, rowData) {
+        rowData = rowData || {};
+        return `
+        <div class="group-row grid grid-cols-4 gap-3 mb-2 items-center">
+            <select name="variant_groups[${groupIdx}][rows][${rowIdx}][secondary_value]"
+                    class="border rounded-xl px-3 py-2 w-full secondaryValue">
+                ${secondaryHtml}
+            </select>
+            <input type="number" step="0.01" min="0"
+                   name="variant_groups[${groupIdx}][rows][${rowIdx}][regular_price]"
+                   placeholder="Regular Price"
+                   value="${rowData.regular_price || ""}"
+                   class="regular_price border rounded-xl px-3 py-2 w-full">
+            <input type="number" step="0.01" min="0"
+                   name="variant_groups[${groupIdx}][rows][${rowIdx}][sale_price]"
+                   placeholder="Sale Price"
+                   value="${rowData.sale_price || ""}"
+                   class="sale_price border rounded-xl px-3 py-2 w-full">
+            <div class="flex items-center gap-2">
+                <input type="number" min="0"
+                       name="variant_groups[${groupIdx}][rows][${rowIdx}][stock]"
+                       placeholder="Stock"
+                       value="${rowData.stock || ""}"
+                       class="stock border rounded-xl px-3 py-2 w-full">
+                ${
+                    showRemove
+                        ? `<button type="button" class="removeGroupRow bg-red-500 text-white px-3 py-2 rounded-xl text-sm">
+                               Remove
+                           </button>`
+                        : ""
+                }
+            </div>
+        </div>`;
+    }
+
+    /*=================================================================
+      ADD / REMOVE PRICE ROW WITHIN A VARIANT GROUP
+    =================================================================*/
+    $(document).on("click", ".addPriceRow", function () {
+        const $group = $(this).closest(".variant-group");
+        const groupIdx = parseInt($group.attr("data-group-index"), 10);
+        const attributeTypeId = $("#primary_variant").val();
+
+        loadVariantOptions(attributeTypeId, function (primaryHtml, secondaryHtml) {
+            const rowIdx = parseInt($group.attr("data-row-index"), 10) || 0;
+            $group
+                .find(".group-rows")
+                .append(makeGroupRowHtml(groupIdx, rowIdx, secondaryHtml, true, {}));
+            $group.attr("data-row-index", rowIdx + 1);
+        });
+    });
+
+    $(document).on("click", ".removeGroupRow", function () {
+        $(this).closest(".group-row").remove();
+    });
 
     /*=================================================================
       LOAD VARIANT OPTIONS (parallel AJAX)
@@ -276,10 +362,10 @@ $(document).ready(function () {
     }
 
     /*=================================================================
-      VARIANT IMAGE PREVIEW
+      VARIANT GROUP — cover image + gallery preview
     =================================================================*/
-    $(document).on("change", ".variantImage", function () {
-        const preview = $(this).siblings(".variantImagePreview");
+    $(document).on("change", ".groupImage", function () {
+        const preview = $(this).closest(".variant-group").find(".groupImagePreview");
         if (this.files && this.files[0]) {
             const reader = new FileReader();
             reader.onload = function (e) {
@@ -287,6 +373,23 @@ $(document).ready(function () {
             };
             reader.readAsDataURL(this.files[0]);
         }
+    });
+
+    $(document).on("change", ".groupGalleryImages", function () {
+        const wrap = $(this).closest(".variant-group").find(".groupGalleryPreviewWrap");
+        for (let i = 0; i < this.files.length; i++) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                wrap.append(
+                    `<img src="${e.target.result}" class="h-16 w-16 rounded object-cover border">`,
+                );
+            };
+            reader.readAsDataURL(this.files[i]);
+        }
+    });
+
+    $(document).on("click", ".removeGroupGalleryImage", function () {
+        $(this).closest(".existing-group-gallery-item").remove();
     });
 
     /*=================================================================
@@ -495,18 +598,16 @@ $(document).ready(function () {
                 isValid = false;
             } else clearError($prim);
 
-            if ($("#variantWrapper .variant-row").length === 0) {
-                showToast("Add at least one variant row", "error", 2000);
+            if ($("#variantWrapper .variant-group").length === 0) {
+                showToast("Add at least one variant", "error", 2000);
                 isValid = false;
             }
 
-            $("#variantWrapper .variant-row").each(function () {
+            $("#variantWrapper .variant-group").each(function () {
                 const $pv = $(this).find(".primaryValue");
-                const $reg = $(this).find(".regular_price");
-                const $sale = $(this).find(".sale_price");
-                const $stk = $(this).find(".stock");
-                const $img = $(this).find(".variantImage");
-                const $eImg = $(this).find(".existingVariantImage");
+                const $img = $(this).find(".groupImage");
+                const $eImg = $(this).find(".existingGroupImage");
+                const $rows = $(this).find(".group-row");
 
                 if (!$.trim($pv.val())) {
                     showError($pv, "Required");
@@ -517,41 +618,64 @@ $(document).ready(function () {
                     );
                     isValid = false;
                 } else clearError($pv);
-                if (!$.trim($reg.val())) {
-                    showError($reg, "Required");
-                    showToast(
-                        "Regular Price required for all variants",
-                        "error",
-                        2000,
-                    );
-                    isValid = false;
-                } else clearError($reg);
-                if (!$.trim($sale.val())) {
-                    showError($sale, "Required");
-                    showToast(
-                        "Sale Price required for all variants",
-                        "error",
-                        2000,
-                    );
-                    isValid = false;
-                } else clearError($sale);
-                if (!$.trim($stk.val())) {
-                    showError($stk, "Required");
-                    showToast("Stock required for all variants", "error", 2000);
-                    isValid = false;
-                } else clearError($stk);
 
                 // On create: file required. On update: existing image is acceptable.
                 if (!$img.val() && !$.trim($eImg.val())) {
                     showError($img, "Image required");
-                    showToast("Image required for all variants", "error", 2000);
+                    showToast("Cover image required for all variants", "error", 2000);
                     isValid = false;
                 } else clearError($img);
+
+                if ($rows.length === 0) {
+                    showToast("Add at least one price row for every variant", "error", 2000);
+                    isValid = false;
+                }
+
+                $rows.each(function () {
+                    const $reg = $(this).find(".regular_price");
+                    const $sale = $(this).find(".sale_price");
+                    const $stk = $(this).find(".stock");
+
+                    if (!$.trim($reg.val())) {
+                        showError($reg, "Required");
+                        showToast(
+                            "Regular Price required for all rows",
+                            "error",
+                            2000,
+                        );
+                        isValid = false;
+                    } else clearError($reg);
+                    if (!$.trim($sale.val())) {
+                        showError($sale, "Required");
+                        showToast(
+                            "Sale Price required for all rows",
+                            "error",
+                            2000,
+                        );
+                        isValid = false;
+                    } else clearError($sale);
+                    if (!$.trim($stk.val())) {
+                        showError($stk, "Required");
+                        showToast("Stock required for all rows", "error", 2000);
+                        isValid = false;
+                    } else clearError($stk);
+                });
             });
         }
 
         // Bulk
         if (type === "bulk") {
+            const $baseReg = $(".bulk_base_regular_price");
+            if (!$.trim($baseReg.val())) {
+                showError($baseReg, "Required");
+                showToast(
+                    "Per Piece Price is required for bulk products",
+                    "error",
+                    2000,
+                );
+                isValid = false;
+            } else clearError($baseReg);
+
             if ($("#bulkWrapper .bulk-row").length === 0) {
                 showToast("Add at least one price range", "error", 2000);
                 isValid = false;
@@ -672,6 +796,20 @@ $(document).ready(function () {
         $("textarea[name='description']").val(product.description);
         $("#production_min_days").val(product.production_min_days || "");
         $("#production_max_days").val(product.production_max_days || "");
+        $("#sample_days").val(product.sample_days || "");
+        $("#packaging_units").val(product.packaging_units || "");
+
+        $(".print_capability_checkbox").prop("checked", false);
+        if (product.print_capability) {
+            const selectedPrintMethods = product.print_capability
+                .split(",")
+                .map((value) => value.trim());
+            $(".print_capability_checkbox").each(function () {
+                if (selectedPrintMethods.includes(this.value)) {
+                    this.checked = true;
+                }
+            });
+        }
 
         // Sub-category — wait for AJAX to populate the option
         if (product.sub_category_id) {
@@ -707,14 +845,16 @@ $(document).ready(function () {
 
         /*--------------------------------------------------------------
          | VARIANT edit
-         | product_variant rows where pri_attribute_id IS NOT NULL
+         | product_variant rows where pri_attribute_id IS NOT NULL, grouped
+         | back into one card per primary value (color) — the cover image
+         | and gallery are stored on the group's first row (see
+         | ProductController::saveProduct's VARIANT SAVE block).
          |--------------------------------------------------------------*/
         if (
             product.product_type === "variant" &&
             product.product_variant &&
             product.product_variant.length
         ) {
-            // Filter to only real variant rows (exclude bulk rows)
             const variantRows = product.product_variant.filter(function (pv) {
                 return pv.pri_attribute_id !== null;
             });
@@ -723,52 +863,80 @@ $(document).ready(function () {
                 const primaryAttributeId = variantRows[0].pri_attribute_id;
                 $("#primary_variant").val(primaryAttributeId);
 
+                // Group rows by their primary value (color) id, preserving order.
+                const groups = []; // [{ primaryValueId, rows: [{regular_price, sale_price, stock, existing_image, secondaryValueId}] }]
+                const groupByPrimary = {};
+
+                variantRows.forEach(function (v) {
+                    let primaryValueId = "";
+                    let secondaryValueId = "";
+
+                    if (v.variant_values && v.variant_values.length) {
+                        v.variant_values.forEach(function (vv) {
+                            if (
+                                String(vv.attribute_id) ===
+                                String(primaryAttributeId)
+                            ) {
+                                primaryValueId = vv.attribute_value_id;
+                            } else {
+                                secondaryValueId = vv.attribute_value_id;
+                            }
+                        });
+                    }
+
+                    if (!groupByPrimary[primaryValueId]) {
+                        const group = { primaryValueId: primaryValueId, variantId: v.id, rows: [] };
+                        groupByPrimary[primaryValueId] = group;
+                        groups.push(group);
+                    }
+
+                    groupByPrimary[primaryValueId].rows.push({
+                        regular_price: v.regular_price,
+                        sale_price: v.sale_price,
+                        stock: v.stock,
+                        secondaryValueId: secondaryValueId,
+                        // The group's images live on its first row (v.id === group.variantId).
+                        cover_image: v.id === groupByPrimary[primaryValueId].variantId ? v.cover_image : null,
+                    });
+                });
+
+                const galleryByVariantId = {};
+                (product.product_gallery_image || []).forEach(function (g) {
+                    if (!g.variant_id) return;
+                    if (!galleryByVariantId[g.variant_id]) galleryByVariantId[g.variant_id] = [];
+                    galleryByVariantId[g.variant_id].push(g.image_path);
+                });
+
                 loadVariantOptions(
                     primaryAttributeId,
                     function (primaryHtml, secondaryHtml) {
                         $("#variantWrapper").html("");
                         variantIndex = 0;
 
-                        variantRows.forEach(function (v, index) {
-                            let primaryValueId = "";
-                            let secondaryValueId = "";
-
-                            if (v.variant_values && v.variant_values.length) {
-                                v.variant_values.forEach(function (vv) {
-                                    if (
-                                        String(vv.attribute_id) ===
-                                        String(primaryAttributeId)
-                                    ) {
-                                        primaryValueId = vv.attribute_value_id;
-                                    } else {
-                                        secondaryValueId =
-                                            vv.attribute_value_id;
-                                    }
-                                });
-                            }
-
-                            const rowHtml = makeVariantRowHtml(
-                                index,
+                        groups.forEach(function (group, groupIdx) {
+                            const groupHtml = makeVariantGroupHtml(
+                                groupIdx,
                                 primaryHtml,
                                 secondaryHtml,
-                                index !== 0,
+                                groupIdx !== 0,
                                 {
-                                    regular_price: v.regular_price,
-                                    sale_price: v.sale_price,
-                                    stock: v.stock,
-                                    existing_image: v.cover_image || "",
+                                    existing_image: group.rows[0].cover_image || "",
+                                    existing_gallery: galleryByVariantId[group.variantId] || [],
+                                    rows: group.rows,
                                 },
                             );
 
-                            $("#variantWrapper").append(rowHtml);
+                            $("#variantWrapper").append(groupHtml);
 
-                            // Set selects AFTER appending to DOM
-                            $(
-                                `select[name="variants[${index}][primary_value]"]`,
-                            ).val(primaryValueId);
-                            $(
-                                `select[name="variants[${index}][secondary_value]"]`,
-                            ).val(secondaryValueId);
+                            $(`select[name="variant_groups[${groupIdx}][primary_value]"]`).val(
+                                group.primaryValueId,
+                            );
+                            group.rows.forEach(function (row, rowIdx) {
+                                $(
+                                    `select[name="variant_groups[${groupIdx}][rows][${rowIdx}][secondary_value]"]`,
+                                ).val(row.secondaryValueId);
+                            });
+
                             variantIndex++;
                         });
                     },
@@ -778,19 +946,19 @@ $(document).ready(function () {
 
         /*--------------------------------------------------------------
          | BULK edit
-         | Bulk rows are product_variant rows where pri_attribute_id IS NULL
-         | and minimum / maximum are filled.
-         | Attribute selections come from variant_values on each row.
+         | Bulk price tiers live in their own bulk_products table now
+         | (see BulkProduct/BulkProductVariant), not in product_variants.
+         | Attribute selections come from each row's nested "variants".
          |--------------------------------------------------------------*/
         if (
             product.product_type === "bulk" &&
-            product.product_variant &&
-            product.product_variant.length
+            product.bulk_products &&
+            product.bulk_products.length
         ) {
-            // Filter to only bulk rows
-            const bulkRows = product.product_variant.filter(function (pv) {
-                return pv.pri_attribute_id === null && pv.minimum !== null;
-            });
+            // Per-piece fallback price lives directly on the product row.
+            $(".bulk_base_regular_price").val(product.per_piece_price);
+
+            const bulkRows = product.bulk_products;
 
             // Collect all attribute selections (union across all rows — they share same attributes)
             const allAttributes = {}; // { attributeTypeId: [value_ids] }
@@ -838,9 +1006,9 @@ $(document).ready(function () {
 
                 bulkIndex = index + 1;
 
-                // Collect attribute values from variant_values of this bulk row
-                if (b.variant_values && b.variant_values.length) {
-                    b.variant_values.forEach(function (vv) {
+                // Collect attribute values from this bulk tier's variants
+                if (b.variants && b.variants.length) {
+                    b.variants.forEach(function (vv) {
                         const attrId = vv.attribute_id;
                         if (!allAttributes[attrId]) allAttributes[attrId] = [];
                         if (

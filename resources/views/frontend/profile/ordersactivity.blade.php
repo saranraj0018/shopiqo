@@ -1,18 +1,22 @@
 @php
-$orders = [
-['image'=>'assets/images/categoriecard/categorie.png','button1'=>'View Order','button2'=>'Download Invoice'],
-['image'=>'assets/images/categoriecard/categorie1.png','button1'=>'Track Order','button2'=>null],
-['image'=>'assets/images/categoriecard/categorie2.png','button1'=>'View Order','button2'=>'Download Invoice'],
-['image'=>'assets/images/categoriecard/categorie3.png','button1'=>'View Order','button2'=>'Download Invoice'],
-['image'=>'assets/images/categoriecard/categorie4.png','button1'=>'Track Order','button2'=>null],
-['image'=>'assets/images/categoriecard/categorie5.png','button1'=>'View Order','button2'=>'Download Invoice'],
-['image'=>'assets/images/categoriecard/categorie3.png','button1'=>'View Order','button2'=>'Download Invoice'],
-['image'=>'assets/images/categoriecard/categorie5.png','button1'=>'Track Order','button2'=>null],
-['image'=>'assets/images/categoriecard/categorie4.png','button1'=>'View Order','button2'=>'Download Invoice'],
-['image'=>'assets/images/categoriecard/categorie.png','button1'=>'View Order','button2'=>'Download Invoice'],
-['image'=>'assets/images/categoriecard/categorie2.png','button1'=>'Track Order','button2'=>null],
-['image'=>'assets/images/categoriecard/categorie1.png','button1'=>'View Order','button2'=>'Download Invoice'],
-];
+    // Each real order becomes one card/row; buttons depend on where the
+    // order actually is in the fulfillment flow (see Order::status).
+    $orderRows = $orders->map(function ($order) {
+        $firstDetail = $order->orderDetails->first();
+        $isFinal = in_array((int) $order->status, [4, 5, 6], true);
+
+        return [
+            'id'      => $order->id,
+            'order_id' => $order->order_id,
+            'date'    => $order->created_at?->format('d/m/Y'),
+            'total'   => $order->gross_amount,
+            'status'  => $order->status_label,
+            'payment' => $order->payment && $order->payment->status === 'PAID' ? 'Online Payment' : 'Pending Payment',
+            'image'   => $firstDetail?->product_image,
+            'button1' => $isFinal ? 'View Order' : 'Track Order',
+            'button2' => (int) $order->status === 4 ? 'Download Invoice' : null,
+        ];
+    });
 @endphp
 
 <section>
@@ -43,20 +47,25 @@ $orders = [
         </div>
 
         {{-- ✅ CONDITION START --}}
-        @if(count($orders) > 0)
+        @if($orders->count() > 0)
 
         <!-- GRID -->
         <div id="ordersContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 px-8 lg:px-0">
-            @foreach($orders as $order)
+            @foreach($orderRows as $order)
             <div class="order-item bg-[#f5f5f5] rounded-2xl overflow-hidden shadow-md">
                 <div class="h-[165px] bg-[#e9e9e9] flex items-center justify-center overflow-hidden">
-                    <img src="{{ asset($order['image']) }}" class="w-full h-full object-fill" alt="order">
+                    <img src="{{ $order['image'] ? asset('storage/' . $order['image']) : asset('assets/images/categoriecard/categorie.png') }}"
+                        class="w-full h-full object-fill" alt="{{ $order['order_id'] }}">
                 </div>
 
-                <div class="p-4">
+                <div class="p-3">
+                    <p class="text-[10px] text-black/50 mb-1">{{ $order['order_id'] }} · {{ $order['status'] }}</p>
+                </div>
+
+                <div class="p-4 pt-0">
                     <div class="flex gap-2">
                         @if($order['button2'])
-                        <a href="{{ url('/order/view-order') }}"
+                        <a href="{{ url('/order/view-order') }}?id={{ $order['id'] }}"
                             class="flex-1 w-full h-[35px] rounded-full border border-black/20 bg-white text-black text-[10px] font-medium text-black/70 hover:bg-black hover:text-white transition flex items-center justify-center">
                             {{ $order['button1'] }}
                         </a>
@@ -66,7 +75,7 @@ $orders = [
                             {{ $order['button2'] }}
                         </button>
                         @else
-                        <a href="{{ url('/order/track-order') }}"
+                        <a href="{{ url($order['button1'] === 'View Order' ? '/order/view-order' : '/order/track-order') }}?id={{ $order['id'] }}"
                             class="w-full h-[35px] rounded-full border border-black/20 text-[10px] font-medium text-black/70 hover:bg-black hover:text-white transition flex items-center justify-center">
                             {{ $order['button1'] }}
                         </a>
@@ -89,36 +98,25 @@ $orders = [
                     <div>Action</div>
                 </div>
 
-                @foreach($orders as $index => $order)
+                @foreach($orderRows as $order)
                 <div class="order-list-item border-t border-white/10 text-white">
                     <div class="hidden md:grid grid-cols-6 items-center px-6 py-5 text-[12px]">
-                        <div>ORD-12345678{{ $index }}</div>
-                        <div>08/11/2024</div>
-                        <div>₹500</div>
+                        <div>{{ $order['order_id'] }}</div>
+                        <div>{{ $order['date'] }}</div>
+                        <div>₹{{ number_format($order['total'], 2) }}</div>
                         <div>
-                            @if($index == 3)
                             <span
-                                class="inline-flex items-center rounded-full border border-white/40 px-3 py-1 text-[11px]">
-                                Pending
+                                class="inline-flex items-center rounded-full px-3 py-1 text-[11px] {{ $order['status'] === 'Pending' ? 'border border-white/40' : 'bg-white text-black' }}">
+                                {{ $order['status'] }}
                             </span>
-                            @else
-                            <span
-                                class="inline-flex items-center rounded-full bg-white text-black px-3 py-1 text-[11px]">
-                                Batching
-                            </span>
-                            @endif
                         </div>
                         <div>
-                            @if($index == 2)
-                            COD
-                            @else
-                            Online Payment
-                            @endif
+                            {{ $order['payment'] }}
                         </div>
                         <div>
                             <div class=" flex flex-col gap-2">
                                 @if($order['button2'])
-                                <a href="{{ url('/order/view-order') }}"
+                                <a href="{{ url('/order/view-order') }}?id={{ $order['id'] }}"
                                     class="rounded-full border border-black/20 bg-white text-[10px] py-1 mx-4 font-medium text-black hover:bg-black hover:text-white transition flex items-center justify-center">
                                     {{ $order['button1'] }}
                                 </a>
@@ -128,7 +126,7 @@ $orders = [
                                     {{ $order['button2'] }}
                                 </button>
                                 @else
-                                <a href="{{ url('/order/track-order') }}"
+                                <a href="{{ url($order['button1'] === 'View Order' ? '/order/view-order' : '/order/track-order') }}?id={{ $order['id'] }}"
                                     class=" rounded-full border border-black/20 bg-white text-[10px] font-medium text-black hover:bg-black py-1 mx-4 hover:text-white transition flex items-center justify-center">
                                     {{ $order['button1'] }}
                                 </a>

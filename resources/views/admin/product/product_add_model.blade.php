@@ -71,6 +71,33 @@
                             class="w-full border rounded-xl px-4 py-2 mt-1" placeholder="e.g. 7">
                     </div>
 
+                    <div>
+                        <label class="text-sm font-semibold">Sample Days</label>
+                        <input type="number" name="sample_days" id="sample_days" min="0"
+                            class="w-full border rounded-xl px-4 py-2 mt-1" placeholder="e.g. 3">
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-semibold">Packaging Units</label>
+                        <input type="text" name="packaging_units" id="packaging_units"
+                            class="w-full border rounded-xl px-4 py-2 mt-1" placeholder="e.g. 10,20,50">
+                        <p class="text-xs text-gray-400 mt-1">Comma-separated pack sizes. Leave blank for the default (10, 20, 50).</p>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="text-sm font-semibold">Print Capability</label>
+                        <div id="print_capability_group" class="flex flex-wrap gap-4 mt-1">
+                            @foreach (['Laser', 'Screen Print', 'UV Print', 'Embroidery'] as $method)
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" name="print_capability[]" value="{{ $method }}"
+                                        class="print_capability_checkbox">
+                                    <span class="text-sm">{{ $method }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Select the print methods available for this product.</p>
+                    </div>
+
                     <div class="col-span-2">
                         <label class="text-sm font-semibold">Description</label>
                         <textarea name="description" id="description" rows="3"
@@ -158,24 +185,17 @@
                         </select>
                     </div>
 
-                    {{-- Column headers --}}
-                    <div class="grid grid-cols-7 gap-3 font-semibold text-sm mb-2 text-gray-600">
-                        <div>Primary Value</div>
-                        <div>Secondary Value</div>
-                        <div>Regular Price</div>
-                        <div>Sale Price</div>
-                        <div>Stock</div>
-                        <div>Image</div>
-                        <div>Action</div>
-                    </div>
-
+                    {{-- One card per primary value (e.g. one per color) — the cover
+                         image and gallery are uploaded once per card and apply to
+                         every size row nested inside it, instead of re-choosing the
+                         same file for every single combo row. --}}
                     <div id="variantWrapper">
-                        {{-- First row (index 0) — built by JS on primary_variant change --}}
+                        {{-- First group — built by JS on primary_variant change --}}
                     </div>
 
                     <button type="button" id="addVariant"
                         class="mt-2 bg-black text-white px-4 py-2 rounded-xl text-sm">
-                        + Add Variant Row
+                        + Add Variant
                     </button>
                 </div>
 
@@ -198,6 +218,23 @@
                                     </select>
                                 </div>
                             @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Base per-piece price — used whenever an ordered quantity falls
+                         outside every price-range row below (e.g. below the lowest
+                         minimum, or above the highest maximum). --}}
+                    <div class="mb-4">
+                        <label class="text-sm font-semibold block mb-2">Per Piece Price</label>
+                        <p class="text-xs text-gray-500 mb-2">
+                            Used to price any quantity that doesn't fall inside one of the ranges below.
+                        </p>
+                        <div class="max-w-xs">
+                            <label class="block text-sm font-semibold mb-1">Regular Price <span class="text-red-500">*</span></label>
+                            <input type="number" step="0.01" min="0"
+                                name="bulk_base_regular_price"
+                                placeholder="Per Piece Regular Price"
+                                class="bulk_base_regular_price w-full border border-gray-300 rounded-xl px-4 py-2">
                         </div>
                     </div>
 

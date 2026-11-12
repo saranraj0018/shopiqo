@@ -23,6 +23,10 @@
     </main>
     <div id="toast-container" class="fixed top-5 right-5 space-y-2 z-50"></div>
     @include('frontend.components.footer')
+    {{-- Modals pushed here render as direct children of <body>, outside any
+         z-indexed page wrapper, so they can never get trapped behind the
+         fixed navbar header regardless of their own z-index. --}}
+    @stack('modals')
 </body>
 
 </html>

@@ -3,12 +3,33 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WishlistController extends Controller
 {
+    public function index()
+    {
+        // Customers log in via the "user" guard, not the default "web" guard.
+        $guard = Auth::guard('user');
+
+        $this->data['wishlistItems'] = $guard->check()
+            ? Product::with([
+                'product_variant',
+                'product_gallery_image',
+                'admin',
+                'wishlists',
+                'reviews',
+                'leastPricedVariant',
+                'leastPricedBulkTier',
+            ])->whereHas('wishlists', fn ($q) => $q->where('user_id', $guard->id()))->get()
+            : collect();
+
+        return view('frontend.wishlist', $this->data);
+    }
+
     public function saveWishlist(Request $request)
     {
         $productId = $request->product_id;

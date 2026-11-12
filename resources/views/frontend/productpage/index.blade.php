@@ -1,6 +1,6 @@
 
-<section class="relative bg-black text-white pt-[9rem] pb-0 px-4 sm:px-6 lg:px-8 overflow-hidden">
-    <div class="pointer-events-none absolute inset-0">
+<section class="relative bg-black text-white pt-[9rem] pb-0 px-4 sm:px-6 lg:px-8">
+    <div class="pointer-events-none absolute inset-0 overflow-hidden">
         <div class="absolute left-0 top-0 h-[300px] w-[300px] rounded-full bg-white/5 blur-3xl"></div>
         <div class="absolute right-0 bottom-0 h-[280px] w-[280px] rounded-full bg-white/5 blur-3xl"></div>
     </div>
@@ -20,8 +20,17 @@
             @endif
         </div>
 
-        <div class="flex flex-col xl:flex-row gap-[30px]">
-<div class="relative flex flex-col xl:flex-row gap-[20px] w-full xl:w-[50%]">
+        {{--
+            This row, and the right column opened just below, are intentionally
+            left open here and closed at the end of quantity.blade.php — that
+            file's content (quantity picker, Add to Cart/Proceed, Specifications)
+            keeps flowing into this same right column, so the sticky image on
+            the left stays in view until Specifications ends, not just until
+            this file's own content ends.
+        --}}
+        <div class="flex flex-col xl:flex-row xl:items-start gap-[30px]">
+<div class="relative flex flex-col xl:flex-row gap-[20px] w-full xl:w-[50%] xl:sticky xl:top-[126px] xl:self-start">
+    {{-- top-[126px] clears the fixed navbar (68px main bar + 50px category bar) so the sticky image sits below it, not underneath. --}}
 
     <!-- Desktop Thumbnails -->
     <div
@@ -56,18 +65,6 @@
             src="{{ asset('storage/' . $product->main_image) }}"
             class="w-full h-full object-cover rounded-[12px]">
 
-        <!-- Logo placement overlay: appears once a design is uploaded, draggable to any spot -->
-        <div id="logoPlacementOverlay"
-            class="hidden absolute z-20 w-16 h-16 -translate-x-1/2 -translate-y-1/2 cursor-move touch-none select-none"
-            style="left: 50%; top: 35%;">
-            <div class="relative w-full h-full rounded-md ring-2 ring-white shadow-lg bg-white/20 backdrop-blur-sm overflow-hidden">
-                <img id="logoPlacementImg" src="" alt="Logo placement preview"
-                    class="w-full h-full object-contain p-1 pointer-events-none">
-            </div>
-            <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] text-white bg-black/70 px-1.5 py-0.5 rounded whitespace-nowrap pointer-events-none">
-                Drag to adjust
-            </span>
-        </div>
     </div>
 
     <!-- Mobile Thumbnails -->
@@ -85,7 +82,7 @@
     </div>
 
 </div>
-            <div class="w-full sm:w-[50%] p-[15px] sm:p-0">
+            <div class="w-full xl:w-[50%] p-[15px] sm:p-0">
                 <h1 class="text-[22px] sm:text-[28px] font-medium">
                     {{ $product->name }}
                 </h1>
@@ -190,32 +187,13 @@
                     </div>
                 </div>
 
-                <!-- LOGO PLACEMENT -->
-                <div class="mt-5 w-[80%]">
-                    <p class="text-[12px] mb-2">Logo Placement</p>
-
-                    <div class="flex flex-wrap gap-3" id="logoPositionGroup">
-                        <button type="button" data-x="20" data-y="30"
-                            class="logo-position-btn px-4 h-[34px] bg-white/10 text-white rounded text-[12px] transition">Left</button>
-                        <button type="button" data-x="50" data-y="30"
-                            class="logo-position-btn is-active px-4 h-[34px] bg-white text-black rounded text-[12px] transition">Center</button>
-                        <button type="button" data-x="80" data-y="30"
-                            class="logo-position-btn px-4 h-[34px] bg-white/10 text-white rounded text-[12px] transition">Right</button>
-                    </div>
-                    <p class="text-[10px] text-white/40 mt-2">
-                        Pick a side and a preset above, or drag the logo directly on the product photo to fine-tune the exact spot.
-                    </p>
-                </div>
-
                 <input type="hidden" id="logoSideInput" name="logo_side" value="front">
-                <input type="hidden" id="logoPosXInput" name="logo_position_x" value="50">
-                <input type="hidden" id="logoPosYInput" name="logo_position_y" value="30">
 
                 <!-- PRINT TYPE -->
                 <div class="mt-5 w-[80%]">
                     <p class="text-[12px] mb-2 text-white">Print Type</p>
 
-                    <select
+                    <select id="printTypeSelect" name="print_type"
                         class="w-full h-[40px] bg-black border border-white/20 rounded px-4 text-[12px] text-white outline-none">
                         @foreach ($printTypes as $type)
                         <option class="bg-black text-white">{{ $type }}</option>
@@ -248,12 +226,6 @@
                 </div>
                 @endif
 
-            </div>
-
-        </div>
-
-    </div>
-
     <style>
     .hide-scrollbar::-webkit-scrollbar {
         display: none;
@@ -264,8 +236,6 @@
         scrollbar-width: none;
     }
     </style>
-
-</section>
 
 @include('frontend.components.product_script')
 
@@ -282,31 +252,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const errorEl    = document.getElementById('logoError');
     if (!dropzone) return;
 
-    /* ============================================================
-       LOGO PLACEMENT — position the uploaded logo on the product photo
-    ============================================================ */
-    const placementContainer = document.getElementById('mainProductImage')
-        ? document.getElementById('mainProductImage').parentElement
-        : null;
-    const overlay      = document.getElementById('logoPlacementOverlay');
-    const overlayImg    = document.getElementById('logoPlacementImg');
-    const sideGroup     = document.getElementById('logoSideGroup');
-    const positionGroup = document.getElementById('logoPositionGroup');
+    const sideGroup  = document.getElementById('logoSideGroup');
     const sideInput  = document.getElementById('logoSideInput');
-    const posXInput  = document.getElementById('logoPosXInput');
-    const posYInput  = document.getElementById('logoPosYInput');
-
-    // Keep the overlay a little inside the edges so it never hangs off the photo.
-    const BOUNDS = { minX: 8, maxX: 92, minY: 10, maxY: 88 };
-
-    function setOverlayPosition(xPercent, yPercent) {
-        const x = Math.min(BOUNDS.maxX, Math.max(BOUNDS.minX, xPercent));
-        const y = Math.min(BOUNDS.maxY, Math.max(BOUNDS.minY, yPercent));
-        overlay.style.left = x + '%';
-        overlay.style.top = y + '%';
-        posXInput.value = Math.round(x);
-        posYInput.value = Math.round(y);
-    }
 
     function setActiveButton(group, btn) {
         group.querySelectorAll('button').forEach(function (b) {
@@ -323,47 +270,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!btn) return;
             setActiveButton(sideGroup, btn);
             sideInput.value = btn.dataset.side;
-        });
-    }
-
-    if (positionGroup) {
-        positionGroup.addEventListener('click', function (e) {
-            const btn = e.target.closest('.logo-position-btn');
-            if (!btn) return;
-            setActiveButton(positionGroup, btn);
-            setOverlayPosition(parseFloat(btn.dataset.x), parseFloat(btn.dataset.y));
-        });
-    }
-
-    // Drag the overlay directly on the product photo to fine-tune the spot.
-    if (overlay && placementContainer) {
-        let dragging = false;
-
-        overlay.addEventListener('pointerdown', function (e) {
-            dragging = true;
-            overlay.setPointerCapture(e.pointerId);
-        });
-
-        overlay.addEventListener('pointermove', function (e) {
-            if (!dragging) return;
-            const rect = placementContainer.getBoundingClientRect();
-            const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
-            const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
-            setOverlayPosition(xPercent, yPercent);
-
-            // A manual drag no longer matches any preset button.
-            if (positionGroup) {
-                positionGroup.querySelectorAll('button').forEach(function (b) {
-                    b.classList.remove('is-active', 'bg-white', 'text-black');
-                    b.classList.add('bg-white/10', 'text-white');
-                });
-            }
-        });
-
-        ['pointerup', 'pointercancel'].forEach(function (evt) {
-            overlay.addEventListener(evt, function () {
-                dragging = false;
-            });
         });
     }
 
@@ -413,12 +319,6 @@ document.addEventListener('DOMContentLoaded', function () {
             fileSize.textContent = formatSize(file.size);
             idleState.classList.add('hidden');
             preview.classList.remove('hidden');
-
-            // Mirror the logo onto the placement overlay so it can be positioned.
-            if (overlay && overlayImg) {
-                overlayImg.src = e.target.result;
-                overlay.classList.remove('hidden');
-            }
         };
         reader.readAsDataURL(file);
     }
@@ -428,11 +328,6 @@ document.addEventListener('DOMContentLoaded', function () {
         previewImg.src = '';
         preview.classList.add('hidden');
         idleState.classList.remove('hidden');
-
-        if (overlay && overlayImg) {
-            overlay.classList.add('hidden');
-            overlayImg.src = '';
-        }
     }
 
     // Click anywhere on the dropzone (except the remove button) opens the picker

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,24 +11,53 @@ use Illuminate\Support\Facades\Auth;
 class ShopController extends Controller
 {
     /**
-     * Print techniques offered site-wide. Kept as one source of truth so the
+     * Fallback print techniques for products an admin hasn't configured
+     * Print Capability for yet. Kept as one source of truth so the
      * "Print Type" dropdown and the spec accordion never drift out of sync.
      */
-    private const PRINT_TYPES = ['Embroidery', 'Screen Print'];
+    private const DEFAULT_PRINT_TYPES = ['Embroidery', 'Screen Print'];
 
     public function index(Request $request)
     {
         // Fetch products with all necessary relations
-        $this->data['products'] = Product::with([
+        $products = Product::with([
             'product_variant',
             'product_variant.variantValues',
             'product_gallery_image',
             'admin',
             'wishlists',
             'reviews',
-            'leastPricedVariant'
-        ])->where('status', 'active')->limit(6)->get();
+            'leastPricedVariant',
+            'leastPricedBulkTier'
+        ])->where('status', 'active')->get();
+
+        $prices = $products->map(fn ($product) => $this->effectivePrice($product))->filter();
+
+        $this->data['products']   = $products;
+        $this->data['categories'] = Category::whereNull('parent_id')->where('status', 1)->orderBy('name')->get();
+        $this->data['minPrice']   = $prices->isNotEmpty() ? (int) floor($prices->min()) : 0;
+        $this->data['maxPrice']   = $prices->isNotEmpty() ? (int) ceil($prices->max()) : 0;
+
         return view('frontend.shop')->with($this->data);
+    }
+
+    /**
+     * Same "starting from" price logic the storefront cards already use —
+     * shared here so the filter's price range reflects real product prices.
+     */
+    private function effectivePrice(Product $product): ?float
+    {
+        if ($product->product_type === 'variant') {
+            return $product->leastPricedVariant
+                ? ($product->leastPricedVariant->sale_price ?: $product->leastPricedVariant->regular_price)
+                : null;
+        }
+        if ($product->product_type === 'bulk') {
+            return $product->leastPricedBulkTier
+                ? ($product->leastPricedBulkTier->sale_price ?: $product->leastPricedBulkTier->regular_price)
+                : $product->per_piece_price;
+        }
+        return $product->sale_price ?: $product->regular_price;
     }
 
     public function show($id)
@@ -36,11 +66,14 @@ class ShopController extends Controller
         $product = Product::with([
             'product_variant',
             'product_variant.variantValues.attribute_value.get_attribute',
+            'bulkProducts',
+            'bulkProducts.variants.attributeValue.get_attribute',
             'product_gallery_image',
             'admin',
             'wishlists',
             'reviews.user',
-            'leastPricedVariant'
+            'leastPricedVariant',
+            'leastPricedBulkTier'
         ])->where('id', $decryptedId)->first();
 
         $variantMatrix = $this->buildVariantMatrix($product);
@@ -48,7 +81,7 @@ class ShopController extends Controller
 
         $this->data['product']         = $product;
         $this->data['variantMatrix']   = $variantMatrix;
-        $this->data['printTypes']      = self::PRINT_TYPES;
+        $this->data['printTypes']      = $product->print_capability_array ?: self::DEFAULT_PRINT_TYPES;
         $this->data['moq']             = $this->resolveMoq($variantMatrix);
         $this->data['displayPrice']    = $this->resolveDisplayPrice($product, $variantMatrix);
         // Customers log in via the "user" guard, not the default "web" guard.
@@ -80,7 +113,7 @@ class ShopController extends Controller
         return match ($product->product_type) {
             'bulk'    => $variantMatrix && $variantMatrix['tiers']->isNotEmpty()
                 ? $variantMatrix['tiers']->first()['price']
-                : null,
+                : $product->per_piece_price,
             'variant' => $product->leastPricedVariant
                 ? ($product->leastPricedVariant->sale_price ?: $product->leastPricedVariant->regular_price)
                 : null,
@@ -125,7 +158,22 @@ class ShopController extends Controller
      */
     private function buildVariantMatrix(?Product $product): ?array
     {
-        if (!$product || !in_array($product->product_type, ['variant', 'bulk']) || $product->product_variant->isEmpty()) {
+        if (!$product || !in_array($product->product_type, ['variant', 'bulk'])) {
+            return null;
+        }
+
+        $sortValues = fn ($values) => collect($values)
+            ->sortBy([['sort_order', 'asc'], ['id', 'asc']])
+            ->values();
+
+        if ($product->product_type === 'bulk') {
+            if ($product->bulkProducts->isEmpty()) {
+                return null;
+            }
+            return $this->buildBulkMatrix($product, $sortValues);
+        }
+
+        if ($product->product_variant->isEmpty()) {
             return null;
         }
 
@@ -145,20 +193,13 @@ class ShopController extends Controller
         }
 
         if ($sizeTypeId === null) {
-            // No attribute is literally named "Size". "variant" products always
-            // have a chosen primary attribute to fall back on; "bulk" products
-            // don't, so just pick whichever attribute type was seen first.
+            // No attribute is literally named "Size" — "variant" products
+            // always have a chosen primary attribute to fall back on.
             $sizeTypeId = $product->product_variant->first()->pri_attribute_id
                 ?? array_key_first($seenTypeIds);
         }
 
-        $sortValues = fn ($values) => collect($values)
-            ->sortBy([['sort_order', 'asc'], ['id', 'asc']])
-            ->values();
-
-        return $product->product_type === 'bulk'
-            ? $this->buildBulkMatrix($product, $sizeTypeId, $sortValues)
-            : $this->buildPerComboMatrix($product, $sizeTypeId, $sortValues);
+        return $this->buildPerComboMatrix($product, $sizeTypeId, $sortValues);
     }
 
     private function buildPerComboMatrix(Product $product, ?int $sizeTypeId, \Closure $sortValues): ?array
@@ -212,15 +253,34 @@ class ShopController extends Controller
         ];
     }
 
-    private function buildBulkMatrix(Product $product, ?int $sizeTypeId, \Closure $sortValues): ?array
+    private function buildBulkMatrix(Product $product, \Closure $sortValues): ?array
     {
+        $firstTierVariants = $product->bulkProducts->first()->variants;
+
+        // No attribute literally named "Size" among bulk products — unlike
+        // "variant" products they have no chosen primary attribute, so just
+        // pick whichever attribute type was seen first.
+        $sizeTypeId = null;
+        $seenTypeIds = [];
+        foreach ($firstTierVariants as $bv) {
+            $type = $bv->attributeValue?->get_attribute;
+            if (!$type) {
+                continue;
+            }
+            $seenTypeIds[$type->id] = true;
+            if ($sizeTypeId === null && stripos($type->name, 'size') !== false) {
+                $sizeTypeId = $type->id;
+            }
+        }
+        $sizeTypeId ??= array_key_first($seenTypeIds);
+
         $rowValues = [];
         $colValues = [];
 
         // Every tier is tagged with the same set of attribute values, so any
         // one tier's values represent the whole product's available options.
-        foreach ($product->product_variant->first()->variantValues as $vv) {
-            $attrValue = $vv->attribute_value;
+        foreach ($firstTierVariants as $bv) {
+            $attrValue = $bv->attributeValue;
             if (!$attrValue || !$attrValue->get_attribute) {
                 continue;
             }
@@ -246,7 +306,7 @@ class ShopController extends Controller
             }
         }
 
-        $tiers = $product->product_variant
+        $tiers = $product->bulkProducts
             ->map(fn ($tier) => [
                 'minimum' => $tier->minimum,
                 'maximum' => $tier->maximum,
@@ -256,11 +316,13 @@ class ShopController extends Controller
             ->values();
 
         return [
-            'type'  => 'bulk',
-            'rows'  => $rows,
-            'cols'  => $cols,
-            'cells' => $cells,
-            'tiers' => $tiers,
+            'type'      => 'bulk',
+            'rows'      => $rows,
+            'cols'      => $cols,
+            'cells'     => $cells,
+            'tiers'     => $tiers,
+            // Per-piece fallback for any quantity outside every tier's range.
+            'basePrice' => $product->per_piece_price,
         ];
     }
 }

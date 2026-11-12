@@ -91,18 +91,18 @@
                         @csrf
                         <div>
                             <label class="block text-[14px] font-medium mb-2">Email Address</label>
-                            <input type="email" placeholder="your@email.com" class="input-style">
+                            <input type="email" placeholder="your@email.com" class="input-style" id="email" name="email">
                         </div>
                         <div>
                             <label class="block text-[14px] font-medium mb-2">Password</label>
-                            <input type="password" placeholder="Password" class="input-style">
+                            <input type="password" placeholder="Password" class="input-style" id="password" name="password">
                         </div>
                         <div class="flex justify-end -mt-2">
                             <a href="#" class="text-[14px] text-white/85 hover:text-white transition">
                                 Forgot Password?
                             </a>
                         </div>
-                        <button type="submit" class="w-full h-[46px] rounded-full bg-white text-black text-[14px] font-semibold hover:bg-white/90 transition flex items-center justify-center">
+                        <button type="submit" id="login_business_form" class="w-full h-[46px] rounded-full bg-white text-black text-[14px] font-semibold hover:bg-white/90 transition flex items-center justify-center">
                             Submit Request
                         </button>
                         <p class="text-center text-[14px] text-white/65">
@@ -123,7 +123,7 @@
                         </div>
                         <div>
                             <label class="block text-[14px] font-medium mb-2">Email Address</label>
-                            <input type="email" placeholder="your@email.com" class="input-style" id="email" name="email">
+                            <input type="email" placeholder="your@email.com" class="input-style" id="signup_email" name="email">
                         </div>
                         <div>
                             <label class="block text-[14px] font-medium mb-2">Phone Number</label>
@@ -131,7 +131,7 @@
                         </div>
                         <div>
                             <label class="block text-[14px] font-medium mb-2">Password</label>
-                            <input type="password" placeholder="Create a strong password" class="input-style" id="password"
+                            <input type="password" placeholder="Create a strong password" class="input-style" id="signup_password"
                                 name="password">
                         </div>
                         <div>
@@ -149,7 +149,7 @@
                             <input type="text" placeholder="GST123456" class="input-style" id="gst_number"
                                 name="gst_number">
                         </div>
-                        <button type="submit"
+                        <button type="submit" id="save_business_signup"
                             class="w-full h-[46px] rounded-full bg-white text-black text-[14px] font-semibold hover:bg-white/90 transition flex items-center justify-center">
                             Create Account
                         </button>

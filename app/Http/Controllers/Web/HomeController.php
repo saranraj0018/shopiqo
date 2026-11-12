@@ -20,7 +20,8 @@ class HomeController extends Controller
             'admin',
             'wishlists',
             'reviews',
-            'leastPricedVariant'
+            'leastPricedVariant',
+            'leastPricedBulkTier'
         ])->where('status', 'active')->limit(6)->get();
 
         // "Browse by need" cards, managed by admins

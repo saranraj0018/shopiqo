@@ -40,13 +40,13 @@
             <h2 class="text-white text-[22px] sm:text-[22px] font-medium leading-none mb-8">
                 Shipping Details
             </h2>
-            <form>
+            <form id="shippingForm">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-9 gap-y-6 mb-4">
                     <div>
                         <label class="block text-white text-[13px] sm:text-[14px] font-medium mb-3">
                             Full Name <span class="text-white">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Your Name" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
+                        <input type="text" id="shipName" value="{{ auth('user')->user()->name ?? '' }}" placeholder="Enter Your Name" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-14px_30px_rgba(255,255,255,0.04),0_0_0_1px_rgba(255,255,255,0.02)]
                     focus:border-white/30">
                     </div>
@@ -54,7 +54,7 @@
                         <label class="block text-white text-[13px] sm:text-[14px] font-medium mb-3">
                             Email <span class="text-white">*</span>
                         </label>
-                        <input type="email" placeholder="Enter Your Email" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
+                        <input type="email" id="shipEmail" value="{{ auth('user')->user()->email ?? '' }}" placeholder="Enter Your Email" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-14px_30px_rgba(255,255,255,0.04),0_0_0_1px_rgba(255,255,255,0.02)]
                     focus:border-white/30">
                     </div>
@@ -64,7 +64,7 @@
                         <label class="block text-white text-[13px] sm:text-[14px] font-medium mb-3">
                             Phone <span class="text-white">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Your Phone Number" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
+                        <input type="text" id="shipPhone" value="{{ auth('user')->user()->phone ?? '' }}" placeholder="Enter Your Phone Number" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-14px_30px_rgba(255,255,255,0.04),0_0_0_1px_rgba(255,255,255,0.02)]
                     focus:border-white/30">
                     </div>
@@ -73,7 +73,7 @@
                         <label class="block text-white text-[13px] sm:text-[14px] font-medium mb-3">
                             Company Name <span class="font-normal">(Optional)</span>
                         </label>
-                        <input type="text" placeholder="Enter Your Company Name" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
+                        <input type="text" id="shipCompany" value="{{ auth('user')->user()->company_name ?? '' }}" placeholder="Enter Your Company Name" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-14px_30px_rgba(255,255,255,0.04),0_0_0_1px_rgba(255,255,255,0.02)]
                     focus:border-white/30">
                     </div>
@@ -82,16 +82,16 @@
                     <label class="block text-white text-[13px] sm:text-[14px] font-medium mb-3">
                         Address <span class="text-white">*</span>
                     </label>
-                    <textarea rows="4" placeholder="Street address, building, floor" class="w-full rounded-[10px] border border-white/20 bg-[#050505] px-4 py-4 text-[13px] text-white placeholder:text-white/35 outline-none resize-none
+                    <textarea rows="4" id="shipAddress" placeholder="Street address, building, floor" class="w-full rounded-[10px] border border-white/20 bg-[#050505] px-4 py-4 text-[13px] text-white placeholder:text-white/35 outline-none resize-none
                 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-20px_35px_rgba(255,255,255,0.04),0_0_0_1px_rgba(255,255,255,0.02)]
                 focus:border-white/30"></textarea>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-x-9 gap-y-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-x-9 gap-y-6 mb-4">
                     <div>
                         <label class="block text-white text-[13px] sm:text-[14px] font-medium mb-3">
                             City <span class="text-white">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Your City" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
+                        <input type="text" id="shipCity" placeholder="Enter Your City" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-14px_30px_rgba(255,255,255,0.04),0_0_0_1px_rgba(255,255,255,0.02)]
                     focus:border-white/30">
                     </div>
@@ -99,7 +99,7 @@
                         <label class="block text-white text-[13px] sm:text-[14px] font-medium mb-3">
                             State <span class="text-white">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Your State" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
+                        <input type="text" id="shipState" placeholder="Enter Your State" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-14px_30px_rgba(255,255,255,0.04),0_0_0_1px_rgba(255,255,255,0.02)]
                     focus:border-white/30">
                     </div>
@@ -107,22 +107,104 @@
                         <label class="block text-white text-[13px] sm:text-[14px] font-medium mb-3">
                             Pincode <span class="text-white">*</span>
                         </label>
-                        <input type="text" placeholder="Enter Your Pincode" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
+                        <input type="text" id="shipPincode" placeholder="Enter Your Pincode" class="w-full h-[44px] rounded-[10px] border border-white/20 bg-[#050505] px-4 text-[13px] text-white placeholder:text-white/35 outline-none
                     shadow-[inset_0_1px_0_rgba(255,255,255,0.05),inset_0_-14px_30px_rgba(255,255,255,0.04),0_0_0_1px_rgba(255,255,255,0.02)]
                     focus:border-white/30">
                     </div>
                 </div>
+                <p id="shippingFormError" class="text-[12px] text-red-400 mb-4 hidden"></p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <button type="button"
-                        class="w-full h-[44px] rounded-[10px] border border-white text-white text-[14px] font-normal hover:bg-white hover:text-black transition duration-300">
+                    <a href="{{ route('cart.index') }}"
+                        class="w-full h-[44px] rounded-[10px] border border-white text-white text-[14px] font-normal hover:bg-white hover:text-black transition duration-300 flex items-center justify-center">
                         Cancel
-                    </button>
-                    <a href="{{ route('order.sampleprocess') }}"
+                    </a>
+                    <button type="button" id="makePaymentBtn"
                         class="w-full h-[44px] rounded-[10px] bg-white text-black text-[14px] font-medium hover:bg-white/90 transition duration-300 flex items-center justify-center">
                         Make Payment
-                    </a>
+                    </button>
                 </div>
             </form>
+
+            <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const btn = document.getElementById('makePaymentBtn');
+                const errorEl = document.getElementById('shippingFormError');
+                if (!btn) return;
+
+                const fields = {
+                    name: document.getElementById('shipName'),
+                    email: document.getElementById('shipEmail'),
+                    phone: document.getElementById('shipPhone'),
+                    company_name: document.getElementById('shipCompany'),
+                    address: document.getElementById('shipAddress'),
+                    city: document.getElementById('shipCity'),
+                    state: document.getElementById('shipState'),
+                    pincode: document.getElementById('shipPincode'),
+                };
+
+                btn.addEventListener('click', function () {
+                    errorEl.classList.add('hidden');
+
+                    const sampleTypeInput = document.getElementById('sampleTypeInput');
+                    const sampleTypeError = document.getElementById('sampleTypeError');
+                    if (sampleTypeInput && !sampleTypeInput.value) {
+                        if (sampleTypeError) sampleTypeError.classList.remove('hidden');
+                        document.getElementById('sampleTypeGroup').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return;
+                    }
+
+                    const required = ['name', 'email', 'phone', 'address', 'city', 'state', 'pincode'];
+                    for (const key of required) {
+                        if (!fields[key].value.trim()) {
+                            errorEl.textContent = 'Please fill in all required shipping fields.';
+                            errorEl.classList.remove('hidden');
+                            fields[key].focus();
+                            return;
+                        }
+                    }
+
+                    const payload = {};
+                    Object.keys(fields).forEach(function (key) { payload[key] = fields[key].value.trim(); });
+                    payload.sample_type = sampleTypeInput ? sampleTypeInput.value : null;
+
+                    // Each cart line item has its own packaging picker (see orderreview.blade.php).
+                    const packaging = {};
+                    @foreach($cartItems as $cartItem)
+                    packaging['{{ $cartItem->id }}'] = {
+                        unit: document.getElementById('packagingUnitInput_{{ $cartItem->id }}').value,
+                        packs: document.getElementById('totalPacksInput_{{ $cartItem->id }}').value,
+                    };
+                    @endforeach
+                    payload.packaging = packaging;
+
+                    btn.disabled = true;
+                    showLoader();
+
+                    sendRequest('/order', payload, 'POST', function (res) {
+                        hideLoader();
+                        btn.disabled = false;
+
+                        if (res.status === 'unauthenticated') {
+                            showToast('Please sign in to place an order.', 'error', 2500);
+                            return;
+                        }
+                        if (res.status === 'placed') {
+                            showToast('Order placed!', 'success', 1500);
+                            setTimeout(function () { window.location.href = res.redirect; }, 600);
+                        }
+                    }, function (err) {
+                        hideLoader();
+                        btn.disabled = false;
+                        if (err.errors) {
+                            errorEl.textContent = Object.values(err.errors)[0][0];
+                        } else {
+                            errorEl.textContent = err.message || 'Something went wrong.';
+                        }
+                        errorEl.classList.remove('hidden');
+                    });
+                });
+            });
+            </script>
         </div>
     </div>
 </div>

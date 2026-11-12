@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\Ticket;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -25,20 +25,25 @@ class TicketController extends Controller
         ];
         $request->validate($rules);
         try {
-            $update = Ticket::where('id', $request->ticket_id)->update([
+            Ticket::where('id', $request->ticket_id)->update([
                 'status' => $request->status,
             ]);
             $ticket = Ticket::where('id', $request->ticket_id)->first();
-            $user = User::where('id', $ticket->user_id)->first();
-            if ($request->status == 'in_progress') {
-                $status = 'In Progress';
-            } else if ($request->status == 'on_hold') {
-                $status = 'On Hold';
-            } else if ($request->status == 'resolved') {
-                $status = 'Resolved';
-            } else if ($request->status == 'rejected') {
-                $status = 'Rejected';
-            }
+
+            $statusLabels = [
+                'pending'     => 'Pending',
+                'in_progress' => 'In Progress',
+                'on_hold'     => 'On Hold',
+                'resolved'    => 'Resolved',
+                'rejected'    => 'Rejected',
+            ];
+            $status = $statusLabels[$request->status] ?? ucfirst($request->status);
+
+            Notification::notifyUser(
+                $ticket->user_id,
+                'Support Ticket ' . $status,
+                "Your support ticket #{$ticket->id} is now {$status}."
+            );
 
             return response()->json([
                 'success' => true,

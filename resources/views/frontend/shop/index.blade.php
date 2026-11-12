@@ -478,22 +478,29 @@
                 <div id="productGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 px-[30px] lg:px-0">
                     @foreach ($products as $product)
                         @php
-                            if ($product->product_type === 'variant' || ($product->product_type === 'bulk' && $product->leastPricedVariant)) {
+                            if ($product->product_type === 'variant' && $product->leastPricedVariant) {
                                 $salePrice = $product->leastPricedVariant->sale_price;
                                 $regularPrice = $product->leastPricedVariant->regular_price;
                                 $stock = $product->leastPricedVariant->stock;
+                            } elseif ($product->product_type === 'bulk') {
+                                $salePrice = $product->leastPricedBulkTier->sale_price ?? $product->per_piece_price;
+                                $regularPrice = $product->leastPricedBulkTier->regular_price ?? $product->per_piece_price;
+                                $stock = null;
                             } else {
                                 $salePrice = $product->sale_price;
                                 $regularPrice = $product->regular_price;
                                 $stock = $product->stock;
                             }
                         @endphp
-                        <div class="product-item h-auto min-h-[300px]" data-title="{{ strtolower($product['name']) }}"
-                            data-subtitle="{{ strtolower($product['subtitle']) }}"
-                            data-category="{{ strtolower($product['category_id']) }}"
-                            {{-- data-availability="{{ strtolower($product['availability']) }}" --}}
-                            {{-- data-print="{{ strtolower(implode(',', $product['print_capability'])) }}" --}}
-                            data-time="{{ strtolower($product['production_min_days']) }}"
+                        @php
+                            $timeMin = $product->production_min_days ?? $product->production_max_days;
+                            $timeMax = $product->production_max_days ?? $product->production_min_days;
+                        @endphp
+                        <div class="product-item h-auto min-h-[300px]" data-title="{{ strtolower($product->name) }}"
+                            data-category="{{ $product->category_id }}"
+                            data-time-min="{{ $timeMin ?? '' }}"
+                            data-time-max="{{ $timeMax ?? '' }}"
+                            data-print="{{ $product->print_capability }}"
                             data-price="{{ $salePrice }}">
                             @include('frontend.components.shopproductcard', ['item' => $product,'salePrice' ])
                         </div>
@@ -544,6 +551,12 @@
             const openFilterDrawer = document.getElementById("openFilterDrawer");
             const closeFilterDrawer = document.getElementById("closeFilterDrawer");
 
+            const TIME_BUCKETS = {
+                "1-3 days": [1, 3],
+                "3-7 days": [3, 7],
+                "7+ days": [7, Infinity],
+            };
+
             let itemsPerPage = window.innerWidth < 1024 ? 8 : 9;
             let currentPage = 1;
             let filteredProducts = [...allProducts];
@@ -552,8 +565,11 @@
             const urlParams = new URLSearchParams(window.location.search);
             const categoryFromUrl = urlParams.get("category");
 
+            // Category id, not a slug — the navbar's category links and the
+            // sidebar's filter-category checkboxes both key off the real
+            // Category id, so this has to match that, not a lowercased name.
             if (categoryFromUrl && categoryFromUrl !== "all") {
-                topNavCategory = categoryFromUrl.toLowerCase();
+                topNavCategory = categoryFromUrl;
             }
 
             function openDrawer() {
@@ -744,21 +760,16 @@
 
                 filteredProducts = allProducts.filter((card) => {
                     const title = card.dataset.title || "";
-                    const subtitle = card.dataset.subtitle || "";
                     const category = card.dataset.category || "";
                     const availability = card.dataset.availability || "";
-                    const print = card.dataset.print || "";
-                    const time = card.dataset.time || "";
+                    const print = (card.dataset.print || "").toLowerCase();
+                    const timeMin = parseFloat(card.dataset.timeMin);
+                    const timeMax = parseFloat(card.dataset.timeMax);
                     const price = parseFloat(card.dataset.price) || 0;
 
                     const keywordMatch =
                         keyword === "" ||
-                        title.includes(keyword) ||
-                        subtitle.includes(keyword) ||
-                        category.includes(keyword) ||
-                        availability.includes(keyword) ||
-                        print.includes(keyword) ||
-                        time.includes(keyword);
+                        title.includes(keyword);
 
                     const topNavMatch =
                         topNavCategory === "" ||
@@ -770,8 +781,14 @@
                     const availabilityMatch =
                         selectedAvailability.length === 0 || selectedAvailability.includes(availability);
 
+                    // Production time is a real min–max day range per product, matched
+                    // against the "1-3 / 3-7 / 7+" buckets by range overlap, not exact text.
                     const timeMatch =
-                        selectedTime.length === 0 || selectedTime.includes(time);
+                        selectedTime.length === 0 ||
+                        (!isNaN(timeMin) && !isNaN(timeMax) && selectedTime.some(function (bucket) {
+                            const range = TIME_BUCKETS[bucket];
+                            return range && timeMin <= range[1] && timeMax >= range[0];
+                        }));
 
                     const priceMatch =
                         price >= Math.min(minVal, maxVal) &&
@@ -979,6 +996,15 @@
                 const allFilter = document.querySelector('.top-category-filter[data-filter="all"]');
                 if (allFilter) {
                     allFilter.classList.add("active-top-filter");
+                }
+            }
+
+            // Reflect a navbar category link (?category=<id>) in the actual
+            // sidebar checkbox, so the drawer's filter state matches what's shown.
+            if (topNavCategory) {
+                const matchingCheckbox = document.querySelector(`.filter-category[value="${topNavCategory}"]`);
+                if (matchingCheckbox) {
+                    matchingCheckbox.checked = true;
                 }
             }
 
